@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url = uri("https://maven.neoforged.net/releases") }
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+
+        maven {
+            name = "NeoForged"
+            url = uri("https://maven.neoforged.net/releases")
+        }
+
+        mavenCentral()
+    }
+}
+
+rootProject.name = "fiverkas_weapons"
