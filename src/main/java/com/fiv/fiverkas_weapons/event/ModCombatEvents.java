@@ -18,8 +18,9 @@ import org.slf4j.Logger;
 
 public class ModCombatEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final int VAPORIFIED_DURATION_TICKS = 80;
-    private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 80;
+    private static final int VAPORIFIED_DURATION_TICKS = 120;
+    private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
+    private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_PARTICLE_COUNT = 12;
 
     public static void onAttackEntity(AttackEntityEvent event) {
@@ -134,5 +135,6 @@ public class ModCombatEvents {
                     0.0
             );
         }
+        target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
 }
