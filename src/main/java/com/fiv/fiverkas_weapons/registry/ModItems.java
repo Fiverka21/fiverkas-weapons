@@ -31,6 +31,6 @@ public class ModItems {
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 6, -2.4f))
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.4f))
                     ));
 }

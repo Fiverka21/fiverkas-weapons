@@ -1,5 +1,6 @@
 package com.fiv.fiverkas_weapons.registry;
 
+import com.fiv.fiverkas_weapons.effect.BleedEffect;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.VaporifiedEffect;
 
@@ -15,4 +16,7 @@ public class ModEffects {
 
     public static final DeferredHolder<MobEffect, VaporifiedEffect> VAPORIFIED =
             EFFECTS.register("vaporified", VaporifiedEffect::new);
+
+    public static final DeferredHolder<MobEffect, BleedEffect> BLEED =
+            EFFECTS.register("bleed", BleedEffect::new);
 }
