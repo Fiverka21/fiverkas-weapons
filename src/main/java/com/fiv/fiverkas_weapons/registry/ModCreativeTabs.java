@@ -20,6 +20,8 @@ public class ModCreativeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.VAPORWAVE_SWORD.get());
                         output.accept(ModItems.SACRILEGIOUS.get());
+                        output.accept(ModItems.MKOPI.get());
+                        output.accept(ModItems.BAYONET.get());
                     })
                     .build());
 }

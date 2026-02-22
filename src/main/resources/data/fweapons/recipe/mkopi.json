@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABC",
+    "FDB",
+    "EFA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:sculk" },
+    "B": { "item": "minecraft:red_dye" },
+    "C": { "item": "minecraft:netherite_ingot" },
+    "D": { "item": "minecraft:nether_star" },
+    "E": { "item": "minecraft:stick" },
+    "F": { "item": "minecraft:note_block" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:mkopi"
+  }
+}

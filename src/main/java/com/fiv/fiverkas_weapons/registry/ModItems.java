@@ -33,4 +33,22 @@ public class ModItems {
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.4f))
                     ));
+
+    public static final DeferredHolder<Item, SwordItem> MKOPI =
+            ITEMS.register("mkopi",
+                    () -> new SwordItem(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.4f))
+                    ));
+
+    public static final DeferredHolder<Item, SwordItem> BAYONET =
+            ITEMS.register("bayonet",
+                    () -> new SwordItem(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3, -2.4f))
+                    ));
 }

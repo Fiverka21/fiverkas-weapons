@@ -24,7 +24,7 @@ license="${mod_license}"
 modId="fweapons" #mandatory
 
 # The version number of the mod
-version="0.1" #mandatory
+version="0.2" #mandatory
 
 # A display name for the mod
 displayName="Fiverka's Weapons" #mandatory
@@ -38,16 +38,14 @@ displayName="Fiverka's Weapons" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 #logoFile="examplemod.png" #optional
 
-# A text field displayed in the mod UI
-#credits="" #optional
+# A text field displayed in the mod UI #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
-#authors=""
+authors="Fiverka, Pantoflik"
 
 # The description text for the mod (multi line!) (#mandatory)
-description='''
-Example mod description.
-'''
+description="Some unique weapons, based on BetterCombat"
+
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
 #[[mixins]]

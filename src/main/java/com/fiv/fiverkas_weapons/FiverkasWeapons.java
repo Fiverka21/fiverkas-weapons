@@ -7,6 +7,7 @@ import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModCreativeTabs;
+import com.fiv.fiverkas_weapons.registry.ModSounds;
 
 @Mod(FiverkasWeapons.MODID)
 public class FiverkasWeapons {
@@ -17,6 +18,7 @@ public class FiverkasWeapons {
         ModItems.ITEMS.register(modEventBus);   // Register items
         ModEffects.EFFECTS.register(modEventBus); // Register effects
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus); // Register creative tabs
+        ModSounds.SOUND_EVENTS.register(modEventBus); // Register sounds
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onAttackEntity);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingIncomingDamage);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingDamagePost);
