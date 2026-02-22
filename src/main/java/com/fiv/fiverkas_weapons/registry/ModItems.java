@@ -15,7 +15,7 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(Registries.ITEM, FiverkasWeapons.MODID);
 
-    // Register sword
+    // Register swords
     public static final DeferredHolder<Item, VaporwaveSword> VAPORWAVE_SWORD =
             ITEMS.register("vaporwave_sword",
                     () -> new VaporwaveSword(
@@ -23,5 +23,14 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.4f))
+                    ));
+
+    public static final DeferredHolder<Item, SwordItem> SACRILEGIOUS =
+            ITEMS.register("sacrilegious",
+                    () -> new SwordItem(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 6, -2.4f))
                     ));
 }

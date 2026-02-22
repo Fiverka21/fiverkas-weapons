@@ -17,6 +17,9 @@ public class ModCreativeTabs {
             CREATIVE_MODE_TABS.register("fweapons_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.fweapons_tab"))
                     .icon(() -> new ItemStack(ModItems.VAPORWAVE_SWORD.get()))
-                    .displayItems((parameters, output) -> output.accept(ModItems.VAPORWAVE_SWORD.get()))
+                    .displayItems((parameters, output) -> {
+                        output.accept(ModItems.VAPORWAVE_SWORD.get());
+                        output.accept(ModItems.SACRILEGIOUS.get());
+                    })
                     .build());
 }
