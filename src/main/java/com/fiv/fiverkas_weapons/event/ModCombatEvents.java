@@ -2,9 +2,12 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
+import com.fiv.fiverkas_weapons.registry.ModSounds;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -14,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 public class ModCombatEvents {
@@ -22,6 +26,13 @@ public class ModCombatEvents {
     private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_PARTICLE_COUNT = 12;
+    private static final int MKOPI_DARKNESS_DURATION_TICKS = 80;
+    private static final int MKOPI_PARTICLE_COUNT = 40;
+    private static final int MKOPI_BLACK_PARTICLE_COUNT = 32;
+    private static final int BAYONET_GUNSHOT_PARTICLE_COUNT = 18;
+    private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
+    private static final String BAYONET_GUNSHOT_ANIMATION = "bettercombat:one_handed_stab";
+    private static final DustParticleOptions MKOPI_BLACK_DUST = new DustParticleOptions(new Vector3f(0.02F, 0.02F, 0.02F), 1.1F);
 
     public static void onAttackEntity(AttackEntityEvent event) {
         if (!(event.getTarget() instanceof LivingEntity target)) {
@@ -35,7 +46,9 @@ public class ModCombatEvents {
                 || attacker.getOffhandItem().is(ModItems.VAPORWAVE_SWORD.get());
         boolean hasSacrilegious = attacker.getMainHandItem().is(ModItems.SACRILEGIOUS.get())
                 || attacker.getOffhandItem().is(ModItems.SACRILEGIOUS.get());
-        if (!hasVaporwaveSword && !hasSacrilegious) {
+        boolean isMkopiSlamAttack = isMkopiSlamAttack(attacker);
+        boolean isBayonetGunshotAttack = isBayonetGunshotAttack(attacker);
+        if (!hasVaporwaveSword && !hasSacrilegious && !isMkopiSlamAttack && !isBayonetGunshotAttack) {
             return;
         }
         if (hasVaporwaveSword) {
@@ -46,12 +59,21 @@ public class ModCombatEvents {
             LOGGER.info("[fweapons] AttackEntityEvent applying sacrilegious effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applySacrilegiousHitEffects(target, attacker);
         }
+        if (isMkopiSlamAttack) {
+            LOGGER.info("[fweapons] AttackEntityEvent applying mkopi slam effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            applyMkopiSlamEffects(target, attacker);
+        }
+        if (isBayonetGunshotAttack) {
+            LOGGER.info("[fweapons] AttackEntityEvent applying bayonet gunshot particles: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            applyBayonetGunshotParticles(target);
+        }
     }
 
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getAmount() <= 0.0F) {
             return;
         }
+
         applyFromSource(event.getEntity(), event.getSource());
     }
 
@@ -136,5 +158,197 @@ public class ModCombatEvents {
             );
         }
         target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
+    }
+
+    private static boolean isMkopiSlamAttack(LivingEntity attacker) {
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack == null) {
+                return false;
+            }
+
+            Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+            if (!(attackItem instanceof ItemStack attackStack) || !attackStack.is(ModItems.MKOPI.get())) {
+                return false;
+            }
+
+            Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+            if (attack == null) {
+                return false;
+            }
+
+            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            if (hitbox == null || !"VERTICAL_PLANE".equals(hitbox.toString())) {
+                return false;
+            }
+
+            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            return MKOPI_SLAM_ANIMATION.equals(animation);
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isBayonetGunshotAttack(LivingEntity attacker) {
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack == null) {
+                return false;
+            }
+
+            Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+            if (!(attackItem instanceof ItemStack attackStack) || !attackStack.is(ModItems.BAYONET.get())) {
+                return false;
+            }
+
+            Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+            if (attack == null) {
+                return false;
+            }
+
+            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            if (hitbox == null || !"FORWARD_BOX".equals(hitbox.toString())) {
+                return false;
+            }
+
+            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            if (!BAYONET_GUNSHOT_ANIMATION.equals(animation)) {
+                return false;
+            }
+
+            Object angleObj = attack.getClass().getMethod("angle").invoke(attack);
+            if (!(angleObj instanceof Number angleNumber) || angleNumber.doubleValue() < 89.9D) {
+                return false;
+            }
+
+            Object rangeObj = attack.getClass().getMethod("rangeMultiplier").invoke(attack);
+            return rangeObj instanceof Number rangeNumber && rangeNumber.doubleValue() >= 2.9D;
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
+    }
+
+    private static void applyMkopiSlamEffects(LivingEntity target, LivingEntity attacker) {
+        target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, MKOPI_DARKNESS_DURATION_TICKS, 0), attacker);
+
+        if (target.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(
+                    ParticleTypes.SQUID_INK,
+                    target.getX(),
+                    target.getY(0.6),
+                    target.getZ(),
+                    MKOPI_PARTICLE_COUNT,
+                    0.45,
+                    0.35,
+                    0.45,
+                    0.12
+            );
+            serverLevel.sendParticles(
+                    ParticleTypes.LARGE_SMOKE,
+                    target.getX(),
+                    target.getY(0.6),
+                    target.getZ(),
+                    MKOPI_PARTICLE_COUNT,
+                    0.4,
+                    0.28,
+                    0.4,
+                    0.04
+            );
+            serverLevel.sendParticles(
+                    ParticleTypes.SMOKE,
+                    target.getX(),
+                    target.getY(0.6),
+                    target.getZ(),
+                    MKOPI_PARTICLE_COUNT + 20,
+                    0.5,
+                    0.35,
+                    0.5,
+                    0.06
+            );
+            serverLevel.sendParticles(
+                    MKOPI_BLACK_DUST,
+                    target.getX(),
+                    target.getY(0.6),
+                    target.getZ(),
+                    MKOPI_BLACK_PARTICLE_COUNT,
+                    0.42,
+                    0.25,
+                    0.42,
+                    0.0
+            );
+
+            serverLevel.playSound(
+                    null,
+                    target.getX(),
+                    target.getY(),
+                    target.getZ(),
+                    ModSounds.MKOPI.get(),
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    1.0F
+            );
+        }
+    }
+
+    private static void applyBayonetGunshotParticles(LivingEntity target) {
+        if (!(target.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        serverLevel.sendParticles(
+                ParticleTypes.FLAME,
+                target.getX(),
+                target.getY(0.7),
+                target.getZ(),
+                BAYONET_GUNSHOT_PARTICLE_COUNT,
+                0.35,
+                0.25,
+                0.35,
+                0.04
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.LARGE_SMOKE,
+                target.getX(),
+                target.getY(0.7),
+                target.getZ(),
+                BAYONET_GUNSHOT_PARTICLE_COUNT,
+                0.45,
+                0.3,
+                0.45,
+                0.03
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.SMOKE,
+                target.getX(),
+                target.getY(0.7),
+                target.getZ(),
+                BAYONET_GUNSHOT_PARTICLE_COUNT + 14,
+                0.5,
+                0.35,
+                0.5,
+                0.02
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.CRIT,
+                target.getX(),
+                target.getY(0.65),
+                target.getZ(),
+                BAYONET_GUNSHOT_PARTICLE_COUNT,
+                0.3,
+                0.2,
+                0.3,
+                0.02
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.ASH,
+                target.getX(),
+                target.getY(0.7),
+                target.getZ(),
+                BAYONET_GUNSHOT_PARTICLE_COUNT,
+                0.4,
+                0.28,
+                0.4,
+                0.01
+        );
     }
 }

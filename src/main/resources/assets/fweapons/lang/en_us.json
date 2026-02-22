@@ -1,5 +1,8 @@
 {
+  "item.fweapons.bayonet": "clamor doloris",
   "effect.fweapons.bleed": "Bleed",
+  "effect.fweapons.vaporified": "Vaporified",
+  "item.fweapons.mkopi": "The Banner of Dreams",
   "item.fweapons.sacrilegious": "Sacrilegious",
   "item.fweapons.vaporwave_sword": "【 ｔｈｅ　ａｅｓｔｈｅｔｉｃ 】",
   "itemGroup.fweapons_tab": "Fiverka's Weapons"
