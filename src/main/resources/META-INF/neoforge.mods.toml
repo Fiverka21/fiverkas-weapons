@@ -24,7 +24,7 @@ license="${mod_license}"
 modId="fweapons" #mandatory
 
 # The version number of the mod
-version="0.2" #mandatory
+version="0.3" #mandatory
 
 # A display name for the mod
 displayName="Fiverka's Weapons" #mandatory
