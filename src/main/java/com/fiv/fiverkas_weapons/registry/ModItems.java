@@ -1,6 +1,9 @@
 package com.fiv.fiverkas_weapons.registry;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
+import com.fiv.fiverkas_weapons.item.Bayonet;
+import com.fiv.fiverkas_weapons.item.Mkopi;
+import com.fiv.fiverkas_weapons.item.Sacrilegious;
 import com.fiv.fiverkas_weapons.item.VaporwaveSword;
 
 import net.minecraft.core.registries.Registries;
@@ -25,30 +28,30 @@ public class ModItems {
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.4f))
                     ));
 
-    public static final DeferredHolder<Item, SwordItem> SACRILEGIOUS =
+    public static final DeferredHolder<Item, Sacrilegious> SACRILEGIOUS =
             ITEMS.register("sacrilegious",
-                    () -> new SwordItem(
+                    () -> new Sacrilegious(
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.4f))
                     ));
 
-    public static final DeferredHolder<Item, SwordItem> MKOPI =
+    public static final DeferredHolder<Item, Mkopi> MKOPI =
             ITEMS.register("mkopi",
-                    () -> new SwordItem(
+                    () -> new Mkopi(
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.4f))
                     ));
 
-    public static final DeferredHolder<Item, SwordItem> BAYONET =
+    public static final DeferredHolder<Item, Bayonet> BAYONET =
             ITEMS.register("bayonet",
-                    () -> new SwordItem(
+                    () -> new Bayonet(
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3, -2.4f))
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.4f))
                     ));
 }
