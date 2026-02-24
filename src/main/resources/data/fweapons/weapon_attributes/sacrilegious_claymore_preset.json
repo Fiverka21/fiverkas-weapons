@@ -32,7 +32,7 @@
         "upswing": 0.5,
         "animation": "bettercombat:one_handed_slash_horizontal_right",
         "swing_sound": {
-          "id": "bettercombat:sword_slash"
+          "id": "bettercombat:claymore_swing"
         }
       },
       {
@@ -42,7 +42,7 @@
         "upswing": 0.5,
         "animation": "bettercombat:one_handed_slash_horizontal_left",
         "swing_sound": {
-          "id": "bettercombat:sword_slash"
+          "id": "bettercombat:claymore_swing"
         }
       },
       {
@@ -52,8 +52,7 @@
         "upswing": 0.5,
         "animation": "bettercombat:one_handed_stab",
         "swing_sound": {
-          "id": "bettercombat:sword_slash",
-          "pitch": 1.2
+          "id": "bettercombat:claymore_stab"
         }
       },
       {

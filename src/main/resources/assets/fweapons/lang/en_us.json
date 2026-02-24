@@ -1,9 +1,9 @@
 {
-  "item.fweapons.bayonet": "clamor doloris",
+  "item.fweapons.bayonet": "\uD835\uDD20\uD835\uDD29\uD835\uDD1E\uD835\uDD2A\uD835\uDD2C\uD835\uDD2F \uD835\uDD21\uD835\uDD2C\uD835\uDD29\uD835\uDD2C\uD835\uDD2F\uD835\uDD26\uD835\uDD30",
   "effect.fweapons.bleed": "Bleed",
   "effect.fweapons.vaporified": "Vaporified",
   "item.fweapons.mkopi": "The Banner of Dreams",
-  "item.fweapons.sacrilegious": "Sacrilegious",
+  "item.fweapons.sacrilegious": "\uD835\uDC6F\uD835\uDC86\uD835\uDC82\uD835\uDC97\uD835\uDC86\uD835\uDC8F \uD835\uDC7C\uD835\uDC91\uD835\uDC94\uD835\uDC8A\uD835\uDC85\uD835\uDC86 \uD835\uDC6B\uD835\uDC90\uD835\uDC98\uD835\uDC8F",
   "item.fweapons.vaporwave_sword": "【 ｔｈｅ　ａｅｓｔｈｅｔｉｃ 】",
   "itemGroup.fweapons_tab": "Fiverka's Weapons"
 }

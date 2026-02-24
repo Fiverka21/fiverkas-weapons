@@ -16,9 +16,9 @@ import net.minecraft.world.phys.Vec3;
 public class VaporifiedEffect extends MobEffect {
     private static final int PINK = 0xFFFF69B4;
     private static final int CYAN = 0xFF00FFFF;
-    // Very strong slow-fall to make the effect immediately obvious.
-    private static final double VAPORIFIED_MAX_FALL_SPEED = -0.008D;
-    private static final double VAPORIFIED_FALL_DAMPING = 0.10D;
+    // Tuned 70% weaker than the original slow-fall reduction.
+    private static final double VAPORIFIED_MAX_FALL_SPEED = -0.0584D;
+    private static final double VAPORIFIED_FALL_DAMPING = 0.73D;
 
     public VaporifiedEffect() {
         super(MobEffectCategory.HARMFUL, 0xFF69B4); // pink color

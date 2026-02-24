@@ -6,14 +6,16 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 
-public class VaporwaveSword extends SwordItem {
+public class VaporwaveSword extends AnimatedGradientSwordItem {
+    private static final int CYAN = 0x00FFFF;
+    private static final int PINK = 0xFF69B4;
+    private static final long COLOR_SHIFT_SPEED_MS = 144L;
 
     public VaporwaveSword(Tier tier, Item.Properties properties) {
-        super(tier, properties); // Uses default Diamond attack + speed
+        super(tier, properties, CYAN, PINK, COLOR_SHIFT_SPEED_MS); // Uses default Diamond attack + speed
     }
 
     @Override
