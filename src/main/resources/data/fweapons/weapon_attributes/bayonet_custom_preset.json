@@ -4,6 +4,19 @@
     "two_handed": true,
     "pose": "bettercombat:pose_two_handed_polearm",
     "category": "sword",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 4294967193,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 102,
+          "glows": false
+        }
+      },
+      "conditional": {}
+    },
     "attacks": [
       {
         "hitbox": "FORWARD_BOX",
@@ -14,7 +27,18 @@
         "animation": "bettercombat:two_handed_stab_right",
         "swing_sound": {
           "id": "bettercombat:spear_stab"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
 
       },
       {
@@ -26,7 +50,18 @@
         "animation": "bettercombat:two_handed_stab_left",
         "swing_sound": {
           "id": "bettercombat:spear_stab"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
 
 
       },

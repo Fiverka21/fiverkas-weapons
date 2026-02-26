@@ -7,11 +7,22 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import org.jetbrains.annotations.NotNull;
 
 public class AnimatedGradientSwordItem extends SwordItem {
+    private static final long NAME_CACHE_REFRESH_MS = 1000L;
+    private static final long GRADIENT_FRAME_MS = 25L;
+
     private final int startColor;
     private final int endColor;
     private final long colorShiftSpeedMs;
+
+    private long nextNameRefreshMs;
+    private String cachedBaseName = "";
+    private String[] cachedGlyphs = new String[0];
+
+    private long cachedGradientFrame = Long.MIN_VALUE;
+    private Component cachedGradientName = Component.empty();
 
     protected AnimatedGradientSwordItem(
             Tier tier,
@@ -23,31 +34,70 @@ public class AnimatedGradientSwordItem extends SwordItem {
         super(tier, properties);
         this.startColor = startColor;
         this.endColor = endColor;
-        this.colorShiftSpeedMs = colorShiftSpeedMs;
+        this.colorShiftSpeedMs = Math.max(1L, colorShiftSpeedMs);
     }
 
     @Override
-    public Component getName(ItemStack stack) {
-        String baseName = Component.translatable(this.getDescriptionId(stack)).getString();
-        if (baseName.isEmpty()) {
+    public @NotNull Component getName(@NotNull ItemStack stack) {
+        long nowMs = Util.getMillis();
+
+        if (nowMs >= nextNameRefreshMs || cachedGlyphs.length == 0) {
+            nextNameRefreshMs = nowMs + NAME_CACHE_REFRESH_MS;
+            refreshNameCache(stack);
+        }
+
+        if (cachedGlyphs.length == 0) {
             return super.getName(stack);
         }
 
-        MutableComponent gradientName = Component.empty();
-        float timeOffset = Util.getMillis() / (float) colorShiftSpeedMs;
-        int[] codePoints = baseName.codePoints().toArray();
+        long frame = nowMs / GRADIENT_FRAME_MS;
+        if (frame != cachedGradientFrame) {
+            cachedGradientFrame = frame;
+            float timeOffset = (frame * GRADIENT_FRAME_MS) / (float) colorShiftSpeedMs;
+            MutableComponent gradientName = Component.empty();
 
-        for (int i = 0; i < codePoints.length; i++) {
-            float wave = (float) ((Math.sin((i + timeOffset) * 0.55f) + 1.0d) * 0.5d);
-            int color = blend(startColor, endColor, wave);
-            String glyph = new String(Character.toChars(codePoints[i]));
+            for (int i = 0; i < cachedGlyphs.length; i++) {
+                float wave = (float) ((Math.sin((i + timeOffset) * 0.55f) + 1.0d) * 0.5d);
+                int color = blend(startColor, endColor, wave);
 
-            gradientName.append(
-                    Component.literal(glyph).withColor(color)
-            );
+                gradientName.append(
+                        Component.literal(cachedGlyphs[i]).withColor(color)
+                );
+            }
+
+            cachedGradientName = gradientName;
         }
 
-        return gradientName;
+        return cachedGradientName;
+    }
+
+    private void refreshNameCache(ItemStack stack) {
+        String baseName = Component.translatable(this.getDescriptionId(stack)).getString();
+
+        if (baseName.isEmpty()) {
+            if (!cachedBaseName.isEmpty()) {
+                cachedBaseName = "";
+                cachedGlyphs = new String[0];
+                cachedGradientFrame = Long.MIN_VALUE;
+                cachedGradientName = Component.empty();
+            }
+            return;
+        }
+
+        if (baseName.equals(cachedBaseName)) {
+            return;
+        }
+
+        cachedBaseName = baseName;
+        int[] codePoints = baseName.codePoints().toArray();
+        String[] glyphs = new String[codePoints.length];
+
+        for (int i = 0; i < codePoints.length; i++) {
+            glyphs[i] = new String(Character.toChars(codePoints[i]));
+        }
+
+        cachedGlyphs = glyphs;
+        cachedGradientFrame = Long.MIN_VALUE;
     }
 
     private static int blend(int startColor, int endColor, float t) {

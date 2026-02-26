@@ -1,5 +1,6 @@
 package com.fiv.fiverkas_weapons.event;
 
+import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
@@ -13,12 +14,17 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 
@@ -79,6 +85,7 @@ public class ModCombatEvents {
             return;
         }
 
+        applyHonorStrike(event);
         applyFromSource(event.getEntity(), event.getSource());
     }
 
@@ -102,6 +109,54 @@ public class ModCombatEvents {
         }
         // Fallback path for any direct melee damage systems that may skip incoming checks.
         applyFromSource(event.getEntity(), event.getSource());
+    }
+
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide) {
+            return;
+        }
+        if (player.isSpectator()) {
+            return;
+        }
+
+        var data = player.getPersistentData();
+        boolean hasShroud = player.hasEffect(ModEffects.CERULEAN_SHROUD);
+        boolean markedInvisible = data.getBoolean(CeruleanShroudEffect.INVISIBLE_TAG);
+
+        if (hasShroud) {
+            if (!player.isInvisible()) {
+                player.setInvisible(true);
+            }
+            if (!markedInvisible) {
+                data.putBoolean(CeruleanShroudEffect.INVISIBLE_TAG, true);
+            }
+            if (player.level() instanceof ServerLevel serverLevel) {
+                CeruleanShroudEffect.spawnFootsteps(serverLevel, player);
+                if (player.tickCount % 5 == 0) {
+                    clearNearbyMobTargets(serverLevel, player);
+                }
+            }
+            return;
+        }
+
+        if (markedInvisible) {
+            if (!player.hasEffect(MobEffects.INVISIBILITY)) {
+                player.setInvisible(false);
+            }
+            data.remove(CeruleanShroudEffect.INVISIBLE_TAG);
+            data.remove(CeruleanShroudEffect.LAST_X_TAG);
+            data.remove(CeruleanShroudEffect.LAST_Y_TAG);
+            data.remove(CeruleanShroudEffect.LAST_Z_TAG);
+            data.remove(CeruleanShroudEffect.STEP_PROGRESS_TAG);
+        }
+    }
+
+    public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
+        LivingEntity target = event.getNewAboutToBeSetTarget();
+        if (target instanceof Player player && player.hasEffect(ModEffects.CERULEAN_SHROUD)) {
+            event.setNewAboutToBeSetTarget(null);
+        }
     }
 
     private static void applyFromSource(LivingEntity target, DamageSource source) {
@@ -157,6 +212,36 @@ public class ModCombatEvents {
                     attacker == null ? "<none>" : attacker.getName().getString(),
                     target.getName().getString());
             applySacrilegiousHitEffects(target, attacker);
+        }
+    }
+
+    private static void applyHonorStrike(LivingIncomingDamageEvent event) {
+        if (event.getEntity().level().isClientSide) {
+            return;
+        }
+
+        Entity sourceEntity = event.getSource().getEntity();
+        if (!(sourceEntity instanceof LivingEntity attacker)) {
+            return;
+        }
+        if (!attacker.hasEffect(ModEffects.CERULEAN_SHROUD)) {
+            return;
+        }
+
+        event.setAmount(event.getAmount() * 2.0F);
+        attacker.removeEffect(ModEffects.CERULEAN_SHROUD);
+        attacker.getPersistentData().putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+        attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_X_TAG);
+        attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_Y_TAG);
+        attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_Z_TAG);
+    }
+
+    private static void clearNearbyMobTargets(ServerLevel serverLevel, Player player) {
+        AABB area = player.getBoundingBox().inflate(32.0D);
+        for (Mob mob : serverLevel.getEntitiesOfClass(Mob.class, area, mob -> mob.getTarget() == player)) {
+            mob.setTarget(null);
+            mob.setLastHurtByPlayer(null);
+            mob.setLastHurtByMob(null);
         }
     }
 

@@ -22,6 +22,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.SACRILEGIOUS.get());
                         output.accept(ModItems.MKOPI.get());
                         output.accept(ModItems.BAYONET.get());
+                        output.accept(ModItems.BLUE_KATANA.get());
                     })
                     .build());
 }

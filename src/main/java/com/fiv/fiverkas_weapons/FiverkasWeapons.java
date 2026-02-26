@@ -25,11 +25,13 @@ public class FiverkasWeapons {
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onAttackEntity);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingIncomingDamage);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingDamagePost);
+        NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingChangeTarget);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onSweepAttack);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onServerStarting);
+        NeoForge.EVENT_BUS.addListener(ModCombatEvents::onPlayerTick);
 
         if (FMLEnvironment.dist.isClient()) {
-            ModCombatClientEvents.init();
+            modEventBus.addListener(ModCombatClientEvents::onClientSetup);
         }
     }
 }

@@ -1,11 +1,16 @@
 package com.fiv.fiverkas_weapons.event.client;
 
 import com.fiv.fiverkas_weapons.registry.ModItems;
+import com.fiv.fiverkas_weapons.registry.ModEffects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -22,10 +27,26 @@ public final class ModCombatClientEvents {
     private ModCombatClientEvents() {
     }
 
-    public static void init() {
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(ModCombatClientEvents::init);
+    }
+
+    private static void init() {
+        registerClientRenderHooks();
         registerBetterCombatAttackStartListener();
         registerBetterCombatAttackHitListener();
     }
+
+    private static void registerClientRenderHooks() {
+        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
+    }
+
+    private static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
+        if (event.getEntity().hasEffect(ModEffects.CERULEAN_SHROUD)) {
+            event.setCanceled(true);
+        }
+    }
+
 
     private static void registerBetterCombatAttackStartListener() {
         try {
