@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CWB",
+    "YPY",
+    "BWC"
+  ],
+  "key": {
+    "B": { "item": "minecraft:black_dye" },
+    "C": { "item": "minecraft:cyan_dye" },
+    "Y": { "item": "minecraft:yellow_dye" },
+    "P": { "item": "minecraft:paper" },
+    "W": { "item": "minecraft:wind_charge" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:gblueprint"
+  }
+}

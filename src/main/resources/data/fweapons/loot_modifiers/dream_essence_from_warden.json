@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:entities/warden"
+    }
+  ],
+  "table": "fweapons:entities/dream_essence_from_warden"
+}

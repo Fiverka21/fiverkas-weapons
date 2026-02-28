@@ -2,17 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "ABC",
-    "FDB",
-    "EFA"
+    "TBN",
+    "REB",
+    "IRT"
   ],
   "key": {
-    "A": { "item": "minecraft:sculk" },
-    "B": { "item": "minecraft:red_dye" },
-    "C": { "item": "minecraft:netherite_ingot" },
-    "D": { "item": "minecraft:nether_star" },
-    "E": { "item": "minecraft:stick" },
-    "F": { "item": "minecraft:note_block" }
+    "R": { "item": "minecraft:red_dye" },
+    "B": { "item": "minecraft:dragon_breath" },
+    "E": { "item": "fweapons:dream_essence" },
+    "N": { "item": "minecraft:nether_star" },
+    "T": { "item": "minecraft:note_block" },
+    "I": { "item": "minecraft:netherite_ingot" }
   },
   "result": {
     "count": 1,
