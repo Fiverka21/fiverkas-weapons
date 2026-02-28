@@ -5,8 +5,12 @@
   "effect.fweapons.vaporified": "Vaporified",
   "death.attack.blue_katana_honor": "%1$s died with honor",
   "item.fweapons.mkopi": "The Banner of Dreams",
-  "item.fweapons.blue_katana": "The Cerulean Shade",
+  "item.fweapons.blue_katana": "蒼「ᴛʜᴇ ᴄᴇʀᴜʟᴇᴀɴ sʜᴀᴅᴇ」影",
+  "item.fweapons.airmace": "\uD835\uDD38\uD835\uDD56\uD835\uDD63\uD835\uDD60 \uD835\uDD44\uD835\uDD52\uD835\uDD54\uD835\uDD56",
   "item.fweapons.sacrilegious": "\uD835\uDC6F\uD835\uDC86\uD835\uDC82\uD835\uDC97\uD835\uDC86\uD835\uDC8F \uD835\uDC7C\uD835\uDC91\uD835\uDC94\uD835\uDC8A\uD835\uDC85\uD835\uDC86 \uD835\uDC6B\uD835\uDC90\uD835\uDC98\uD835\uDC8F",
   "item.fweapons.vaporwave_sword": "【 ｔｈｅ　ａｅｓｔｈｅｔｉｃ 】",
+  "item.fweapons.gblueprint": "\uD835\uDD3E\uD835\uDD60\uD835\uDD63\uD835\uDD6B\uD835\uDD52\uD835\uDD5F'\uD835\uDD64 \uD835\uDD39\uD835\uDD5D\uD835\uDD66\uD835\uDD56\uD835\uDD61\uD835\uDD63\uD835\uDD5A\uD835\uDD5F\uD835\uDD65",
+  "tooltip.fweapons.gblueprint": "Allows you to smith your mace with a diamond block.",
+  "item.fweapons.dream_essence": "Essence of Dreams",
   "itemGroup.fweapons_tab": "Fiverka's Weapons"
 }

@@ -1,0 +1,31 @@
+{
+  "attributes": {
+    "range_bonus": -0.25,
+    "category": "mace",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 4056836761,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 2462038630,
+          "glows": false
+        }
+      },
+      "conditional": {}
+    },
+    "attacks": [
+      {
+        "hitbox": "VERTICAL_PLANE",
+        "damage_multiplier": 1.2,
+        "angle": 90,
+        "upswing": 1.2,
+        "animation": "bettercombat:one_handed_slam",
+        "swing_sound": {
+          "id": "bettercombat:mace_slam"
+        }
+      }
+    ]
+  }
+}

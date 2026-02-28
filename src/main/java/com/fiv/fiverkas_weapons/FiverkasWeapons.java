@@ -4,9 +4,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import com.fiv.fiverkas_weapons.event.client.ModCombatClientEvents;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
+import com.fiv.fiverkas_weapons.event.ModCommandEvents;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModCreativeTabs;
@@ -29,6 +29,8 @@ public class FiverkasWeapons {
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onSweepAttack);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onServerStarting);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(ModCombatEvents::onAnvilUpdate);
+        NeoForge.EVENT_BUS.addListener(ModCommandEvents::onRegisterCommands);
 
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.addListener(ModCombatClientEvents::onClientSetup);

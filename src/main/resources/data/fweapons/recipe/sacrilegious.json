@@ -2,14 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "  D",
+    "M D",
     "GL ",
-    "SG "
+    "SGM"
   ],
   "key": {
     "D": { "item": "minecraft:diamond" },
     "G": { "item": "minecraft:gold_ingot" },
     "L": { "item": "minecraft:lapis_lazuli" },
+    "M": { "tag": "c:music_discs" },
     "S": { "item": "minecraft:netherite_sword" }
   },
   "result": {

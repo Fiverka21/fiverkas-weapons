@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_diamond_sword": {
+    "has_mace": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": "minecraft:netherite_sword"
+            "items": "minecraft:mace"
           }
         ]
       }
@@ -14,19 +14,19 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fweapons:blue_katana"
+        "recipe": "fweapons:airmace"
       }
     }
   },
   "requirements": [
     [
-      "has_netherite_sword",
+      "has_mace",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "fweapons:blue_katana"
+      "fweapons:airmace"
     ]
   }
 }
