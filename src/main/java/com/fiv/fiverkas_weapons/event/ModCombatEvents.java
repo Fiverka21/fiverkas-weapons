@@ -186,15 +186,12 @@ public class ModCombatEvents {
     }
 
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
-        if (!event.getOutput().isEmpty()) {
-            return;
-        }
         ItemStack left = event.getLeft();
         if (!left.is(ModItems.AIRMACE.get())) {
             return;
         }
         ItemStack right = event.getRight();
-        if (right.isEmpty() || !EnchantmentHelper.canStoreEnchantments(left)) {
+        if (right.isEmpty()) {
             return;
         }
 
@@ -209,7 +206,7 @@ public class ModCombatEvents {
         Set<net.minecraft.core.Holder<Enchantment>> seen = new HashSet<>(leftEnchantments.keySet());
         for (var entry : rightEnchantments.entrySet()) {
             var enchantment = entry.getKey();
-            if (!left.supportsEnchantment(enchantment)) {
+            if (!left.supportsEnchantment(enchantment) && !isBreachDensityEnchantment(enchantment)) {
                 return;
             }
             for (var existing : seen) {
@@ -589,6 +586,10 @@ public class ModCombatEvents {
     private static boolean isBreachDensityPair(net.minecraft.core.Holder<Enchantment> first, net.minecraft.core.Holder<Enchantment> second) {
         return (first.is(Enchantments.BREACH) && second.is(Enchantments.DENSITY))
                 || (first.is(Enchantments.DENSITY) && second.is(Enchantments.BREACH));
+    }
+
+    private static boolean isBreachDensityEnchantment(net.minecraft.core.Holder<Enchantment> enchantment) {
+        return enchantment.is(Enchantments.BREACH) || enchantment.is(Enchantments.DENSITY);
     }
 
     private static void disableBetterCombatReworkedSweepParticles() {
