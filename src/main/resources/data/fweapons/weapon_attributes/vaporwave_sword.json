@@ -1,3 +1,73 @@
 {
-  "parent": "fweapons:vaporified_sword"
+  "attributes": {
+    "range_bonus": 1.2,
+    "category": "sword",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 16777113,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 4285117542,
+          "glows": false
+        }
+      },
+      "conditional": {
+        "is_enchanted": {
+          "primary": {
+            "color_rgba": 16777113,
+            "glows": false
+          },
+          "secondary": {
+            "color_rgba": 4285117542,
+            "glows": false
+          }
+        }
+      }
+    },
+    "attacks": [
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1,
+        "angle": 120,
+        "upswing": 0.4,
+        "animation": "bettercombat:one_handed_slash_horizontal_right",
+        "swing_sound": {
+          "id": "bettercombat:sword_slash"
+        }
+      },
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1,
+        "angle": 120,
+        "upswing": 0.7,
+        "animation": "bettercombat:one_handed_slash_horizontal_left",
+        "swing_sound": {
+          "id": "bettercombat:sword_slash"
+        }
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1.2,
+        "angle": 0,
+        "upswing": 0.4,
+        "animation": "bettercombat:one_handed_stab",
+        "swing_sound": {
+          "id": "bettercombat:sword_slash",
+          "pitch": 1.2 }
+      },
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1.2,
+        "angle": 360,
+        "upswing": 0.4,
+        "animation": "bettercombat:two_handed_spin",
+        "swing_sound": {
+          "id": "bettercombat:sword_slash"
+        }
+        }
+
+    ]
+  }
 }

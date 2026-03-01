@@ -1,3 +1,54 @@
 {
-  "parent": "fweapons:mkopi_spear_preset"
+  "attributes": {
+    "range_bonus": 1.4,
+    "pose": "bettercombat:pose_two_handed_polearm",
+    "two_handed": true,
+    "category": "spear",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 4278190233,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 1111507046,
+          "glows": false
+        }
+      },
+      "conditional": {
+        "is_enchanted": {
+          "primary": {
+            "color_rgba": 4278190233,
+            "glows": false
+          },
+          "secondary": {
+            "color_rgba": 1111507046,
+            "glows": false
+          }
+        }
+      }
+    },
+    "attacks": [
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1.4,
+        "angle": 0,
+        "upswing": 2.4,
+        "animation": "bettercombat:two_handed_stab_right",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        }
+      },
+      {
+        "hitbox": "VERTICAL_PLANE",
+        "damage_multiplier": 1.4,
+        "angle": 150,
+        "upswing": 2.8,
+        "animation": "bettercombat:two_handed_slam",
+        "swing_sound": {
+          "id": "fweapons:mkopi"
+        }
+      }
+    ]
+  }
 }
