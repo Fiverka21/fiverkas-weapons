@@ -1,10 +1,14 @@
 package com.fiv.fiverkas_weapons.event;
 
+import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
@@ -13,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -29,6 +34,7 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -60,6 +66,10 @@ public class ModCombatEvents {
     private static final String AIRMACE_FALL_DISTANCE_TAG = "fweapons_airmace_fall_distance";
     private static final String AIRMACE_FALL_TICK_TAG = "fweapons_airmace_fall_tick";
     private static final int AIRMACE_FALL_TICK_WINDOW = 2;
+    private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = ResourceKey.create(
+            Registries.DAMAGE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
+    );
     private static final DustParticleOptions AIRMACE_LIGHT_YELLOW =
             new DustParticleOptions(new Vector3f(241 / 255F, 206 / 255F, 106 / 255F), 1.25F);
     private static final DustParticleOptions AIRMACE_BLAND_CYAN =
@@ -110,6 +120,7 @@ public class ModCombatEvents {
             return;
         }
 
+        applyVaporifiedArmorBypass(event);
         applyHonorStrike(event);
         applyAirmaceFallBonus(event);
         applyFromSource(event.getEntity(), event.getSource());
@@ -377,6 +388,16 @@ public class ModCombatEvents {
         attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_X_TAG);
         attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_Y_TAG);
         attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_Z_TAG);
+    }
+
+    private static void applyVaporifiedArmorBypass(LivingIncomingDamageEvent event) {
+        if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
+            return;
+        }
+
+        // Reduce armor and enchantment reductions by 50% (effective half protection).
+        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.5F);
+        event.addReductionModifier(DamageContainer.Reduction.ENCHANTMENTS, (container, reduction) -> reduction * 0.5F);
     }
 
     private static void applyAirmaceFallBonus(LivingIncomingDamageEvent event) {
