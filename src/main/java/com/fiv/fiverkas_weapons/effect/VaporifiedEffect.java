@@ -1,9 +1,15 @@
 package com.fiv.fiverkas_weapons.effect;
 
+import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,6 +25,10 @@ public class VaporifiedEffect extends MobEffect {
     // Tuned 70% weaker than the original slow-fall reduction.
     private static final double VAPORIFIED_MAX_FALL_SPEED = -0.0584D;
     private static final double VAPORIFIED_FALL_DAMPING = 0.73D;
+    private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = ResourceKey.create(
+            Registries.DAMAGE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
+    );
 
     public VaporifiedEffect() {
         super(MobEffectCategory.HARMFUL, 0xFF69B4); // pink color
@@ -42,7 +52,12 @@ public class VaporifiedEffect extends MobEffect {
                     serverLevel.sendParticles(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, CYAN), x, y, z, 8, xzSpread, ySpread, xzSpread, 0.01D);
                 }
                 float damage = 4.0f; // 4 damage per second
-                entity.hurt(entity.damageSources().generic(), damage);
+                DamageSource vaporified = new DamageSource(
+                        entity.level().registryAccess()
+                                .registryOrThrow(Registries.DAMAGE_TYPE)
+                                .getHolderOrThrow(VAPORIFIED_DAMAGE)
+                );
+                entity.hurt(vaporified, damage);
             }
         }
         // Returning false removes the effect instance in 1.21.1; keep it active.
