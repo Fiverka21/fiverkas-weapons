@@ -1,5 +1,6 @@
 package com.fiv.fiverkas_weapons.event.client;
 
+import com.fiv.fiverkas_weapons.network.BayonetMuzzleFlashPayload;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -68,6 +70,7 @@ public final class ModCombatClientEvents {
                         Object attackHand = args[1];
                         if (attackHand != null && isBayonetThirdAttack(attackHand)) {
                             spawnBayonetGunshotParticles(player);
+                            PacketDistributor.sendToServer(new BayonetMuzzleFlashPayload());
                         }
                         return null;
                     }

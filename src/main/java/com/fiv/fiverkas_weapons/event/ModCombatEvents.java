@@ -12,8 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -60,6 +62,7 @@ public class ModCombatEvents {
     private static final int MKOPI_PARTICLE_COUNT = 40;
     private static final int MKOPI_BLACK_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_PARTICLE_COUNT = 32;
+    private static final int BAYONET_GUNSHOT_MUZZLE_COUNT = 18;
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
@@ -743,6 +746,50 @@ public class ModCombatEvents {
                 0.42,
                 0.0
         );
+    }
+
+    public static void spawnBayonetGunshotMuzzleParticles(ServerPlayer attacker) {
+        if (!(attacker.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        spawnBayonetGunshotMuzzleParticles(serverLevel, attacker);
+    }
+
+    private static void spawnBayonetGunshotMuzzleParticles(ServerLevel serverLevel, LivingEntity attacker) {
+        Vec3 look = attacker.getLookAngle().normalize();
+        double x = attacker.getX() + look.x * 1.2D;
+        double y = attacker.getEyeY() - 0.2D + look.y * 0.2D;
+        double z = attacker.getZ() + look.z * 1.2D;
+
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.FLASH, x, y, z, 1, 0.0, 0.0, 0.0, 0.0);
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.FLAME, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.LARGE_SMOKE, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.08);
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.CRIT, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.FIREWORK, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.12);
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.CLOUD, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
+        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.SMOKE, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
+    }
+
+    private static void sendParticlesToOthers(
+            ServerLevel serverLevel,
+            LivingEntity attacker,
+            ParticleOptions particle,
+            double x,
+            double y,
+            double z,
+            int count,
+            double xOffset,
+            double yOffset,
+            double zOffset,
+            double speed
+    ) {
+        ServerPlayer attackerPlayer = attacker instanceof ServerPlayer player ? player : null;
+        for (ServerPlayer player : serverLevel.players()) {
+            if (attackerPlayer != null && player == attackerPlayer) {
+                continue;
+            }
+            serverLevel.sendParticles(player, particle, false, x, y, z, count, xOffset, yOffset, zOffset, speed);
+        }
     }
 
     private static void spawnAirmaceSmashParticles(ServerLevel serverLevel, LivingEntity target, float fallDistance) {
