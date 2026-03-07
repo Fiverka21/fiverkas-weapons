@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_diamond_sword": {
+    "has_netherite_sword": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
