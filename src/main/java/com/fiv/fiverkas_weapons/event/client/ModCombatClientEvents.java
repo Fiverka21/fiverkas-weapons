@@ -1,6 +1,8 @@
 package com.fiv.fiverkas_weapons.event.client;
 
+import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.network.BayonetMuzzleFlashPayload;
+import com.fiv.fiverkas_weapons.network.ClientAttackFlagPayload;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.client.Minecraft;
@@ -22,6 +24,8 @@ import java.util.List;
 public final class ModCombatClientEvents {
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
+    private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
+    private static final String MKOPI_SLAM_HITBOX = "VERTICAL_PLANE";
     private static final String TRAIL_PARTICLE_TYPE_NONE = "none";
     private static final int BURST_COUNT = 18;
     private static final List<?> NO_TRAIL_PARTICLES = createNoTrailParticles();
@@ -68,9 +72,16 @@ public final class ModCombatClientEvents {
                         }
 
                         Object attackHand = args[1];
-                        if (attackHand != null && isBayonetThirdAttack(attackHand)) {
-                            spawnBayonetGunshotParticles(player);
-                            PacketDistributor.sendToServer(new BayonetMuzzleFlashPayload());
+                        if (attackHand != null) {
+                            if (isBayonetThirdAttack(attackHand)) {
+                                spawnBayonetGunshotParticles(player);
+                                PacketDistributor.sendToServer(new BayonetMuzzleFlashPayload());
+                            }
+                            if (isMkopiSlamAttack(attackHand)) {
+                                PacketDistributor.sendToServer(
+                                        new ClientAttackFlagPayload(ModCombatEvents.ClientAttackFlag.MKOPI_SLAM)
+                                );
+                            }
                         }
                         return null;
                     }
@@ -179,6 +190,30 @@ public final class ModCombatClientEvents {
                 return false;
             }
             return true;
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isMkopiSlamAttack(Object attackHand) {
+        try {
+            Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
+            if (!(attackItem instanceof ItemStack attackStack) || !attackStack.is(ModItems.MKOPI.get())) {
+                return false;
+            }
+
+            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            if (attack == null) {
+                return false;
+            }
+
+            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            if (hitbox == null || !MKOPI_SLAM_HITBOX.equals(hitbox.toString())) {
+                return false;
+            }
+
+            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            return MKOPI_SLAM_ANIMATION.equals(animation);
         } catch (ReflectiveOperationException ignored) {
             return false;
         }

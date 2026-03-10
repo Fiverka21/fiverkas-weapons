@@ -5,6 +5,7 @@ import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -14,14 +15,19 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -48,9 +54,15 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class ModCombatEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -63,6 +75,16 @@ public class ModCombatEvents {
     private static final int MKOPI_BLACK_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_MUZZLE_COUNT = 18;
+    private static final long CLIENT_ATTACK_FLAG_WINDOW_TICKS = 8L;
+    private static final Map<UUID, EnumMap<ClientAttackFlag, Long>> CLIENT_ATTACK_FLAGS = new HashMap<>();
+    private static final EquipmentSlot[] CERULEAN_EQUIPMENT_SLOTS = {
+            EquipmentSlot.MAINHAND,
+            EquipmentSlot.OFFHAND,
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET
+    };
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
@@ -78,6 +100,64 @@ public class ModCombatEvents {
     private static final DustParticleOptions AIRMACE_BLAND_CYAN =
             new DustParticleOptions(new Vector3f(146 / 255F, 191 / 255F, 186 / 255F), 1.1F);
     private static final DustParticleOptions MKOPI_BLACK_DUST = new DustParticleOptions(new Vector3f(0.02F, 0.02F, 0.02F), 1.1F);
+    private static final ParticleSpec[] BAYONET_MUZZLE_SPECS = new ParticleSpec[]{
+            new ParticleSpec(ParticleTypes.FLASH, 1, 0.0, 0.0, 0.0, 0.0),
+            new ParticleSpec(ParticleTypes.FLAME, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1),
+            new ParticleSpec(ParticleTypes.LARGE_SMOKE, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.08),
+            new ParticleSpec(ParticleTypes.CRIT, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1),
+            new ParticleSpec(ParticleTypes.FIREWORK, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.12),
+            new ParticleSpec(ParticleTypes.CLOUD, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1),
+            new ParticleSpec(ParticleTypes.SMOKE, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1)
+    };
+
+    private static final class ParticleSpec {
+        private final ParticleOptions particle;
+        private final int count;
+        private final double xOffset;
+        private final double yOffset;
+        private final double zOffset;
+        private final double speed;
+
+        private ParticleSpec(
+                ParticleOptions particle,
+                int count,
+                double xOffset,
+                double yOffset,
+                double zOffset,
+                double speed
+        ) {
+            this.particle = particle;
+            this.count = count;
+            this.xOffset = xOffset;
+            this.yOffset = yOffset;
+            this.zOffset = zOffset;
+            this.speed = speed;
+        }
+    }
+
+    public enum ClientAttackFlag {
+        BAYONET_GUNSHOT((byte) 0),
+        MKOPI_SLAM((byte) 1);
+
+        private final byte id;
+
+        ClientAttackFlag(byte id) {
+            this.id = id;
+        }
+
+        public byte id() {
+            return id;
+        }
+
+        public static ClientAttackFlag fromId(byte id) {
+            for (ClientAttackFlag flag : values()) {
+                if (flag.id == id) {
+                    return flag;
+                }
+            }
+            return BAYONET_GUNSHOT;
+        }
+    }
 
     public static void onAttackEntity(AttackEntityEvent event) {
         if (!(event.getTarget() instanceof LivingEntity target)) {
@@ -129,6 +209,59 @@ public class ModCombatEvents {
         applyFromSource(event.getEntity(), event.getSource());
     }
 
+    public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
+        if (event.getNewDamage() <= 0.0F) {
+            return;
+        }
+        if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
+            return;
+        }
+        if (event.getEntity().level().isClientSide) {
+            return;
+        }
+
+        DamageContainer container = event.getContainer();
+        float adjusted = event.getNewDamage();
+        DamageSource source = event.getSource();
+
+        boolean bypassArmor = source.is(DamageTypeTags.BYPASSES_ARMOR);
+        boolean bypassEnchants = source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS);
+
+        if (bypassArmor && container.getReduction(DamageContainer.Reduction.ARMOR) <= 0.0F) {
+            int armorValue = event.getEntity().getArmorValue();
+            if (armorValue > 0) {
+                float armorAfter = CombatRules.getDamageAfterAbsorb(
+                        event.getEntity(),
+                        adjusted,
+                        source,
+                        (float) armorValue,
+                        (float) event.getEntity().getAttributeValue(Attributes.ARMOR_TOUGHNESS)
+                );
+                float armorReduction = adjusted - armorAfter;
+                if (armorReduction > 0.0F) {
+                    adjusted -= armorReduction * 0.5F;
+                }
+            }
+        }
+
+        if (bypassEnchants && container.getReduction(DamageContainer.Reduction.ENCHANTMENTS) <= 0.0F) {
+            if (event.getEntity().level() instanceof ServerLevel serverLevel) {
+                float enchantProtection = EnchantmentHelper.getDamageProtection(serverLevel, event.getEntity(), source);
+                if (enchantProtection > 0.0F) {
+                    float enchantAfter = CombatRules.getDamageAfterMagicAbsorb(adjusted, enchantProtection);
+                    float enchantReduction = adjusted - enchantAfter;
+                    if (enchantReduction > 0.0F) {
+                        adjusted -= enchantReduction * 0.5F;
+                    }
+                }
+            }
+        }
+
+        if (adjusted != event.getNewDamage()) {
+            event.setNewDamage(adjusted);
+        }
+    }
+
     public static void onSweepAttack(SweepAttackEvent event) {
         if (!event.isSweeping()) {
             return;
@@ -168,14 +301,17 @@ public class ModCombatEvents {
             if (!player.isInvisible()) {
                 player.setInvisible(true);
             }
-            if (!markedInvisible) {
-                data.putBoolean(CeruleanShroudEffect.INVISIBLE_TAG, true);
-            }
             if (player.level() instanceof ServerLevel serverLevel) {
                 CeruleanShroudEffect.spawnFootsteps(serverLevel, player);
-                if (player.tickCount % 5 == 0) {
+                if (!markedInvisible) {
+                    data.putBoolean(CeruleanShroudEffect.INVISIBLE_TAG, true);
                     clearNearbyMobTargets(serverLevel, player);
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        syncCeruleanEquipment(serverLevel, serverPlayer, true);
+                    }
                 }
+            } else if (!markedInvisible) {
+                data.putBoolean(CeruleanShroudEffect.INVISIBLE_TAG, true);
             }
             return;
         }
@@ -183,6 +319,9 @@ public class ModCombatEvents {
         if (markedInvisible) {
             if (!player.hasEffect(MobEffects.INVISIBILITY)) {
                 player.setInvisible(false);
+            }
+            if (player.level() instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer) {
+                syncCeruleanEquipment(serverLevel, serverPlayer, false);
             }
             data.remove(CeruleanShroudEffect.INVISIBLE_TAG);
             data.remove(CeruleanShroudEffect.LAST_X_TAG);
@@ -497,6 +636,26 @@ public class ModCombatEvents {
         }
     }
 
+    private static void syncCeruleanEquipment(ServerLevel serverLevel, ServerPlayer shrouded, boolean hidden) {
+        if (serverLevel.players().size() <= 1) {
+            return;
+        }
+
+        List<Pair<EquipmentSlot, ItemStack>> equipment = new ArrayList<>(CERULEAN_EQUIPMENT_SLOTS.length);
+        for (EquipmentSlot slot : CERULEAN_EQUIPMENT_SLOTS) {
+            ItemStack stack = hidden ? ItemStack.EMPTY : shrouded.getItemBySlot(slot).copy();
+            equipment.add(Pair.of(slot, stack));
+        }
+
+        ClientboundSetEquipmentPacket packet = new ClientboundSetEquipmentPacket(shrouded.getId(), equipment);
+        for (ServerPlayer viewer : serverLevel.players()) {
+            if (viewer == shrouded) {
+                continue;
+            }
+            viewer.connection.send(packet);
+        }
+    }
+
     private static void applySacrilegiousHitEffects(LivingEntity target, LivingEntity attacker) {
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SACRILEGIOUS_SLOWNESS_DURATION_TICKS, 0), attacker);
 
@@ -516,68 +675,108 @@ public class ModCombatEvents {
         target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
 
-    private static boolean isMkopiSlamAttack(LivingEntity attacker) {
-        try {
-            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
-            if (currentAttack == null) {
-                return false;
-            }
+    public static void recordClientAttackFlag(ServerPlayer player, ClientAttackFlag flag) {
+        if (player.level().isClientSide) {
+            return;
+        }
+        if (!isClientAttackFlagValid(player, flag)) {
+            return;
+        }
 
-            Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
-            if (!(attackItem instanceof ItemStack attackStack) || !attackStack.is(ModItems.MKOPI.get())) {
-                return false;
-            }
+        long expiresAt = player.level().getGameTime() + CLIENT_ATTACK_FLAG_WINDOW_TICKS;
+        CLIENT_ATTACK_FLAGS
+                .computeIfAbsent(player.getUUID(), id -> new EnumMap<>(ClientAttackFlag.class))
+                .put(flag, expiresAt);
+    }
 
-            Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
-            if (attack == null) {
-                return false;
-            }
-
-            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
-            if (hitbox == null || !"VERTICAL_PLANE".equals(hitbox.toString())) {
-                return false;
-            }
-
-            Object animation = attack.getClass().getMethod("animation").invoke(attack);
-            return MKOPI_SLAM_ANIMATION.equals(animation);
-        } catch (ReflectiveOperationException ignored) {
+    private static boolean consumeClientAttackFlag(LivingEntity attacker, ClientAttackFlag flag) {
+        if (!(attacker instanceof ServerPlayer player)) {
             return false;
         }
+
+        EnumMap<ClientAttackFlag, Long> flags = CLIENT_ATTACK_FLAGS.get(player.getUUID());
+        if (flags == null) {
+            return false;
+        }
+
+        Long expiresAt = flags.get(flag);
+        if (expiresAt == null) {
+            return false;
+        }
+
+        long now = player.level().getGameTime();
+        flags.remove(flag);
+        if (flags.isEmpty()) {
+            CLIENT_ATTACK_FLAGS.remove(player.getUUID());
+        }
+        if (expiresAt < now) {
+            return false;
+        }
+
+        return isClientAttackFlagValid(player, flag);
+    }
+
+    private static boolean isClientAttackFlagValid(LivingEntity attacker, ClientAttackFlag flag) {
+        return switch (flag) {
+            case BAYONET_GUNSHOT -> isHoldingBayonet(attacker);
+            case MKOPI_SLAM -> isHoldingMkopi(attacker);
+        };
+    }
+
+    private static boolean isMkopiSlamAttack(LivingEntity attacker) {
+        boolean result = false;
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack != null) {
+                Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+                if (attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.MKOPI.get())) {
+                    Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+                    if (attack != null) {
+                        Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+                        Object animation = attack.getClass().getMethod("animation").invoke(attack);
+                        result = hitbox != null
+                                && "VERTICAL_PLANE".equals(hitbox.toString())
+                                && MKOPI_SLAM_ANIMATION.equals(animation);
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException ignored) {
+            result = false;
+        }
+
+        if (result) {
+            return true;
+        }
+
+        return consumeClientAttackFlag(attacker, ClientAttackFlag.MKOPI_SLAM);
     }
 
     private static boolean isBayonetGunshotAttack(LivingEntity attacker) {
+        boolean result = false;
         try {
             Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
-            if (currentAttack == null) {
-                return false;
+            if (currentAttack != null) {
+                Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+                if (attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.BAYONET.get())) {
+                    Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+                    if (attack != null) {
+                        Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+                        Object animation = attack.getClass().getMethod("animation").invoke(attack);
+                        result = hitbox != null
+                                && BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())
+                                && BAYONET_GUNSHOT_ANIMATION.equals(animation);
+                    }
+                }
             }
-
-            Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
-            if (!(attackItem instanceof ItemStack attackStack) || !attackStack.is(ModItems.BAYONET.get())) {
-                return false;
-            }
-
-            Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
-            if (attack == null) {
-                return false;
-            }
-
-            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
-            if (hitbox == null) {
-                return false;
-            }
-            if (!BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())) {
-                return false;
-            }
-
-            Object animation = attack.getClass().getMethod("animation").invoke(attack);
-            if (!BAYONET_GUNSHOT_ANIMATION.equals(animation)) {
-                return false;
-            }
-            return true;
         } catch (ReflectiveOperationException ignored) {
-            return false;
+            result = false;
         }
+
+        if (result) {
+            return true;
+        }
+
+        return consumeClientAttackFlag(attacker, ClientAttackFlag.BAYONET_GUNSHOT);
     }
 
     private static boolean isAirmaceAttack(LivingEntity attacker) {
@@ -605,6 +804,11 @@ public class ModCombatEvents {
     private static boolean isHoldingAirmace(LivingEntity attacker) {
         return attacker.getMainHandItem().is(ModItems.AIRMACE.get())
                 || attacker.getOffhandItem().is(ModItems.AIRMACE.get());
+    }
+
+    private static boolean isHoldingMkopi(LivingEntity attacker) {
+        return attacker.getMainHandItem().is(ModItems.MKOPI.get())
+                || attacker.getOffhandItem().is(ModItems.MKOPI.get());
     }
 
     private static boolean isBreachDensityPair(net.minecraft.core.Holder<Enchantment> first, net.minecraft.core.Holder<Enchantment> second) {
@@ -761,34 +965,37 @@ public class ModCombatEvents {
         double y = attacker.getEyeY() - 0.2D + look.y * 0.2D;
         double z = attacker.getZ() + look.z * 1.2D;
 
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.FLASH, x, y, z, 1, 0.0, 0.0, 0.0, 0.0);
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.FLAME, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.LARGE_SMOKE, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.08);
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.CRIT, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.FIREWORK, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.12);
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.CLOUD, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
-        sendParticlesToOthers(serverLevel, attacker, ParticleTypes.SMOKE, x, y, z, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1);
+        sendParticlesToOthers(serverLevel, attacker, x, y, z, BAYONET_MUZZLE_SPECS);
     }
 
     private static void sendParticlesToOthers(
             ServerLevel serverLevel,
             LivingEntity attacker,
-            ParticleOptions particle,
             double x,
             double y,
             double z,
-            int count,
-            double xOffset,
-            double yOffset,
-            double zOffset,
-            double speed
+            ParticleSpec[] specs
     ) {
         ServerPlayer attackerPlayer = attacker instanceof ServerPlayer player ? player : null;
         for (ServerPlayer player : serverLevel.players()) {
             if (attackerPlayer != null && player == attackerPlayer) {
                 continue;
             }
-            serverLevel.sendParticles(player, particle, false, x, y, z, count, xOffset, yOffset, zOffset, speed);
+            for (ParticleSpec spec : specs) {
+                serverLevel.sendParticles(
+                        player,
+                        spec.particle,
+                        false,
+                        x,
+                        y,
+                        z,
+                        spec.count,
+                        spec.xOffset,
+                        spec.yOffset,
+                        spec.zOffset,
+                        spec.speed
+                );
+            }
         }
     }
 
