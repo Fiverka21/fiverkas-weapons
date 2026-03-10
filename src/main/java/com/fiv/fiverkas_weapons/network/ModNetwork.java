@@ -18,6 +18,11 @@ public final class ModNetwork {
                 BayonetMuzzleFlashPayload.STREAM_CODEC,
                 ModNetwork::handleBayonetMuzzleFlash
         );
+        registrar.playToServer(
+                ClientAttackFlagPayload.TYPE,
+                ClientAttackFlagPayload.STREAM_CODEC,
+                ModNetwork::handleClientAttackFlag
+        );
     }
 
     private static void handleBayonetMuzzleFlash(BayonetMuzzleFlashPayload payload, IPayloadContext context) {
@@ -29,7 +34,17 @@ public final class ModNetwork {
                     && !player.getOffhandItem().is(ModItems.BAYONET.get())) {
                 return;
             }
+            ModCombatEvents.recordClientAttackFlag(player, ModCombatEvents.ClientAttackFlag.BAYONET_GUNSHOT);
             ModCombatEvents.spawnBayonetGunshotMuzzleParticles(player);
+        });
+    }
+
+    private static void handleClientAttackFlag(ClientAttackFlagPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (!(context.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            ModCombatEvents.recordClientAttackFlag(player, payload.flag());
         });
     }
 }
