@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "M D",
+    "GL ",
+    "SGM"
+  ],
+  "key": {
+    "D": { "item": "minecraft:diamond" },
+    "G": { "item": "minecraft:gold_ingot" },
+    "L": { "item": "minecraft:lapis_lazuli" },
+    "M": { "tag": "c:music_discs" },
+    "S": { "item": "minecraft:netherite_sword" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:sacrilegious"
+  }
+}

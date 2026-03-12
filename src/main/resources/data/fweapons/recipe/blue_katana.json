@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "B L",
+    " S ",
+    "C Y"
+  ],
+  "key": {
+    "B": { "item": "minecraft:blue_dye" },
+    "L": { "item": "minecraft:lapis_block" },
+    "S": { "item": "minecraft:netherite_sword" },
+    "C": { "item": "minecraft:copper_block" },
+    "Y": { "item": "minecraft:cyan_dye" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:blue_katana"
+  }
+}

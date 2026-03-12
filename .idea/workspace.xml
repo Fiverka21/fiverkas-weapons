@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="04e3edb7-58c8-4684-bc0a-d3749a5dde52" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="143" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="3Aod67J5yQpvvSQjY7n6uUIFTUG" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Application.Fiverkas_weapons: Client">
+    <configuration name="Fiverkas_weapons: Client" type="Application" factoryName="Application">
+      <envs>
+        <env name="MOD_CLASSES" value="fiverkas_weapons%%$PROJECT_DIR$/build/resources/main:fiverkas_weapons%%$PROJECT_DIR$/build/classes/java/main" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="cpw.mods.bootstraplauncher.BootstrapLauncher" />
+      <module name="fiverkas_weapons.main" />
+      <option name="PROGRAM_PARAMETERS" value="--launchTarget forgeclientdev --version 21.1.219 --assetIndex asset-index --assetsDir $USER_HOME$/.gradle/caches/minecraft/assets --gameDir . --fml.fmlVersion 4.0.42 --fml.mcVersion 1.21.1 --fml.neoForgeVersion 21.1.219 --fml.neoFormVersion 20240808.144430" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="-p $USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/bootstraplauncher/2.0.2/1a2d076cbc33b0520cbacd591224427b2a20047d/bootstraplauncher-2.0.2.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/securejarhandler/3.0.8/c0ef95cecd8699a0449053ac7d9c160748d902cd/securejarhandler-3.0.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.8/36e4d212970388e5bd2c5180292012502df461bb/asm-commons-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.8/395f1c1f035258511f27bc9b2583d76e4b143f59/asm-util-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.8/b9747a320844b6cb1eacd90d8ecfd260a16c01d3/asm-analysis-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.8/18419ca5b77a2f81097c741e7872e6ab8d2f40d/asm-tree-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.8/dc19ecb3f7889b7860697215cae99c0f9b6f6b4b/asm-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarFileSystems/0.4.1/78f59f89defcd032ed788b151ca6a0d40ace796a/JarJarFileSystems-0.4.1.jar --add-modules ALL-MODULE-PATH --add-opens java.base/java.util.jar=cpw.mods.securejarhandler --add-opens java.base/java.lang.invoke=cpw.mods.securejarhandler --add-exports java.base/sun.security.util=cpw.mods.securejarhandler --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dforge.logging.markers=REGISTRIES -Dforge.logging.console.level=debug -Dneoforge.enabledGameTestNamespaces=fweapons -Dneoforge.enableGameTest=true -DlegacyClassPath.file=$PROJECT_DIR$/.gradle/configuration/neoForm/neoFormJoined1.21.1-20240808.144430/steps/writeMinecraftClasspathClient/classpath.txt -DignoreList=mixinextras-neoforge-0.5.0.jar,client-extra,neoforge- -Djava.net.preferIPv6Addresses=system" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="ideBeforeRun" externalProjectPath="$PROJECT_DIR$" />
+      </method>
+    </configuration>
+    <configuration name="Fiverkas_weapons: Data" type="Application" factoryName="Application">
+      <envs>
+        <env name="MOD_CLASSES" value="fiverkas_weapons%%$PROJECT_DIR$/build/resources/main:fiverkas_weapons%%$PROJECT_DIR$/build/classes/java/main" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="cpw.mods.bootstraplauncher.BootstrapLauncher" />
+      <module name="fiverkas_weapons.main" />
+      <option name="PROGRAM_PARAMETERS" value="--mod fweapons --all --output $PROJECT_DIR$/src/generated/resources --existing $PROJECT_DIR$/src/main/resources --launchTarget forgedatadev --assetIndex asset-index --assetsDir $USER_HOME$/.gradle/caches/minecraft/assets --gameDir . --fml.fmlVersion 4.0.42 --fml.mcVersion 1.21.1 --fml.neoForgeVersion 21.1.219 --fml.neoFormVersion 20240808.144430" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="-p $USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/bootstraplauncher/2.0.2/1a2d076cbc33b0520cbacd591224427b2a20047d/bootstraplauncher-2.0.2.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/securejarhandler/3.0.8/c0ef95cecd8699a0449053ac7d9c160748d902cd/securejarhandler-3.0.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.8/36e4d212970388e5bd2c5180292012502df461bb/asm-commons-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.8/395f1c1f035258511f27bc9b2583d76e4b143f59/asm-util-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.8/b9747a320844b6cb1eacd90d8ecfd260a16c01d3/asm-analysis-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.8/18419ca5b77a2f81097c741e7872e6ab8d2f40d/asm-tree-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.8/dc19ecb3f7889b7860697215cae99c0f9b6f6b4b/asm-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarFileSystems/0.4.1/78f59f89defcd032ed788b151ca6a0d40ace796a/JarJarFileSystems-0.4.1.jar --add-modules ALL-MODULE-PATH --add-opens java.base/java.util.jar=cpw.mods.securejarhandler --add-opens java.base/java.lang.invoke=cpw.mods.securejarhandler --add-exports java.base/sun.security.util=cpw.mods.securejarhandler --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dforge.logging.markers=REGISTRIES -Dforge.logging.console.level=debug -DlegacyClassPath.file=$PROJECT_DIR$/.gradle/configuration/neoForm/neoFormJoined1.21.1-20240808.144430/steps/writeMinecraftClasspathData/classpath.txt -DignoreList=mixinextras-neoforge-0.5.0.jar,client-extra,neoforge- -Djava.net.preferIPv6Addresses=system" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/data" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="ideBeforeRun" externalProjectPath="$PROJECT_DIR$" />
+      </method>
+    </configuration>
+    <configuration name="Fiverkas_weapons: GameTestServer" type="Application" factoryName="Application">
+      <envs>
+        <env name="MOD_CLASSES" value="fiverkas_weapons%%$PROJECT_DIR$/build/resources/main:fiverkas_weapons%%$PROJECT_DIR$/build/classes/java/main" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="cpw.mods.bootstraplauncher.BootstrapLauncher" />
+      <module name="fiverkas_weapons.main" />
+      <option name="PROGRAM_PARAMETERS" value="--launchTarget forgeserverdev --gameDir . --fml.fmlVersion 4.0.42 --fml.mcVersion 1.21.1 --fml.neoForgeVersion 21.1.219 --fml.neoFormVersion 20240808.144430" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="-p $USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/bootstraplauncher/2.0.2/1a2d076cbc33b0520cbacd591224427b2a20047d/bootstraplauncher-2.0.2.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/securejarhandler/3.0.8/c0ef95cecd8699a0449053ac7d9c160748d902cd/securejarhandler-3.0.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.8/36e4d212970388e5bd2c5180292012502df461bb/asm-commons-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.8/395f1c1f035258511f27bc9b2583d76e4b143f59/asm-util-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.8/b9747a320844b6cb1eacd90d8ecfd260a16c01d3/asm-analysis-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.8/18419ca5b77a2f81097c741e7872e6ab8d2f40d/asm-tree-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.8/dc19ecb3f7889b7860697215cae99c0f9b6f6b4b/asm-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarFileSystems/0.4.1/78f59f89defcd032ed788b151ca6a0d40ace796a/JarJarFileSystems-0.4.1.jar --add-modules ALL-MODULE-PATH --add-opens java.base/java.util.jar=cpw.mods.securejarhandler --add-opens java.base/java.lang.invoke=cpw.mods.securejarhandler --add-exports java.base/sun.security.util=cpw.mods.securejarhandler --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dforge.logging.markers=REGISTRIES -Dforge.logging.console.level=debug -Dneoforge.enabledGameTestNamespaces=fweapons -Dneoforge.enableGameTest=true -Dneoforge.gameTestServer=true -DlegacyClassPath.file=$PROJECT_DIR$/.gradle/configuration/neoForm/neoFormJoined1.21.1-20240808.144430/steps/writeMinecraftClasspathGameTestServer/classpath.txt -DignoreList=mixinextras-neoforge-0.5.0.jar,client-extra,neoforge- -Djava.net.preferIPv6Addresses=system" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/gameTestServer" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="ideBeforeRun" externalProjectPath="$PROJECT_DIR$" />
+      </method>
+    </configuration>
+    <configuration name="Fiverkas_weapons: Server" type="Application" factoryName="Application">
+      <envs>
+        <env name="MOD_CLASSES" value="fiverkas_weapons%%$PROJECT_DIR$/build/resources/main:fiverkas_weapons%%$PROJECT_DIR$/build/classes/java/main" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="cpw.mods.bootstraplauncher.BootstrapLauncher" />
+      <module name="fiverkas_weapons.main" />
+      <option name="PROGRAM_PARAMETERS" value="--nogui --launchTarget forgeserverdev --gameDir . --fml.fmlVersion 4.0.42 --fml.mcVersion 1.21.1 --fml.neoForgeVersion 21.1.219 --fml.neoFormVersion 20240808.144430" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="-p $USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/bootstraplauncher/2.0.2/1a2d076cbc33b0520cbacd591224427b2a20047d/bootstraplauncher-2.0.2.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/securejarhandler/3.0.8/c0ef95cecd8699a0449053ac7d9c160748d902cd/securejarhandler-3.0.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.8/36e4d212970388e5bd2c5180292012502df461bb/asm-commons-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.8/395f1c1f035258511f27bc9b2583d76e4b143f59/asm-util-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.8/b9747a320844b6cb1eacd90d8ecfd260a16c01d3/asm-analysis-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.8/18419ca5b77a2f81097c741e7872e6ab8d2f40d/asm-tree-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.8/dc19ecb3f7889b7860697215cae99c0f9b6f6b4b/asm-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarFileSystems/0.4.1/78f59f89defcd032ed788b151ca6a0d40ace796a/JarJarFileSystems-0.4.1.jar --add-modules ALL-MODULE-PATH --add-opens java.base/java.util.jar=cpw.mods.securejarhandler --add-opens java.base/java.lang.invoke=cpw.mods.securejarhandler --add-exports java.base/sun.security.util=cpw.mods.securejarhandler --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dforge.logging.markers=REGISTRIES -Dforge.logging.console.level=debug -Dneoforge.enabledGameTestNamespaces=fweapons -DlegacyClassPath.file=$PROJECT_DIR$/.gradle/configuration/neoForm/neoFormJoined1.21.1-20240808.144430/steps/writeMinecraftClasspathServer/classpath.txt -DignoreList=mixinextras-neoforge-0.5.0.jar,client-extra,neoforge- -Djava.net.preferIPv6Addresses=system" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/server" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="ideBeforeRun" externalProjectPath="$PROJECT_DIR$" />
+      </method>
+    </configuration>
+    <configuration name="Fiverkas_weapons: Junit" type="JUnit" factoryName="JUnit">
+      <module name="fiverkas_weapons.test" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="TEST_OBJECT" value="pattern" />
+      <option name="VM_PARAMETERS" value="-p $USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/bootstraplauncher/2.0.2/1a2d076cbc33b0520cbacd591224427b2a20047d/bootstraplauncher-2.0.2.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/securejarhandler/3.0.8/c0ef95cecd8699a0449053ac7d9c160748d902cd/securejarhandler-3.0.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.8/36e4d212970388e5bd2c5180292012502df461bb/asm-commons-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.8/395f1c1f035258511f27bc9b2583d76e4b143f59/asm-util-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.8/b9747a320844b6cb1eacd90d8ecfd260a16c01d3/asm-analysis-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.8/18419ca5b77a2f81097c741e7872e6ab8d2f40d/asm-tree-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.8/dc19ecb3f7889b7860697215cae99c0f9b6f6b4b/asm-9.8.jar:$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarFileSystems/0.4.1/78f59f89defcd032ed788b151ca6a0d40ace796a/JarJarFileSystems-0.4.1.jar --add-modules ALL-MODULE-PATH --add-opens java.base/java.util.jar=cpw.mods.securejarhandler --add-opens java.base/java.lang.invoke=cpw.mods.securejarhandler --add-exports java.base/sun.security.util=cpw.mods.securejarhandler --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dforge.logging.markers=REGISTRIES -Dforge.logging.console.level=debug -DlegacyClassPath.file=$PROJECT_DIR$/.gradle/configuration/neoForm/neoFormJoined1.21.1-20240808.144430/steps/writeMinecraftClasspathJunit/classpath.txt -DignoreList=mixinextras-neoforge-0.5.0.jar,client-extra,neoforge- -Djava.net.preferIPv6Addresses=system -Dfml.junit.argsfile=$PROJECT_DIR$/runs/junit/junit_test_args.txt @$PROJECT_DIR$/runs/junit/junit_jvm_args.txt" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/junit" />
+      <envs>
+        <env name="MOD_CLASSES" value="fiverkas_weapons%%$PROJECT_DIR$/build/resources/main:fiverkas_weapons%%$PROJECT_DIR$/build/classes/java/main:" />
+      </envs>
+      <patterns>
+        <pattern testClass=".*" />
+      </patterns>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="ideBeforeRun" externalProjectPath="$PROJECT_DIR$" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="04e3edb7-58c8-4684-bc0a-d3749a5dde52" name="Changes" comment="" />
+      <created>1773262679012</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773262679012</updated>
+      <workItem from="1773262680980" duration="3541000" />
+      <workItem from="1773266233261" duration="4015000" />
+      <workItem from="1773328458423" duration="1172000" />
+      <workItem from="1773329708801" duration="7646000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

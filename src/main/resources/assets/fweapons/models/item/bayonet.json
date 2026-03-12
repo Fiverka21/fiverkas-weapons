@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "fweapons:item/bayonet"
+  },
+"display": {
+"thirdperson_righthand": {
+"rotation": [0, 90, 55],
+"translation": [0, 8, 1],
+"scale": [2.5, 2.5, 0.75]
+},
+"firstperson_righthand": {
+"rotation": [270, -90, 25],
+"translation": [1, 0, -10],
+"scale": [2, 2, 0.75]
+}
+}
+}

@@ -1,0 +1,121 @@
+---- Minecraft Crash Report ----
+// On the bright side, I bought you a teddy bear!
+
+Time: 2026-03-12 17:10:24
+Description: Bootstrap
+
+java.lang.ExceptionInInitializerError
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.StructureSet.lambda$static$0(StructureSet.java:20)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.create(RecordCodecBuilder.java:72)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.StructureSet.<clinit>(StructureSet.java:20)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacement$ExclusionZone.lambda$static$0(StructurePlacement.java:41)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.create(RecordCodecBuilder.java:72)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacement$ExclusionZone.<clinit>(StructurePlacement.java:41)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacement.placementCodec(StructurePlacement.java:31)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement.lambda$static$0(RandomSpreadStructurePlacement.java:23)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(RecordCodecBuilder.java:76)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement.<clinit>(RandomSpreadStructurePlacement.java:23)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType.<clinit>(StructurePlacementType.java:8)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.lambda$static$32(BuiltInRegistries.java:215)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.lambda$internalRegister$48(BuiltInRegistries.java:294)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.lambda$createContents$49(BuiltInRegistries.java:309)
+	at java.base/java.util.LinkedHashMap.forEach(LinkedHashMap.java:986)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.createContents(BuiltInRegistries.java:307)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.bootStrap(BuiltInRegistries.java:301)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.Bootstrap.bootStrap(Bootstrap.java:70)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.main.Main.main(Main.java:135)
+	at net.neoforged.fml.startup.Client.main(Client.java:19)
+Caused by: java.lang.IllegalStateException: Field settings in net/minecraft/world/level/levelgen/structure/Structure is not private and an instance field
+	at FML Plugins//net.neoforged.neoforge.coremods.ReplaceFieldWithGetterAccess.redirectFieldToMethod(ReplaceFieldWithGetterAccess.java:63)
+	at FML Plugins//net.neoforged.neoforge.coremods.ReplaceFieldWithGetterAccess.transform(ReplaceFieldWithGetterAccess.java:55)
+	at net.neoforged.neoforgespi.transformation.SimpleClassProcessor.processClass(SimpleClassProcessor.java:48)
+	at net.neoforged.fml.classloading.transformation.ClassTransformer.transform(ClassTransformer.java:96)
+	at net.neoforged.fml.classloading.transformation.TransformingClassLoader.maybeTransformClassBytes(TransformingClassLoader.java:47)
+	at net.neoforged.fml.classloading.ModuleClassLoader.readerToClass(ModuleClassLoader.java:224)
+	at net.neoforged.fml.classloading.ModuleClassLoader.loadClass(ModuleClassLoader.java:245)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.StructureSet$StructureSelectionEntry.lambda$static$0(StructureSet.java:34)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.create(RecordCodecBuilder.java:72)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.StructureSet$StructureSelectionEntry.<clinit>(StructureSet.java:34)
+	... 20 more
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: main
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.StructureSet.lambda$static$0(StructureSet.java:20)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.create(RecordCodecBuilder.java:72)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.StructureSet.<clinit>(StructureSet.java:20)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacement$ExclusionZone.lambda$static$0(StructurePlacement.java:41)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.create(RecordCodecBuilder.java:72)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacement$ExclusionZone.<clinit>(StructurePlacement.java:41)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacement.placementCodec(StructurePlacement.java:31)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement.lambda$static$0(RandomSpreadStructurePlacement.java:23)
+	at com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(RecordCodecBuilder.java:76)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement.<clinit>(RandomSpreadStructurePlacement.java:23)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType.<clinit>(StructurePlacementType.java:8)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.lambda$static$32(BuiltInRegistries.java:215)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.lambda$internalRegister$48(BuiltInRegistries.java:294)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.lambda$createContents$49(BuiltInRegistries.java:309)
+	at java.base/java.util.LinkedHashMap.forEach(LinkedHashMap.java:986)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.createContents(BuiltInRegistries.java:307)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.core.registries.BuiltInRegistries.bootStrap(BuiltInRegistries.java:301)
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.Bootstrap.bootStrap(Bootstrap.java:70)
+
+-- Initialization --
+Details:
+	Modules: 
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.main.Main.main(Main.java:135)
+	at net.neoforged.fml.startup.Client.main(Client.java:19)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.11
+	Minecraft Version ID: 1.21.11
+	Operating System: Linux (amd64) version 6.18.13-arch1-1
+	Java Version: 21.0.10, Eclipse Adoptium
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Eclipse Adoptium
+	Memory: 146442040 bytes (139 MiB) / 377487360 bytes (360 MiB) up to 8388608000 bytes (8000 MiB)
+	CPUs: 24
+	Processor Vendor: AuthenticAMD
+	Processor Name: AMD Ryzen 9 5900X 12-Core Processor
+	Identifier: AuthenticAMD Family 25 Model 33 Stepping 2
+	Microarchitecture: Zen 3
+	Frequency (GHz): -0.00
+	Number of physical packages: 1
+	Number of physical CPUs: 12
+	Number of logical CPUs: 24
+	Graphics card #0 name: GA104 [GeForce RTX 3060]
+	Graphics card #0 vendor: NVIDIA Corporation (0x10de)
+	Graphics card #0 VRAM (MiB): 16416.00
+	Graphics card #0 deviceId: 0x2487
+	Graphics card #0 versionInfo: unknown
+	Virtual memory max (MiB): 25009.16
+	Virtual memory used (MiB): 15868.58
+	Swap memory total (MiB): 9011.20
+	Swap memory used (MiB): 34.97
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 15986.76, total: 15997.97
+	Space in storage for workdir (MiB): available: 40890.69, total: 222760.36
+	JVM Flags: 0 total; 
+	Debug Flags: 0 total; 
+	Launched Version: 21.11.38-beta
+	Backend library: LWJGL version 3.3.3+5
+	Backend API: Unknown
+	Window size: <not initialized>
+	GFLW Platform: x11
+	Render Extensions: ERR
+	GL debug messages: <no renderer available>
+	Is Modded: Very likely; Client jar signature invalidated
+	Universe: 404
+	Type: Client (map_client.txt)
+	Locale: en_US
+	System encoding: UTF-8
+	File encoding: UTF-8
+	CPU: 24x AMD Ryzen 9 5900X 12-Core Processor
