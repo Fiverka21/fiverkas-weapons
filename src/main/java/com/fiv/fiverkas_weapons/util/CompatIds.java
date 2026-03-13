@@ -243,9 +243,22 @@ public final class CompatIds {
                         if (method.getDeclaringClass() == Object.class) {
                             return method.invoke(proxy, args);
                         }
+                        String name = method.getName();
                         Class<?> returnType = method.getReturnType();
-                        if (returnType == double.class || returnType == Double.class) {
+                        if (returnType == double.class) {
                             return value;
+                        }
+                        if (returnType.isAssignableFrom(Double.class)) {
+                            return Double.valueOf(value);
+                        }
+                        if (returnType == Object.class) {
+                            if ("apply".equals(name)
+                                    || "get".equals(name)
+                                    || "getOrDefault".equals(name)
+                                    || "put".equals(name)
+                                    || "remove".equals(name)) {
+                                return Double.valueOf(value);
+                            }
                         }
                         if (returnType == boolean.class) {
                             return false;

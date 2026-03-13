@@ -24,7 +24,7 @@ license="${mod_license}"
 modId="fweapons" #mandatory
 
 # The version number of the mod
-version="1.0.1" #mandatory
+version="1.0.4.1" #mandatory
 
 # A display name for the mod
 displayName="Fiverka's Weapons" #mandatory
@@ -75,6 +75,14 @@ description="Some unique weapons, based on BetterCombat"
     # AFTER - This mod is loaded AFTER the dependency
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT, or SERVER
+    side="BOTH"
+
+# Minecraft version range supported by this mod
+[[dependencies.fweapons]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
     side="BOTH"
 
 # Here's another dependency
