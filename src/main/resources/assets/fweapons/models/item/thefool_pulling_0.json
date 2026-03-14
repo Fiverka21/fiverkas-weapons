@@ -1,0 +1,18 @@
+{
+  "parent": "item/bow_pulling_0",
+  "textures": {
+    "layer0": "fweapons:item/thefool0"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [0, -90, 55],
+      "translation": [0, -2, 1],
+      "scale": [1.2, 1.2, 0.75]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, 90, -55],
+      "translation": [0, -2, 1],
+      "scale": [1.2, 1.2, 0.75]
+    }
+  }
+}

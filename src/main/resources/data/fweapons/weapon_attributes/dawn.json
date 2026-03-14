@@ -1,0 +1,53 @@
+{
+  "attributes": {
+    "range_bonus": -0.5,
+    "two_handed": false,
+    "category": "dagger",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 4292373401,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 4287607193,
+          "glows": false
+        }
+      },
+      "conditional": {
+        "is_enchanted": {
+          "primary": {
+            "color_rgba": 4292373401,
+            "glows": false
+          },
+          "secondary": {
+            "color_rgba": 4287607193,
+            "glows": false
+          }
+        }
+      }
+    },
+    "attacks": [
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 0.9,
+        "angle": 150,
+        "upswing": 0.5,
+        "animation": "bettercombat:one_handed_slash_horizontal_right",
+        "swing_sound": {
+          "id": "bettercombat:dagger_slash"
+        }
+      },
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1,
+        "angle": 150,
+        "upswing": 0.5,
+        "animation": "bettercombat:one_handed_slash_horizontal_left",
+        "swing_sound": {
+          "id": "bettercombat:dagger_slash"
+        }
+      }
+    ]
+  }
+}

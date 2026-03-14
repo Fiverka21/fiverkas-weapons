@@ -1,4 +1,9 @@
 {
+  "dusk": {
+    "sounds": [
+      "fweapons:dusk"
+    ]
+  },
   "mkopi": {
     "sounds": [
       "fweapons:mkopi"

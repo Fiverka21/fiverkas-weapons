@@ -7,13 +7,20 @@ import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.lang.reflect.Constructor;
@@ -26,6 +33,8 @@ public final class ModCombatClientEvents {
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String MKOPI_SLAM_HITBOX = "VERTICAL_PLANE";
+    private static final String DUSK_THIRD_ANIMATION = "bettercombat:dual_handed_stab";
+    private static final String DUSK_THIRD_HITBOX = "FORWARD_BOX";
     private static final String TRAIL_PARTICLE_TYPE_NONE = "none";
     private static final int BURST_COUNT = 18;
     private static final List<?> NO_TRAIL_PARTICLES = createNoTrailParticles();
@@ -39,17 +48,73 @@ public final class ModCombatClientEvents {
 
     private static void init() {
         registerClientRenderHooks();
+        registerItemProperties();
         registerBetterCombatAttackStartListener();
         registerBetterCombatAttackHitListener();
     }
 
     private static void registerClientRenderHooks() {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
+        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onEntityTickPost);
+    }
+
+    private static void registerItemProperties() {
+        ItemProperties.register(
+                ModItems.THE_FOOL.get(),
+                ResourceLocation.withDefaultNamespace("pull"),
+                (stack, level, entity, seed) -> {
+                    if (entity == null || entity.getUseItem() != stack) {
+                        return 0.0F;
+                    }
+                    return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
+                }
+        );
+        ItemProperties.register(
+                ModItems.THE_FOOL.get(),
+                ResourceLocation.withDefaultNamespace("pulling"),
+                (stack, level, entity, seed) ->
+                        entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
+        );
     }
 
     private static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
         if (event.getEntity().hasEffect(ModEffects.CERULEAN_SHROUD)) {
             event.setCanceled(true);
+        }
+    }
+
+    private static void onEntityTickPost(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof SpectralArrow arrow)) {
+            return;
+        }
+        if (!arrow.level().isClientSide) {
+            return;
+        }
+        ItemStack weapon = arrow.getWeaponItem();
+        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
+            return;
+        }
+        PotionContents contents = arrow.getPickupItemStackOrigin()
+                .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        if (contents.equals(PotionContents.EMPTY)) {
+            return;
+        }
+        int color = contents.getColor();
+        if (color == -1) {
+            return;
+        }
+        boolean moving = arrow.getDeltaMovement().lengthSqr() > 1.0E-4;
+        int count = moving ? 2 : 1;
+        for (int i = 0; i < count; i++) {
+            arrow.level().addParticle(
+                    ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color),
+                    arrow.getRandomX(0.5),
+                    arrow.getRandomY(),
+                    arrow.getRandomZ(0.5),
+                    0.0,
+                    0.0,
+                    0.0
+            );
         }
     }
 
@@ -80,6 +145,11 @@ public final class ModCombatClientEvents {
                             if (isMkopiSlamAttack(attackHand)) {
                                 PacketDistributor.sendToServer(
                                         new ClientAttackFlagPayload(ModCombatEvents.ClientAttackFlag.MKOPI_SLAM)
+                                );
+                            }
+                            if (isDuskThirdAttack(attackHand)) {
+                                PacketDistributor.sendToServer(
+                                        new ClientAttackFlagPayload(ModCombatEvents.ClientAttackFlag.DUSK_THIRD)
                                 );
                             }
                         }
@@ -150,6 +220,11 @@ public final class ModCombatClientEvents {
         return attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.BAYONET.get());
     }
 
+    private static boolean isDuskAttack(Object attackHand) throws ReflectiveOperationException {
+        Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
+        return attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.DUSK.get());
+    }
+
     private static List<?> createNoTrailParticles() {
         try {
             Class<?> particlePlacementClass = Class.forName("net.bettercombat.api.fx.ParticlePlacement");
@@ -187,6 +262,32 @@ public final class ModCombatClientEvents {
 
             Object animation = attack.getClass().getMethod("animation").invoke(attack);
             if (!BAYONET_GUNSHOT_ANIMATION.equals(animation)) {
+                return false;
+            }
+            return true;
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDuskThirdAttack(Object attackHand) {
+        try {
+            if (!isDuskAttack(attackHand)) {
+                return false;
+            }
+
+            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            if (attack == null) {
+                return false;
+            }
+
+            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            if (hitbox == null || !DUSK_THIRD_HITBOX.equals(hitbox.toString())) {
+                return false;
+            }
+
+            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            if (!DUSK_THIRD_ANIMATION.equals(animation)) {
                 return false;
             }
             return true;

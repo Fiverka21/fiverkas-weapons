@@ -1,0 +1,40 @@
+{
+  "parent": "item/bow",
+  "textures": {
+    "layer0": "fweapons:item/thefool"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [0, -90, 55],
+      "translation": [0, -2, 1],
+      "scale": [1.2, 1.2, 0.75]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, 90, -55],
+      "translation": [0, -2, 1],
+      "scale": [1.2, 1.2, 0.75]
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "fweapons:item/thefool_pulling_0"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.65
+      },
+      "model": "fweapons:item/thefool_pulling_1"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.9
+      },
+      "model": "fweapons:item/thefool_pulling_2"
+    }
+  ]
+}
