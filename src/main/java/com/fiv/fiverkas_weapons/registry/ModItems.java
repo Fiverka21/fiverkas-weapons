@@ -5,9 +5,12 @@ import com.fiv.fiverkas_weapons.item.Airmace;
 import com.fiv.fiverkas_weapons.item.AnimatedGradientItem;
 import com.fiv.fiverkas_weapons.item.Bayonet;
 import com.fiv.fiverkas_weapons.item.BlueKatana;
+import com.fiv.fiverkas_weapons.item.Dawn;
+import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
 import com.fiv.fiverkas_weapons.item.Mkopi;
 import com.fiv.fiverkas_weapons.item.Sacrilegious;
+import com.fiv.fiverkas_weapons.item.TheFoolBow;
 import com.fiv.fiverkas_weapons.item.VaporwaveSword;
 
 import net.minecraft.core.registries.Registries;
@@ -75,6 +78,32 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.6f))
+                    ));
+
+    public static final DeferredHolder<Item, Dawn> DAWN =
+            ITEMS.register("dawn",
+                    () -> new Dawn(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, -1, -1.4f))
+                    ));
+
+    public static final DeferredHolder<Item, Dusk> DUSK =
+            ITEMS.register("dusk",
+                    () -> new Dusk(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 0, -1.4f))
+                    ));
+
+    public static final DeferredHolder<Item, Item> THE_FOOL =
+            ITEMS.register("thefool",
+                    () -> new TheFoolBow(
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .durability(384)
                     ));
 
     public static final DeferredHolder<Item, Item> GBLUEPRINT =

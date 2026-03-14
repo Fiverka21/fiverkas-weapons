@@ -24,6 +24,9 @@ public class ModCreativeTabs {
                         output.accept(ModItems.BAYONET.get());
                         output.accept(ModItems.BLUE_KATANA.get());
                         output.accept(ModItems.AIRMACE.get());
+                        output.accept(ModItems.DAWN.get());
+                        output.accept(ModItems.DUSK.get());
+                        output.accept(ModItems.THE_FOOL.get());
                         output.accept(ModItems.GBLUEPRINT.get());
                         output.accept(ModItems.DREAM_ESSENCE.get());
                     })

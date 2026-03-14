@@ -143,18 +143,16 @@ public class ModEnchantCommand {
         }
 
         Set<Holder<Enchantment>> existing = EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet();
-        boolean hasPair = false;
         for (Holder<Enchantment> holder : existing) {
             if (Enchantment.areCompatible(holder, enchantment)) {
                 continue;
             }
             if (isBreachDensityPair(holder, enchantment)) {
-                hasPair = true;
                 continue;
             }
             return false;
         }
-        return hasPair;
+        return true;
     }
 
     private static boolean isBreachDensityPair(Holder<Enchantment> first, Holder<Enchantment> second) {

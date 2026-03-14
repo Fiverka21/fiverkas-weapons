@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "YGY",
+    "OSO",
+    "YGY"
+  ],
+  "key": {
+    "Y": { "item": "minecraft:yellow_dye" },
+    "G": { "item": "minecraft:glowstone" },
+    "O": { "item": "minecraft:orange_dye" },
+    "S": { "item": "minecraft:netherite_sword" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:dawn"
+  }
+}
