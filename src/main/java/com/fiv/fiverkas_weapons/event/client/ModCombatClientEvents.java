@@ -172,7 +172,7 @@ public final class ModCombatClientEvents {
                     listenerClass.getClassLoader(),
                     new Class<?>[]{listenerClass},
                     (proxy, method, args) -> {
-                        if (!"onPlayerAttackStart".equals(method.getName())
+                        if (!"onPlayerAttackHit".equals(method.getName())
                                 || args == null
                                 || args.length < 2) {
                             return null;
