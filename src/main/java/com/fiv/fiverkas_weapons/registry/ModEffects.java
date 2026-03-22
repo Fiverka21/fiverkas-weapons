@@ -3,7 +3,7 @@ package com.fiv.fiverkas_weapons.registry;
 import com.fiv.fiverkas_weapons.effect.BleedEffect;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
-import com.fiv.fiverkas_weapons.effect.EternityEffect;
+import com.fiv.fiverkas_weapons.effect.SunriseEffect;
 import com.fiv.fiverkas_weapons.effect.VaporifiedEffect;
 
 import net.minecraft.core.registries.Registries;
@@ -25,6 +25,6 @@ public class ModEffects {
     public static final DeferredHolder<MobEffect, CeruleanShroudEffect> CERULEAN_SHROUD =
             EFFECTS.register("cerulean_shroud", CeruleanShroudEffect::new);
 
-    public static final DeferredHolder<MobEffect, EternityEffect> ETERNITY =
-            EFFECTS.register("eternity", EternityEffect::new);
+    public static final DeferredHolder<MobEffect, SunriseEffect> SUNRISE =
+            EFFECTS.register("sunrise", SunriseEffect::new);
 }

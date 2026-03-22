@@ -16,21 +16,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-public class EternityEffect extends MobEffect {
-    private static final int ETERNITY_COLOR = 0xFFFFB347;
+public class SunriseEffect extends MobEffect {
+    private static final int SUNRISE_COLOR = 0xFFFFB347;
     private static final double SLOW_PER_STACK = -0.1D;
     private static final int MAX_SLOW_STACKS = 8;
     private static final float DAMAGE_PER_SECOND_PER_STACK = 0.25F;
-    private static final ResourceKey<DamageType> ETERNITY_DAMAGE = ResourceKey.create(
+    private static final ResourceKey<DamageType> SUNRISE_DAMAGE = ResourceKey.create(
             Registries.DAMAGE_TYPE,
-            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "eternity")
+            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "sunrise")
     );
 
-    public EternityEffect() {
+    public SunriseEffect() {
         super(MobEffectCategory.HARMFUL, 0xFFB347);
         addAttributeModifier(
                 Attributes.MOVEMENT_SPEED,
-                ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "eternity_slow"),
+                ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "sunrise_slow"),
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
                 level -> SLOW_PER_STACK * Math.min(level + 1, MAX_SLOW_STACKS)
         );
@@ -42,12 +42,12 @@ public class EternityEffect extends MobEffect {
             if (entity.tickCount % 20 == 0) {
                 int stacks = amplifier + 1;
                 float damage = DAMAGE_PER_SECOND_PER_STACK * stacks;
-                DamageSource eternity = new DamageSource(
+                DamageSource sunriseDamage = new DamageSource(
                         entity.level().registryAccess()
                                 .registryOrThrow(Registries.DAMAGE_TYPE)
-                                .getHolderOrThrow(ETERNITY_DAMAGE)
+                                .getHolderOrThrow(SUNRISE_DAMAGE)
                 );
-                entity.hurt(eternity, damage);
+                entity.hurt(sunriseDamage, damage);
             }
         }
         // Returning false removes the effect instance in 1.21.1; keep it active.
@@ -61,7 +61,7 @@ public class EternityEffect extends MobEffect {
 
     @Override
     public ParticleOptions createParticleOptions(MobEffectInstance effect) {
-        return ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ETERNITY_COLOR);
+        return ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, SUNRISE_COLOR);
     }
 
     

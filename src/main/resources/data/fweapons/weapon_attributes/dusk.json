@@ -49,13 +49,11 @@
         }
       },
       {
-        "conditions": [
-          "DUAL_WIELDING_SAME_CATEGORY"],
         "hitbox": "FORWARD_BOX",
         "damage_multiplier": 1.2,
         "angle": 150,
         "upswing": 0.5,
-        "animation": "bettercombat:dual_handed_stab",
+        "animation": "bettercombat:one_handed_stab",
         "swing_sound": {
           "id": "bettercombat:dagger_slash"
         }
