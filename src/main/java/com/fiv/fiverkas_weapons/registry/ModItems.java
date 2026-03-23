@@ -5,9 +5,12 @@ import com.fiv.fiverkas_weapons.item.Airmace;
 import com.fiv.fiverkas_weapons.item.AnimatedGradientItem;
 import com.fiv.fiverkas_weapons.item.Bayonet;
 import com.fiv.fiverkas_weapons.item.BlueKatana;
+import com.fiv.fiverkas_weapons.item.Dawn;
+import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
 import com.fiv.fiverkas_weapons.item.Mkopi;
 import com.fiv.fiverkas_weapons.item.Sacrilegious;
+import com.fiv.fiverkas_weapons.item.TheFoolBow;
 import com.fiv.fiverkas_weapons.item.VaporwaveSword;
 
 import net.minecraft.core.registries.Registries;
@@ -69,6 +72,30 @@ public class ModItems {
                             itemProps("airmace")
                                     .stacksTo(1)
                                     .sword(ToolMaterial.DIAMOND, 4, -2.6f)
+                    ));
+
+    public static final DeferredHolder<Item, Dawn> DAWN =
+            ITEMS.register("dawn",
+                    () -> new Dawn(
+                            itemProps("dawn")
+                                    .stacksTo(1)
+                                    .sword(ToolMaterial.DIAMOND, -1, -1.4f)
+                    ));
+
+    public static final DeferredHolder<Item, Dusk> DUSK =
+            ITEMS.register("dusk",
+                    () -> new Dusk(
+                            itemProps("dusk")
+                                    .stacksTo(1)
+                                    .sword(ToolMaterial.DIAMOND, 0, -1.4f)
+                    ));
+
+    public static final DeferredHolder<Item, Item> THE_FOOL =
+            ITEMS.register("thefool",
+                    () -> new TheFoolBow(
+                            itemProps("thefool")
+                                    .stacksTo(1)
+                                    .durability(384)
                     ));
 
     public static final DeferredHolder<Item, Item> GBLUEPRINT =

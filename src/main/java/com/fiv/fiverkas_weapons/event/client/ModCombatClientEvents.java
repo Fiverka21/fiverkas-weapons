@@ -5,7 +5,9 @@ import com.fiv.fiverkas_weapons.network.BayonetMuzzleFlashPayload;
 import com.fiv.fiverkas_weapons.network.ClientAttackFlagPayload;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
+import com.fiv.fiverkas_weapons.util.CompatIds;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.particles.ColorParticleOption;
@@ -13,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +26,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
@@ -31,9 +35,25 @@ public final class ModCombatClientEvents {
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String MKOPI_SLAM_HITBOX = "VERTICAL_PLANE";
+    private static final String DUSK_THIRD_ANIMATION_PRIMARY = "bettercombat:dual_handed_stab";
+    private static final String DUSK_THIRD_ANIMATION_FALLBACK = "bettercombat:one_handed_stab";
+    private static final String DUSK_THIRD_HITBOX = "FORWARD_BOX";
     private static final String TRAIL_PARTICLE_TYPE_NONE = "none";
+    private static final String[] ITEM_PROPERTIES_CLASS_NAMES = new String[]{
+            "net.minecraft.client.renderer.item.ItemProperties",
+            "net.minecraft.client.renderer.item.properties.ItemProperties"
+    };
+    private static final String[] ITEM_PROPERTY_FUNCTION_CLASS_NAMES = new String[]{
+            "net.minecraft.client.renderer.item.ItemPropertyFunction",
+            "net.minecraft.client.renderer.item.properties.ItemPropertyFunction"
+    };
     private static final int BURST_COUNT = 18;
     private static volatile List<?> noTrailParticles;
+
+    @FunctionalInterface
+    private interface ItemPropertyGetter {
+        float call(ItemStack stack, ClientLevel level, LivingEntity entity, int seed);
+    }
 
     private ModCombatClientEvents() {
     }
@@ -44,12 +64,110 @@ public final class ModCombatClientEvents {
 
     private static void init() {
         registerClientRenderHooks();
+        registerItemProperties();
         registerBetterCombatAttackStartListener();
         registerBetterCombatAttackHitListener();
     }
 
     private static void registerClientRenderHooks() {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
+    }
+
+    private static void registerItemProperties() {
+        registerItemProperty(
+                ModItems.THE_FOOL.get(),
+                "pull",
+                (stack, level, entity, seed) -> {
+                    if (entity == null || entity.getUseItem() != stack) {
+                        return 0.0F;
+                    }
+                    return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
+                }
+        );
+        registerItemProperty(
+                ModItems.THE_FOOL.get(),
+                "pulling",
+                (stack, level, entity, seed) ->
+                        entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
+        );
+    }
+
+    private static void registerItemProperty(Item item, String path, ItemPropertyGetter getter) {
+        Object id = CompatIds.id("minecraft", path);
+        Class<?> propertiesClass = getItemPropertiesClass();
+        Class<?> functionClass = getItemPropertyFunctionClass();
+        if (propertiesClass == null || functionClass == null) {
+            return;
+        }
+        Object function = createItemPropertyFunction(functionClass, getter);
+        if (function == null) {
+            return;
+        }
+        try {
+            Method register = findItemPropertiesRegister(propertiesClass, id, functionClass);
+            if (register != null) {
+                register.invoke(null, item, id, function);
+            }
+        } catch (ReflectiveOperationException ignored) {
+        }
+    }
+
+    private static Object createItemPropertyFunction(Class<?> functionClass, ItemPropertyGetter getter) {
+        return Proxy.newProxyInstance(
+                functionClass.getClassLoader(),
+                new Class<?>[]{functionClass},
+                (proxy, method, args) -> {
+                    if (method.getDeclaringClass() == Object.class) {
+                        return method.invoke(getter, args);
+                    }
+                    if (args != null && args.length == 4 && args[0] instanceof ItemStack stack) {
+                        ClientLevel level = args[1] instanceof ClientLevel clientLevel ? clientLevel : null;
+                        LivingEntity entity = args[2] instanceof LivingEntity living ? living : null;
+                        int seed = args[3] instanceof Integer value ? value : 0;
+                        return getter.call(stack, level, entity, seed);
+                    }
+                    return 0.0F;
+                }
+        );
+    }
+
+    private static Method findItemPropertiesRegister(Class<?> propertiesClass, Object id, Class<?> functionClass) {
+        Class<?> idClass = id.getClass();
+        for (Method method : propertiesClass.getMethods()) {
+            if (!method.getName().equals("register") || method.getParameterCount() != 3) {
+                continue;
+            }
+            Class<?>[] params = method.getParameterTypes();
+            if (!Item.class.isAssignableFrom(params[0])) {
+                continue;
+            }
+            if (!params[1].isAssignableFrom(idClass) && !idClass.isAssignableFrom(params[1])) {
+                continue;
+            }
+            if (!params[2].isAssignableFrom(functionClass) && !functionClass.isAssignableFrom(params[2])) {
+                continue;
+            }
+            return method;
+        }
+        return null;
+    }
+
+    private static Class<?> getItemPropertiesClass() {
+        return findClass(ITEM_PROPERTIES_CLASS_NAMES);
+    }
+
+    private static Class<?> getItemPropertyFunctionClass() {
+        return findClass(ITEM_PROPERTY_FUNCTION_CLASS_NAMES);
+    }
+
+    private static Class<?> findClass(String[] candidates) {
+        for (String name : candidates) {
+            try {
+                return Class.forName(name);
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+        return null;
     }
 
     private static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
@@ -91,6 +209,11 @@ public final class ModCombatClientEvents {
                             if (isMkopiSlamAttack(attackHand)) {
                                 sendToServer(
                                         new ClientAttackFlagPayload(ModCombatEvents.ClientAttackFlag.MKOPI_SLAM)
+                                );
+                            }
+                            if (isDuskThirdAttack(attackHand)) {
+                                sendToServer(
+                                        new ClientAttackFlagPayload(ModCombatEvents.ClientAttackFlag.DUSK_THIRD)
                                 );
                             }
                         }
@@ -172,6 +295,11 @@ public final class ModCombatClientEvents {
         return attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.BAYONET.get());
     }
 
+    private static boolean isDuskAttack(Object attackHand) throws ReflectiveOperationException {
+        Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
+        return attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.DUSK.get());
+    }
+
     private static List<?> createNoTrailParticles() {
         try {
             Class<?> particlePlacementClass = Class.forName("net.bettercombat.api.fx.ParticlePlacement");
@@ -217,6 +345,29 @@ public final class ModCombatClientEvents {
         }
     }
 
+    private static boolean isDuskThirdAttack(Object attackHand) {
+        try {
+            if (!isDuskAttack(attackHand)) {
+                return false;
+            }
+
+            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            if (attack == null) {
+                return false;
+            }
+
+            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            if (hitbox == null || !DUSK_THIRD_HITBOX.equals(hitbox.toString())) {
+                return false;
+            }
+
+            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            return isDuskThirdAnimation(animation);
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
+    }
+
     private static boolean isMkopiSlamAttack(Object attackHand) {
         try {
             Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
@@ -239,6 +390,14 @@ public final class ModCombatClientEvents {
         } catch (ReflectiveOperationException ignored) {
             return false;
         }
+    }
+
+    private static boolean isDuskThirdAnimation(Object animation) {
+        if (animation == null) {
+            return false;
+        }
+        String value = animation.toString();
+        return DUSK_THIRD_ANIMATION_PRIMARY.equals(value) || DUSK_THIRD_ANIMATION_FALLBACK.equals(value);
     }
 
     private static void spawnBayonetGunshotParticles(LocalPlayer player) {

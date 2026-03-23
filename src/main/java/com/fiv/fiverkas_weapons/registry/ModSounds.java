@@ -14,4 +14,8 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> MKOPI =
             SOUND_EVENTS.register("mkopi",
                     () -> CompatIds.soundEvent(FiverkasWeapons.MODID, "mkopi"));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DUSK =
+            SOUND_EVENTS.register("dusk",
+                    () -> CompatIds.soundEvent(FiverkasWeapons.MODID, "dusk"));
 }

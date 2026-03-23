@@ -25,9 +25,11 @@ public class FiverkasWeapons {
         ModSounds.SOUND_EVENTS.register(modEventBus); // Register sounds
         modEventBus.addListener(ModNetwork::onRegisterPayloadHandlers);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onAttackEntity);
+        NeoForge.EVENT_BUS.addListener(ModCombatEvents::onProjectileImpact);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingIncomingDamage);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingDamagePre);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingDamagePost);
+        NeoForge.EVENT_BUS.addListener(ModCombatEvents::onEntityTickPost);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingChangeTarget);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onSweepAttack);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onServerStarting);
