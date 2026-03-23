@@ -10,6 +10,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
@@ -60,6 +61,7 @@ import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
@@ -80,7 +82,7 @@ public class ModCombatEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final boolean DEBUG_LOGS = Boolean.getBoolean("fweapons.debug");
     private static final int VAPORIFIED_DURATION_TICKS = 120;
-    private static final int SUNRISE_DURATION_TICKS = 80;
+    private static final int SUNSET_DURATION_TICKS = 80;
     private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_PARTICLE_COUNT = 12;
@@ -94,6 +96,8 @@ public class ModCombatEvents {
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
     private static final Map<UUID, EnumMap<ClientAttackFlag, Long>> CLIENT_ATTACK_FLAGS = new HashMap<>();
     private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
+    private static final Field ARROW_IN_GROUND_FIELD = resolveArrowField("inGround");
+    private static final Field ARROW_IN_GROUND_TIME_FIELD = resolveArrowField("inGroundTime");
     private static final EquipmentSlot[] CERULEAN_EQUIPMENT_SLOTS = {
             EquipmentSlot.MAINHAND,
             EquipmentSlot.OFFHAND,
@@ -114,17 +118,17 @@ public class ModCombatEvents {
             Registries.DAMAGE_TYPE,
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
     );
-    private static final ResourceKey<DamageType> SUNRISE_DAMAGE = ResourceKey.create(
+    private static final ResourceKey<DamageType> SUNSET_DAMAGE = ResourceKey.create(
             Registries.DAMAGE_TYPE,
-            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "sunrise")
+            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "sunset")
     );
     private static final DustParticleOptions AIRMACE_LIGHT_YELLOW =
             new DustParticleOptions(new Vector3f(241 / 255F, 206 / 255F, 106 / 255F), 1.25F);
     private static final DustParticleOptions AIRMACE_BLAND_CYAN =
             new DustParticleOptions(new Vector3f(146 / 255F, 191 / 255F, 186 / 255F), 1.1F);
-    private static final DustParticleOptions DUSK_SUNRISE_DUST =
+    private static final DustParticleOptions DUSK_SUNSET_DUST =
             new DustParticleOptions(new Vector3f(91 / 255F, 60 / 255F, 136 / 255F), 1.35F);
-    private static final DustParticleOptions DUSK_SUNRISE_LIGHT_DUST =
+    private static final DustParticleOptions DUSK_SUNSET_LIGHT_DUST =
             new DustParticleOptions(new Vector3f(120 / 255F, 190 / 255F, 255 / 255F), 1.25F);
     private static final DustParticleOptions MKOPI_BLACK_DUST = new DustParticleOptions(new Vector3f(0.02F, 0.02F, 0.02F), 1.1F);
     private static final ParticleSpec[] BAYONET_MUZZLE_SPECS = new ParticleSpec[]{
@@ -241,7 +245,7 @@ public class ModCombatEvents {
                         target.getName().getString()
                 );
             }
-            applyDuskSunriseFinisher(target, attacker);
+            applyDuskSunsetFinisher(target, attacker);
         }
     }
 
@@ -319,13 +323,23 @@ public class ModCombatEvents {
         if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
             return;
         }
-        if (arrow instanceof SpectralArrow) {
-            return;
-        }
+        Entity effectSource = arrow.getEffectSource();
         target.addEffect(
                 new MobEffectInstance(MobEffects.GLOWING, THE_FOOL_SPECTRAL_DURATION_TICKS, 0),
-                arrow.getEffectSource()
+                effectSource
         );
+        LivingEntity sourceLiving = null;
+        if (effectSource instanceof LivingEntity living) {
+            sourceLiving = living;
+        } else if (arrow.getOwner() instanceof LivingEntity ownerLiving) {
+            sourceLiving = ownerLiving;
+        }
+        if (sourceLiving != null) {
+            sourceLiving.addEffect(
+                    new MobEffectInstance(MobEffects.GLOWING, THE_FOOL_SPECTRAL_DURATION_TICKS, 0),
+                    effectSource
+            );
+        }
     }
 
     private static void applyTheFoolPotionEffects(LivingEntity target, DamageSource source) {
@@ -365,6 +379,38 @@ public class ModCombatEvents {
         }
     }
 
+    private static Field resolveArrowField(String name) {
+        try {
+            Field field = AbstractArrow.class.getDeclaredField(name);
+            field.setAccessible(true);
+            return field;
+        } catch (ReflectiveOperationException ignored) {
+            return null;
+        }
+    }
+
+    private static boolean isArrowInGround(AbstractArrow arrow) {
+        if (ARROW_IN_GROUND_FIELD == null) {
+            return false;
+        }
+        try {
+            return ARROW_IN_GROUND_FIELD.getBoolean(arrow);
+        } catch (IllegalAccessException ignored) {
+            return false;
+        }
+    }
+
+    private static int getArrowInGroundTime(AbstractArrow arrow) {
+        if (ARROW_IN_GROUND_TIME_FIELD == null) {
+            return 0;
+        }
+        try {
+            return ARROW_IN_GROUND_TIME_FIELD.getInt(arrow);
+        } catch (IllegalAccessException ignored) {
+            return 0;
+        }
+    }
+
     private static void teleportEntity(LivingEntity entity, Vec3 position) {
         if (entity instanceof ServerPlayer serverPlayer) {
             serverPlayer.teleportTo(
@@ -386,7 +432,7 @@ public class ModCombatEvents {
         }
 
         applyVaporifiedArmorBypass(event);
-        applySunriseArmorBypass(event);
+        applySunsetArmorBypass(event);
         applyHonorStrike(event);
         applyAirmaceFallBonus(event);
     }
@@ -466,6 +512,51 @@ public class ModCombatEvents {
         applyFromSource(event.getEntity(), event.getSource());
         applyTheFoolSpectralEffect(event.getEntity(), event.getSource());
         applyTheFoolPotionEffects(event.getEntity(), event.getSource());
+    }
+
+    public static void onEntityTickPost(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof SpectralArrow arrow)) {
+            return;
+        }
+        if (!(arrow.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        ItemStack weapon = arrow.getWeaponItem();
+        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
+            return;
+        }
+        PotionContents contents = arrow.getPickupItemStackOrigin()
+                .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        if (contents.equals(PotionContents.EMPTY)) {
+            return;
+        }
+        int color = contents.getColor();
+        if (color == -1) {
+            return;
+        }
+        int count;
+        if (isArrowInGround(arrow)) {
+            int inGroundTime = getArrowInGroundTime(arrow);
+            if (inGroundTime % 5 != 0) {
+                return;
+            }
+            count = 1;
+        } else {
+            count = 2;
+        }
+        for (int i = 0; i < count; i++) {
+            serverLevel.sendParticles(
+                    ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color),
+                    arrow.getRandomX(0.5),
+                    arrow.getRandomY(),
+                    arrow.getRandomZ(0.5),
+                    1,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+            );
+        }
     }
 
     public static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -699,13 +790,13 @@ public class ModCombatEvents {
         if (isDawn) {
             if (DEBUG_LOGS) {
                 LOGGER.info(
-                        "[fweapons] Damage hook applying sunrise: msgId={} attacker={} target={}",
+                        "[fweapons] Damage hook applying sunset: msgId={} attacker={} target={}",
                         source.getMsgId(),
                         attacker == null ? "<none>" : attacker.getName().getString(),
                         target.getName().getString()
                 );
             }
-            applySunriseHitEffects(target, attacker);
+            applySunsetHitEffects(target, attacker);
         }
         if (isSacrilegious) {
             if (DEBUG_LOGS) {
@@ -751,8 +842,8 @@ public class ModCombatEvents {
         event.addReductionModifier(DamageContainer.Reduction.ENCHANTMENTS, (container, reduction) -> reduction * 0.5F);
     }
 
-    private static void applySunriseArmorBypass(LivingIncomingDamageEvent event) {
-        if (!event.getSource().is(SUNRISE_DAMAGE)) {
+    private static void applySunsetArmorBypass(LivingIncomingDamageEvent event) {
+        if (!event.getSource().is(SUNSET_DAMAGE)) {
             return;
         }
 
@@ -893,20 +984,20 @@ public class ModCombatEvents {
         target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
 
-    private static void applySunriseHitEffects(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.SUNRISE);
+    private static void applySunsetHitEffects(LivingEntity target, LivingEntity attacker) {
+        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
         int amplifier = existing == null ? 0 : existing.getAmplifier() + 1;
-        target.addEffect(new MobEffectInstance(ModEffects.SUNRISE, SUNRISE_DURATION_TICKS, amplifier), attacker);
+        target.addEffect(new MobEffectInstance(ModEffects.SUNSET, SUNSET_DURATION_TICKS, amplifier), attacker);
     }
 
-    private static void applyDuskSunriseFinisher(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.SUNRISE);
+    private static void applyDuskSunsetFinisher(LivingEntity target, LivingEntity attacker) {
+        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
         if (existing == null) {
             return;
         }
 
         int stacks = existing.getAmplifier() + 1;
-        target.removeEffect(ModEffects.SUNRISE);
+        target.removeEffect(ModEffects.SUNSET);
 
         float bonusDamage = 2.0F * stacks;
         DamageSource source;
@@ -920,7 +1011,7 @@ public class ModCombatEvents {
         target.hurt(source, bonusDamage);
 
         if (target.level() instanceof ServerLevel serverLevel) {
-            spawnDuskSunriseBurst(serverLevel, target, stacks);
+            spawnDuskSunsetBurst(serverLevel, target, stacks);
             serverLevel.playSound(
                     null,
                     target.getX(),
@@ -934,14 +1025,14 @@ public class ModCombatEvents {
         }
     }
 
-    private static void spawnDuskSunriseBurst(ServerLevel serverLevel, LivingEntity target, int stacks) {
+    private static void spawnDuskSunsetBurst(ServerLevel serverLevel, LivingEntity target, int stacks) {
         int count = Math.min(480, 22 * stacks);
         double x = target.getX();
         double y = target.getY(0.6);
         double z = target.getZ();
         double spread = Math.min(3.0D, 0.55D + 0.12D * stacks);
         serverLevel.sendParticles(
-                DUSK_SUNRISE_DUST,
+                DUSK_SUNSET_DUST,
                 x,
                 y,
                 z,
@@ -953,7 +1044,7 @@ public class ModCombatEvents {
         );
         int lightCount = Math.max(10, (int) (count * 0.7F));
         serverLevel.sendParticles(
-                DUSK_SUNRISE_LIGHT_DUST,
+                DUSK_SUNSET_LIGHT_DUST,
                 x,
                 y,
                 z,
