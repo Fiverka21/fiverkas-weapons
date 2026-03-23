@@ -2,15 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "PBP",
-    "ASA",
-    "PBP"
+    "ADA",
+    "DED",
+    "ADA"
   ],
   "key": {
-    "P": { "item": "minecraft:purple_dye" },
-    "B": { "item": "minecraft:black_dye" },
     "A": { "item": "minecraft:amethyst_shard" },
-    "S": { "item": "minecraft:netherite_sword" }
+    "D": { "item": "minecraft:diamond" },
+    "E": { "item": "minecraft:end_stone" }
   },
   "result": {
     "count": 1,

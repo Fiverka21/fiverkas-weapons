@@ -2,15 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "YGY",
-    "OSO",
-    "YGY"
+    "BGB",
+    "GAG",
+    "BGB"
   ],
   "key": {
-    "Y": { "item": "minecraft:yellow_dye" },
+    "B": { "item": "minecraft:gold_ingot" },
     "G": { "item": "minecraft:glowstone" },
-    "O": { "item": "minecraft:orange_dye" },
-    "S": { "item": "minecraft:netherite_sword" }
+    "A": { "item": "minecraft:ancient_debris" }
   },
   "result": {
     "count": 1,

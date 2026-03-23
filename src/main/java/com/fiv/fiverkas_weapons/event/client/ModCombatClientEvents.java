@@ -8,19 +8,14 @@ import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.lang.reflect.Constructor;
@@ -55,7 +50,6 @@ public final class ModCombatClientEvents {
 
     private static void registerClientRenderHooks() {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
-        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onEntityTickPost);
     }
 
     private static void registerItemProperties() {
@@ -82,42 +76,6 @@ public final class ModCombatClientEvents {
             event.setCanceled(true);
         }
     }
-
-    private static void onEntityTickPost(EntityTickEvent.Post event) {
-        if (!(event.getEntity() instanceof SpectralArrow arrow)) {
-            return;
-        }
-        if (!arrow.level().isClientSide) {
-            return;
-        }
-        ItemStack weapon = arrow.getWeaponItem();
-        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
-            return;
-        }
-        PotionContents contents = arrow.getPickupItemStackOrigin()
-                .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-        if (contents.equals(PotionContents.EMPTY)) {
-            return;
-        }
-        int color = contents.getColor();
-        if (color == -1) {
-            return;
-        }
-        boolean moving = arrow.getDeltaMovement().lengthSqr() > 1.0E-4;
-        int count = moving ? 2 : 1;
-        for (int i = 0; i < count; i++) {
-            arrow.level().addParticle(
-                    ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color),
-                    arrow.getRandomX(0.5),
-                    arrow.getRandomY(),
-                    arrow.getRandomZ(0.5),
-                    0.0,
-                    0.0,
-                    0.0
-            );
-        }
-    }
-
 
     private static void registerBetterCombatAttackStartListener() {
         try {

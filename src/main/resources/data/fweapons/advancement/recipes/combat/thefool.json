@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ancient_debris": {
+    "has_ender_pearl": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": "minecraft:ancient_debris"
+            "items": "minecraft:ender_pearl"
           }
         ]
       }
@@ -14,19 +14,19 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fweapons:dawn"
+        "recipe": "fweapons:thefool"
       }
     }
   },
   "requirements": [
     [
-      "has_ancient_debris",
+      "has_ender_pearl",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "fweapons:dawn"
+      "fweapons:thefool"
     ]
   }
 }
