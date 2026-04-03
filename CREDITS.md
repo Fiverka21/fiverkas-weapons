@@ -1,3 +1,3 @@
 credits: 
-Fiverka - programming
+Fiverka - programming,
 Pantoflik - pixel art
