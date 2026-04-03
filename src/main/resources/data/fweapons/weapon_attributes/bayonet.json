@@ -50,7 +50,6 @@
             "roll_set": 0.0
           }
         ]
-
       },
       {
         "hitbox": "FORWARD_BOX",
@@ -73,8 +72,6 @@
             "roll_set": 0.0
           }
         ]
-
-
       },
       {
         "hitbox": "FORWARD_BOX",
@@ -85,6 +82,186 @@
         "animation": "fweapons:bayonet_no_swing",
         "swing_sound": {
           "id": "bettercombat:wand_swing"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "none"
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1,
+        "range_multiplier": 0.2,
+        "angle": 0,
+        "upswing": 0.5,
+        "animation": "bettercombat:two_handed_stab_right",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1,
+        "range_multiplier": 0.2,
+        "angle": 0,
+        "upswing": 0.5,
+        "animation": "bettercombat:two_handed_stab_left",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1.4,
+        "range_multiplier": 1.0,
+        "angle": 14,
+        "upswing": 1.2,
+        "animation": "fweapons:bayonet_no_swing",
+        "swing_sound": {
+          "id": "bettercombat:wand_swing"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "none"
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1,
+        "range_multiplier": 0.2,
+        "angle": 0,
+        "upswing": 0.5,
+        "animation": "bettercombat:two_handed_stab_right",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1,
+        "range_multiplier": 0.2,
+        "angle": 0,
+        "upswing": 0.5,
+        "animation": "bettercombat:two_handed_stab_left",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1.4,
+        "range_multiplier": 1.0,
+        "angle": 14,
+        "upswing": 1.2,
+        "animation": "fweapons:bayonet_no_swing",
+        "swing_sound": {
+          "id": "bettercombat:wand_swing"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "none"
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1,
+        "range_multiplier": 0.2,
+        "angle": 0,
+        "upswing": 0.5,
+        "animation": "bettercombat:two_handed_stab_right",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 1,
+        "range_multiplier": 0.2,
+        "angle": 0,
+        "upswing": 0.5,
+        "animation": "bettercombat:two_handed_stab_left",
+        "swing_sound": {
+          "id": "bettercombat:spear_stab"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "FORWARD_BOX",
+        "damage_multiplier": 2.8,
+        "range_multiplier": 1.0,
+        "angle": 28,
+        "upswing": 2.4,
+        "animation": "fweapons:bayonet_impact",
+        "swing_sound": {
+          "id": "fweapons:ramiel"
         },
         "trail_particles": [
           {

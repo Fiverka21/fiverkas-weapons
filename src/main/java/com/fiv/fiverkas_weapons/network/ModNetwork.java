@@ -1,6 +1,7 @@
 package com.fiv.fiverkas_weapons.network;
 
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
+import com.fiv.fiverkas_weapons.event.client.ModCombatClientEvents;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -22,6 +23,16 @@ public final class ModNetwork {
                 ClientAttackFlagPayload.TYPE,
                 ClientAttackFlagPayload.STREAM_CODEC,
                 ModNetwork::handleClientAttackFlag
+        );
+        registrar.playToServer(
+                BayonetComboAttackPayload.TYPE,
+                BayonetComboAttackPayload.STREAM_CODEC,
+                ModNetwork::handleBayonetComboAttack
+        );
+        registrar.playToClient(
+                BayonetImpactFramePayload.TYPE,
+                BayonetImpactFramePayload.STREAM_CODEC,
+                ModNetwork::handleBayonetImpactFrame
         );
     }
 
@@ -46,5 +57,18 @@ public final class ModNetwork {
             }
             ModCombatEvents.recordClientAttackFlag(player, payload.flag());
         });
+    }
+
+    private static void handleBayonetComboAttack(BayonetComboAttackPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (!(context.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            ModCombatEvents.onBayonetComboAttack(player);
+        });
+    }
+
+    private static void handleBayonetImpactFrame(BayonetImpactFramePayload payload, IPayloadContext context) {
+        context.enqueueWork(ModCombatClientEvents::triggerBayonetImpactFrame);
     }
 }
