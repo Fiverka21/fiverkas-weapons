@@ -8,5 +8,10 @@
     "sounds": [
       "fweapons:mkopi"
     ]
+  },
+  "ramiel": {
+    "sounds": [
+      "fweapons:ramiel"
+    ]
   }
 }

@@ -20,6 +20,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -809,6 +810,84 @@ public class ModCombatEvents {
             }
             applySacrilegiousHitEffects(target, attacker);
         }
+    }
+
+    public static void onBayonetComboAttack(ServerPlayer player) {
+        if (player.level().isClientSide) {
+            return;
+        }
+        if (!isHoldingBayonet(player)) {
+            return;
+        }
+        spawnPerfectDapEffect(player);
+        playBetterCombatAttackAnimation(player);
+    }
+
+    private static void playBetterCombatAttackAnimation(ServerPlayer player) {
+        try {
+            Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
+            Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
+            Class<?> swingParticlesClass = Class.forName("net.bettercombat.network.Packets$SwingParticles");
+            Class<?> serverNetworkClass = Class.forName("net.bettercombat.network.ServerNetwork");
+
+            Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
+            Object particles = swingParticlesClass.getField("EMPTY").get(null);
+            float length = 1.625f;
+            float upswing = 1.2f;
+            int upswingTicks = Math.round(upswing * 20.0f);
+            Object payload = attackAnimClass
+                    .getConstructor(
+                            int.class,
+                            animatedHandClass,
+                            String.class,
+                            float.class,
+                            float.class,
+                            float.class,
+                            int.class,
+                            swingParticlesClass
+                    )
+                    .newInstance(
+                            player.getId(),
+                            hand,
+                            "fweapons:perfect_hit",
+                            length,
+                            upswing,
+                            0.0f,
+                            upswingTicks,
+                            particles
+                    );
+
+            serverNetworkClass
+                    .getMethod(
+                            "handleAttackAnimation",
+                            attackAnimClass,
+                            net.minecraft.server.MinecraftServer.class,
+                            net.minecraft.server.level.ServerPlayer.class
+                    )
+                    .invoke(null, payload, player.getServer(), player);
+        } catch (ReflectiveOperationException ignored) {
+            if (DEBUG_LOGS) {
+                LOGGER.info("[fweapons] BetterCombat not present or attack animation send failed.");
+            }
+        }
+    }
+
+    private static void spawnPerfectDapEffect(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        Vec3 look = player.getLookAngle().normalize();
+        double x = player.getX() + look.x * 0.7D;
+        double y = player.getEyeY() - 0.2D + look.y * 0.1D;
+        double z = player.getZ() + look.z * 0.7D;
+
+        serverLevel.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 5, 0.2, 0.2, 0.2, 0.0);
+        serverLevel.sendParticles(ParticleTypes.CRIT, x, y, z, 40, 0.4, 0.4, 0.4, 0.12);
+        serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 50, 0.5, 0.5, 0.5, 0.15);
+
+        serverLevel.playSound(null, x, y, z, SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.5f, 1.0f);
+        serverLevel.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0f, 1.0f);
+        serverLevel.playSound(null, x, y, z, SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 1.2f, 1.0f);
     }
 
     private static void applyHonorStrike(LivingIncomingDamageEvent event) {
