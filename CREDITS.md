@@ -1,1 +1,3 @@
-credits: Fiverka, Pantoflik
+credits: 
+Fiverka - programming
+Pantoflik - pixel art
