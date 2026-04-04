@@ -1,0 +1,50 @@
+{
+  "attributes": {
+    "range_bonus": 0,
+    "category": "axe",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 796734207,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 1833714175,
+          "glows": false
+        }
+      },
+      "conditional": {
+        "is_enchanted": {
+          "primary": {
+            "color_rgba": 796734207,
+            "glows": false
+          },
+          "secondary": {
+            "color_rgba": 1833714175,
+            "glows": false
+          }
+        }
+      }
+    },
+    "attacks": [
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "angle": 90,
+        "upswing": 0.3,
+        "animation": "bettercombat:one_handed_slash_horizontal_right",
+        "swing_sound": {
+          "id": "bettercombat:axe_slash"
+        }
+      },
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "angle": 90,
+        "upswing": 0.3,
+        "animation": "bettercombat:one_handed_slash_horizontal_left",
+        "swing_sound": {
+          "id": "bettercombat:axe_slash"
+        }
+      }
+    ]
+  }
+}

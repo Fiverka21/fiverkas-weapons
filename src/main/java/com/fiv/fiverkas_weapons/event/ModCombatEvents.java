@@ -39,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,6 +51,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -58,12 +60,14 @@ import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 
@@ -513,6 +517,50 @@ public class ModCombatEvents {
         applyFromSource(event.getEntity(), event.getSource());
         applyTheFoolSpectralEffect(event.getEntity(), event.getSource());
         applyTheFoolPotionEffects(event.getEntity(), event.getSource());
+    }
+
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (event.getEntity().level().isClientSide) {
+            return;
+        }
+        if (event.getEntity() instanceof Player) {
+            return;
+        }
+        DamageSource source = event.getSource();
+        ItemStack weapon = source.getWeaponItem();
+        boolean isNatureAxe = weapon != null && !weapon.isEmpty() && weapon.is(ModItems.NATUREAXE.get());
+        Player attackerPlayer = null;
+        Entity sourceEntity = source.getEntity();
+        if (sourceEntity instanceof Player player) {
+            attackerPlayer = player;
+        }
+        if (!isNatureAxe && sourceEntity instanceof LivingEntity attacker) {
+            isNatureAxe = attacker.getMainHandItem().is(ModItems.NATUREAXE.get())
+                    || attacker.getOffhandItem().is(ModItems.NATUREAXE.get());
+        }
+        if (!isNatureAxe) {
+            return;
+        }
+
+        if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        BlockPos feetPos = event.getEntity().blockPosition();
+        ItemStack boneMeal = new ItemStack(Items.BONE_MEAL);
+        if (BoneMealItem.applyBonemeal(boneMeal, serverLevel, feetPos, attackerPlayer)) {
+            if (attackerPlayer != null) {
+                attackerPlayer.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
+            }
+            serverLevel.levelEvent(1505, feetPos, 15);
+            return;
+        }
+        BlockPos below = feetPos.below();
+        if (BoneMealItem.applyBonemeal(boneMeal, serverLevel, below, attackerPlayer)) {
+            if (attackerPlayer != null) {
+                attackerPlayer.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
+            }
+            serverLevel.levelEvent(1505, below, 15);
+        }
     }
 
     public static void onEntityTickPost(EntityTickEvent.Post event) {

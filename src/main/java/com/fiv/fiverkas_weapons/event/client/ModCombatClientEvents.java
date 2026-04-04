@@ -42,10 +42,10 @@ public final class ModCombatClientEvents {
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame1.png"),
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame2.png")
     };
-    private static final long[] IMPACT_FRAME_DURATIONS_MS = {360L, 360L, 480L};
+    private static final long[] IMPACT_FRAME_DURATIONS_MS = {300L, 300L, 400L};
     private static final int IMPACT_FRAME_WIDTH = 1920;
     private static final int IMPACT_FRAME_HEIGHT = 1080;
-    private static final long IMPACT_FRAME_DURATION_MS = 1200L;
+    private static final long IMPACT_FRAME_DURATION_MS = 1000L;
     private static final float IMPACT_FRAME_SCALE = 1.4F;
     private static boolean bayonetImpactFrameActive = false;
     private static long bayonetImpactFrameStartTime = 0L;

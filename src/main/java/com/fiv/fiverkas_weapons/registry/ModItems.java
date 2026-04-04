@@ -9,12 +9,14 @@ import com.fiv.fiverkas_weapons.item.Dawn;
 import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
 import com.fiv.fiverkas_weapons.item.Mkopi;
+import com.fiv.fiverkas_weapons.item.NatureAxe;
 import com.fiv.fiverkas_weapons.item.Sacrilegious;
 import com.fiv.fiverkas_weapons.item.TheFoolBow;
 import com.fiv.fiverkas_weapons.item.VaporwaveSword;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -78,6 +80,16 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.6f))
+                    ));
+
+    public static final DeferredHolder<Item, NatureAxe> NATUREAXE =
+            ITEMS.register("natureaxe",
+                    () -> new NatureAxe(
+                            Tiers.NETHERITE,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .fireResistant()
+                                    .attributes(AxeItem.createAttributes(Tiers.NETHERITE, 5.0F, -2.8F))
                     ));
 
     public static final DeferredHolder<Item, Dawn> DAWN =
