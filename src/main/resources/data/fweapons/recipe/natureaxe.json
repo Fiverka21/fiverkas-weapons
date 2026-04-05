@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LYL",
+    "LAL",
+    "DOG"
+  ],
+  "key": {
+    "L": { "tag": "minecraft:leaves" },
+    "Y": { "item": "minecraft:oxeye_daisy" },
+    "A": { "item": "minecraft:netherite_axe" },
+    "D": { "item": "minecraft:lime_dye" },
+    "O": { "tag": "minecraft:logs" },
+    "G": { "item": "minecraft:green_dye" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:natureaxe"
+  }
+}

@@ -8,6 +8,7 @@ import com.fiv.fiverkas_weapons.item.BlueKatana;
 import com.fiv.fiverkas_weapons.item.Dawn;
 import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
+import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.item.Mkopi;
 import com.fiv.fiverkas_weapons.item.NatureAxe;
 import com.fiv.fiverkas_weapons.item.Sacrilegious;
@@ -89,7 +90,7 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .fireResistant()
-                                    .attributes(AxeItem.createAttributes(Tiers.NETHERITE, 5.0F, -2.8F))
+                                    .attributes(AxeItem.createAttributes(Tiers.NETHERITE, 4.0F, -2.8F))
                     ));
 
     public static final DeferredHolder<Item, Dawn> DAWN =
@@ -108,6 +109,15 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 0, -1.4f))
+                    ));
+
+    public static final DeferredHolder<Item, LScythe> LSCYTHE =
+            ITEMS.register("lscythe",
+                    () -> new LScythe(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 6, -2.9f))
                     ));
 
     public static final DeferredHolder<Item, Item> THE_FOOL =
