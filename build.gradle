@@ -43,6 +43,14 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
 }
 
+def java21Launcher = javaToolchains.launcherFor {
+    languageVersion = JavaLanguageVersion.of(21)
+}
+
+tasks.withType(JavaExec).configureEach {
+    javaLauncher.set(java21Launcher)
+}
+
 processResources {
     inputs.property "version", project.version
     inputs.properties([

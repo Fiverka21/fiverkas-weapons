@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityPersistentDataMixin implements PersistentDataAccessor {
@@ -24,14 +25,14 @@ public abstract class EntityPersistentDataMixin implements PersistentDataAccesso
         return fweapons$persistentData;
     }
 
-    @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
-    private void fweapons$writePersistentData(CompoundTag tag, CallbackInfo ci) {
+    @Inject(method = "saveWithoutId", at = @At("TAIL"))
+    private void fweapons$writePersistentData(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
         if (fweapons$persistentData != null && !fweapons$persistentData.isEmpty()) {
             tag.put(FWEAPONS_PERSISTENT_DATA_KEY, fweapons$persistentData.copy());
         }
     }
 
-    @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+    @Inject(method = "load", at = @At("TAIL"))
     private void fweapons$readPersistentData(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains(FWEAPONS_PERSISTENT_DATA_KEY, 10)) {
             fweapons$persistentData = tag.getCompound(FWEAPONS_PERSISTENT_DATA_KEY).copy();

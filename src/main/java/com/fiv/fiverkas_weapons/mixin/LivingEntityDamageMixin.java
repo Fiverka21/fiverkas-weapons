@@ -1,6 +1,5 @@
 package com.fiv.fiverkas_weapons.mixin;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.common.NeoForge;
@@ -49,7 +48,6 @@ public abstract class LivingEntityDamageMixin {
 
     @Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
     private void fweapons$onActuallyHurtPre(
-            ServerLevel level,
             DamageSource source,
             float amount,
             CallbackInfo ci
@@ -74,7 +72,6 @@ public abstract class LivingEntityDamageMixin {
 
     @Inject(method = "actuallyHurt", at = @At("TAIL"))
     private void fweapons$onActuallyHurtPost(
-            ServerLevel level,
             DamageSource source,
             float amount,
             CallbackInfo ci
