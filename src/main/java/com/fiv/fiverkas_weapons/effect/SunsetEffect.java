@@ -31,8 +31,8 @@ public class SunsetEffect extends MobEffect {
         addAttributeModifier(
                 Attributes.MOVEMENT_SPEED,
                 ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "sunset_slow"),
-                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
-                level -> SLOW_PER_STACK * Math.min(level + 1, MAX_SLOW_STACKS)
+                SLOW_PER_STACK,
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
     }
 

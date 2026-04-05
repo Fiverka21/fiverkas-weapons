@@ -21,7 +21,7 @@ public class VaporwaveSword extends AnimatedGradientSwordItem {
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         // Apply Vaporified for 4 seconds (80 ticks)
-        target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, 80, 0));
+        target.addEffect(new MobEffectInstance(ModEffects.vaporifiedHolder(), 80, 0));
 
         // Spawn particles around target (client-side)
         if (!target.level().isClientSide) return super.hurtEnemy(stack, target, attacker);

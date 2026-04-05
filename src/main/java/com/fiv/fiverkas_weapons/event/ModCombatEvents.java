@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
@@ -307,14 +308,14 @@ public class ModCombatEvents {
     }
 
     private static void applyTheFoolSpectralBonus(AbstractArrow arrow) {
-        if (arrow.getPersistentData().getBoolean(THE_FOOL_SPECTRAL_BONUS_TAG)) {
+        if (PersistentData.get(arrow).getBoolean(THE_FOOL_SPECTRAL_BONUS_TAG)) {
             return;
         }
         ItemStack pickup = arrow.getPickupItemStackOrigin();
         if (!pickup.isEmpty() && pickup.is(Items.SPECTRAL_ARROW)) {
             arrow.setBaseDamage(arrow.getBaseDamage() + 1.0D);
         }
-        arrow.getPersistentData().putBoolean(THE_FOOL_SPECTRAL_BONUS_TAG, true);
+        PersistentData.get(arrow).putBoolean(THE_FOOL_SPECTRAL_BONUS_TAG, true);
     }
 
     private static void applyTheFoolSpectralEffect(LivingEntity target, DamageSource source) {
@@ -548,7 +549,7 @@ public class ModCombatEvents {
         }
         BlockPos feetPos = event.getEntity().blockPosition();
         ItemStack boneMeal = new ItemStack(Items.BONE_MEAL);
-        if (BoneMealItem.applyBonemeal(boneMeal, serverLevel, feetPos, attackerPlayer)) {
+        if (BoneMealItem.growCrop(boneMeal, serverLevel, feetPos)) {
             if (attackerPlayer != null) {
                 attackerPlayer.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
             }
@@ -556,7 +557,7 @@ public class ModCombatEvents {
             return;
         }
         BlockPos below = feetPos.below();
-        if (BoneMealItem.applyBonemeal(boneMeal, serverLevel, below, attackerPlayer)) {
+        if (BoneMealItem.growCrop(boneMeal, serverLevel, below)) {
             if (attackerPlayer != null) {
                 attackerPlayer.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
             }
@@ -625,8 +626,8 @@ public class ModCombatEvents {
             pruneExpiredAttackFlags(serverPlayer);
         }
 
-        var data = player.getPersistentData();
-        boolean hasShroud = player.hasEffect(ModEffects.CERULEAN_SHROUD);
+        var data = PersistentData.get(player);
+        boolean hasShroud = player.hasEffect(ModEffects.ceruleanShroudHolder());
         boolean markedInvisible = data.getBoolean(CeruleanShroudEffect.INVISIBLE_TAG);
 
         if (hasShroud) {
@@ -664,7 +665,7 @@ public class ModCombatEvents {
     }
 
     private static void updateLScytheDashPenalty(Player player) {
-        var data = player.getPersistentData();
+        var data = PersistentData.get(player);
         if (!data.contains(LScythe.DASH_ARMOR_EXPIRES_TAG)) {
             LScythe.clearDashArmorPenalty(player);
             return;
@@ -693,7 +694,7 @@ public class ModCombatEvents {
 
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
         LivingEntity target = event.getNewAboutToBeSetTarget();
-        if (target instanceof Player player && player.hasEffect(ModEffects.CERULEAN_SHROUD)) {
+        if (target instanceof Player player && player.hasEffect(ModEffects.ceruleanShroudHolder())) {
             event.setNewAboutToBeSetTarget(null);
         }
     }
@@ -722,7 +723,7 @@ public class ModCombatEvents {
         Set<net.minecraft.core.Holder<Enchantment>> seen = new HashSet<>(leftEnchantments.keySet());
         for (var entry : rightEnchantments.entrySet()) {
             var enchantment = entry.getKey();
-            if (!left.supportsEnchantment(enchantment) && !isBreachDensityEnchantment(enchantment)) {
+            if (!enchantment.value().canEnchant(left) && !isBreachDensityEnchantment(enchantment)) {
                 return;
             }
             for (var existing : seen) {
@@ -867,7 +868,7 @@ public class ModCombatEvents {
                         target.getName().getString()
                 );
             }
-            target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, VAPORIFIED_DURATION_TICKS, 0), attacker);
+            target.addEffect(new MobEffectInstance(ModEffects.vaporifiedHolder(), VAPORIFIED_DURATION_TICKS, 0), attacker);
         }
         if (isDawn) {
             if (DEBUG_LOGS) {
@@ -980,16 +981,16 @@ public class ModCombatEvents {
         if (!(sourceEntity instanceof LivingEntity attacker)) {
             return;
         }
-        if (!attacker.hasEffect(ModEffects.CERULEAN_SHROUD)) {
+        if (!attacker.hasEffect(ModEffects.ceruleanShroudHolder())) {
             return;
         }
 
         event.setAmount(event.getAmount() * 2.0F);
-        attacker.removeEffect(ModEffects.CERULEAN_SHROUD);
-        attacker.getPersistentData().putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
-        attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_X_TAG);
-        attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_Y_TAG);
-        attacker.getPersistentData().remove(CeruleanShroudEffect.LAST_Z_TAG);
+        attacker.removeEffect(ModEffects.ceruleanShroudHolder());
+        PersistentData.get(attacker).putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_X_TAG);
+        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_Y_TAG);
+        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_Z_TAG);
     }
 
     private static void applyVaporifiedArmorBypass(LivingIncomingDamageEvent event) {
@@ -997,9 +998,8 @@ public class ModCombatEvents {
             return;
         }
 
-        // Reduce armor and enchantment reductions by 50% (effective half protection).
-        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.5F);
-        event.addReductionModifier(DamageContainer.Reduction.ENCHANTMENTS, (container, reduction) -> reduction * 0.5F);
+        // Fabric fallback: emulate reduced protection by scaling incoming damage upward.
+        event.setAmount(event.getAmount() * 1.35F);
     }
 
     private static void applySunsetArmorBypass(LivingIncomingDamageEvent event) {
@@ -1007,8 +1007,8 @@ public class ModCombatEvents {
             return;
         }
 
-        // Ignore 60% of armor reduction.
-        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.4F);
+        // Fabric fallback: emulate partial armor bypass with a direct damage increase.
+        event.setAmount(event.getAmount() * 1.2F);
     }
 
     private static void applyAirmaceFallBonus(LivingIncomingDamageEvent event) {
@@ -1141,23 +1141,23 @@ public class ModCombatEvents {
                     0.0
             );
         }
-        target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
+        target.addEffect(new MobEffectInstance(ModEffects.bleedHolder(), SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
 
     private static void applySunsetHitEffects(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
+        MobEffectInstance existing = target.getEffect(ModEffects.sunsetHolder());
         int amplifier = existing == null ? 0 : existing.getAmplifier() + 1;
-        target.addEffect(new MobEffectInstance(ModEffects.SUNSET, SUNSET_DURATION_TICKS, amplifier), attacker);
+        target.addEffect(new MobEffectInstance(ModEffects.sunsetHolder(), SUNSET_DURATION_TICKS, amplifier), attacker);
     }
 
     private static void applyDuskSunsetFinisher(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
+        MobEffectInstance existing = target.getEffect(ModEffects.sunsetHolder());
         if (existing == null) {
             return;
         }
 
         int stacks = existing.getAmplifier() + 1;
-        target.removeEffect(ModEffects.SUNSET);
+        target.removeEffect(ModEffects.sunsetHolder());
 
         float bonusDamage = 2.0F * stacks;
         DamageSource source;
@@ -1628,22 +1628,22 @@ public class ModCombatEvents {
         if (!canAirmaceSmash(attacker, attacker.fallDistance)) {
             return;
         }
-        var data = attacker.getPersistentData();
+        var data = PersistentData.get(attacker);
         data.putFloat(AIRMACE_FALL_DISTANCE_TAG, attacker.fallDistance);
         data.putInt(AIRMACE_FALL_TICK_TAG, attacker.tickCount);
     }
 
     private static boolean hasRecentAirmaceSmash(LivingEntity attacker) {
-        int recordedTick = attacker.getPersistentData().getInt(AIRMACE_FALL_TICK_TAG);
+        int recordedTick = PersistentData.get(attacker).getInt(AIRMACE_FALL_TICK_TAG);
         return recordedTick != 0 && attacker.tickCount - recordedTick <= AIRMACE_FALL_TICK_WINDOW;
     }
 
     private static float getStoredAirmaceFallDistance(LivingEntity attacker) {
-        return attacker.getPersistentData().getFloat(AIRMACE_FALL_DISTANCE_TAG);
+        return PersistentData.get(attacker).getFloat(AIRMACE_FALL_DISTANCE_TAG);
     }
 
     private static void clearAirmaceSmash(LivingEntity attacker) {
-        var data = attacker.getPersistentData();
+        var data = PersistentData.get(attacker);
         data.remove(AIRMACE_FALL_DISTANCE_TAG);
         data.remove(AIRMACE_FALL_TICK_TAG);
     }

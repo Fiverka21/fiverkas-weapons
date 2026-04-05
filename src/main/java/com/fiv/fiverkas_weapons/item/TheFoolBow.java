@@ -24,6 +24,6 @@ public class TheFoolBow extends AnimatedGradientBowItem {
         if (isCrit) {
             arrow.setCritArrow(true);
         }
-        return customArrow(arrow, ammo, weapon);
+        return arrow;
     }
 }

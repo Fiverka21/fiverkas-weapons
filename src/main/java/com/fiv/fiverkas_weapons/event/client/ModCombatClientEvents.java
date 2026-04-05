@@ -89,7 +89,7 @@ public final class ModCombatClientEvents {
     }
 
     private static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
-        if (event.getEntity().hasEffect(ModEffects.CERULEAN_SHROUD)) {
+        if (event.getEntity().hasEffect(ModEffects.ceruleanShroudHolder())) {
             event.setCanceled(true);
         }
     }

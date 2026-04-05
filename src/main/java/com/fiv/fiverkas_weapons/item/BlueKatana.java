@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.item;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
@@ -51,11 +52,11 @@ public class BlueKatana extends AnimatedGradientSwordItem {
             );
             player.hurt(honorDamage, 2.0F);
             if (player.isAlive()) {
-                player.getPersistentData().putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
-                player.getPersistentData().putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
-                player.getPersistentData().putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
-                player.getPersistentData().putDouble(CeruleanShroudEffect.LAST_Z_TAG, player.getZ());
-                player.addEffect(new MobEffectInstance(ModEffects.CERULEAN_SHROUD, CERULEAN_SHROUD_DURATION_TICKS, 0, false, false, true));
+                PersistentData.get(player).putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
+                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
+                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_Z_TAG, player.getZ());
+                player.addEffect(new MobEffectInstance(ModEffects.ceruleanShroudHolder(), CERULEAN_SHROUD_DURATION_TICKS, 0, false, false, true));
             }
             if (level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(

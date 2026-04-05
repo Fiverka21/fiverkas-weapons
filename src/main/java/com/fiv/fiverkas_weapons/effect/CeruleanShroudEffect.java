@@ -1,5 +1,6 @@
 package com.fiv.fiverkas_weapons.effect;
 
+import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +57,7 @@ public class CeruleanShroudEffect extends MobEffect {
             return;
         }
 
-        var data = entity.getPersistentData();
+        var data = PersistentData.get(entity);
         if (!data.contains(LAST_X_TAG)) {
             data.putDouble(LAST_X_TAG, entity.getX());
             data.putDouble(LAST_Y_TAG, entity.getY());
