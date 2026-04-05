@@ -90,7 +90,7 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .fireResistant()
-                                    .attributes(AxeItem.createAttributes(Tiers.NETHERITE, 4.0F, -2.8F))
+                                    .attributes(AxeItem.createAttributes(Tiers.NETHERITE, 6, -2.6f))
                     ));
 
     public static final DeferredHolder<Item, Dawn> DAWN =
@@ -117,7 +117,7 @@ public class ModItems {
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 6, -2.9f))
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.8f))
                     ));
 
     public static final DeferredHolder<Item, Item> THE_FOOL =
