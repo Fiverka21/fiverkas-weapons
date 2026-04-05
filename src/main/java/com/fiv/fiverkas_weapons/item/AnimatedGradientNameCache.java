@@ -1,6 +1,6 @@
 package com.fiv.fiverkas_weapons.item;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -25,12 +25,12 @@ final class AnimatedGradientNameCache {
         this.colorShiftSpeedMs = Math.max(1L, colorShiftSpeedMs);
     }
 
-    Component getName(String descriptionId, Component fallback) {
+    Component getName(Component baseNameComponent, Component fallback) {
         long nowMs = Util.getMillis();
 
         if (nowMs >= nextNameRefreshMs || cachedGlyphs.length == 0) {
             nextNameRefreshMs = nowMs + NAME_CACHE_REFRESH_MS;
-            refreshNameCache(descriptionId);
+            refreshNameCache(baseNameComponent);
         }
 
         if (cachedGlyphs.length == 0) {
@@ -58,8 +58,8 @@ final class AnimatedGradientNameCache {
         return cachedGradientName;
     }
 
-    private void refreshNameCache(String descriptionId) {
-        String baseName = Component.translatable(descriptionId).getString();
+    private void refreshNameCache(Component baseNameComponent) {
+        String baseName = baseNameComponent.getString();
 
         if (baseName.isEmpty()) {
             if (!cachedBaseName.isEmpty()) {

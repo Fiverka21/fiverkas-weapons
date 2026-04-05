@@ -11,6 +11,10 @@ public final class FMLEnvironment {
     private FMLEnvironment() {
     }
 
+    public static Dist getDist() {
+        return dist;
+    }
+
     public enum Dist {
         CLIENT,
         DEDICATED_SERVER;

@@ -17,9 +17,8 @@ import com.fiv.fiverkas_weapons.item.VaporwaveSword;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
+import com.fiv.fiverkas_weapons.util.CompatIds;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -32,98 +31,88 @@ public class ModItems {
     public static final DeferredHolder<Item, VaporwaveSword> VAPORWAVE_SWORD =
             ITEMS.register("vaporwave_sword",
                     () -> new VaporwaveSword(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("vaporwave_sword")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.2f))
+                                    .sword(ToolMaterial.DIAMOND, 4, -2.2f)
                     ));
 
     public static final DeferredHolder<Item, Sacrilegious> SACRILEGIOUS =
             ITEMS.register("sacrilegious",
                     () -> new Sacrilegious(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("sacrilegious")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f))
+                                    .sword(ToolMaterial.DIAMOND, 10, -2.6f)
                     ));
 
     public static final DeferredHolder<Item, Mkopi> MKOPI =
             ITEMS.register("mkopi",
                     () -> new Mkopi(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("mkopi")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 12, -2.8f))
+                                    .sword(ToolMaterial.DIAMOND, 12, -2.8f)
                     ));
 
     public static final DeferredHolder<Item, Bayonet> BAYONET =
             ITEMS.register("bayonet",
                     () -> new Bayonet(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("bayonet")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.4f))
+                                    .sword(ToolMaterial.DIAMOND, 4, -2.4f)
                     ));
 
     public static final DeferredHolder<Item, BlueKatana> BLUE_KATANA =
             ITEMS.register("blue_katana",
                     () -> new BlueKatana(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("blue_katana")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.4f))
+                                    .sword(ToolMaterial.DIAMOND, 8, -2.4f)
                     ));
 
     public static final DeferredHolder<Item, Airmace> AIRMACE =
             ITEMS.register("airmace",
                     () -> new Airmace(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("airmace")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4, -2.6f))
+                                    .sword(ToolMaterial.DIAMOND, 4, -2.6f)
                     ));
 
     public static final DeferredHolder<Item, NatureAxe> NATUREAXE =
             ITEMS.register("natureaxe",
                     () -> new NatureAxe(
-                            Tiers.NETHERITE,
-                            new Item.Properties()
+                            itemProps("natureaxe")
                                     .stacksTo(1)
                                     .fireResistant()
-                                    .attributes(AxeItem.createAttributes(Tiers.NETHERITE, 6, -2.6f))
+                                    .axe(ToolMaterial.NETHERITE, 6.0F, -2.6F)
                     ));
 
     public static final DeferredHolder<Item, Dawn> DAWN =
             ITEMS.register("dawn",
                     () -> new Dawn(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("dawn")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, -1, -1.4f))
+                                    .sword(ToolMaterial.DIAMOND, -1, -1.4f)
                     ));
 
     public static final DeferredHolder<Item, Dusk> DUSK =
             ITEMS.register("dusk",
                     () -> new Dusk(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("dusk")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 0, -1.4f))
+                                    .sword(ToolMaterial.DIAMOND, 0, -1.4f)
                     ));
 
     public static final DeferredHolder<Item, LScythe> LSCYTHE =
             ITEMS.register("lscythe",
                     () -> new LScythe(
-                            Tiers.DIAMOND,
-                            new Item.Properties()
+                            itemProps("lscythe")
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.8f))
+                                    .sword(ToolMaterial.DIAMOND, 8, -2.8f)
                     ));
 
     public static final DeferredHolder<Item, Item> THE_FOOL =
             ITEMS.register("thefool",
                     () -> new TheFoolBow(
-                            new Item.Properties()
+                            itemProps("thefool")
                                     .stacksTo(1)
                                     .durability(384)
                     ));
@@ -132,7 +121,7 @@ public class ModItems {
             ITEMS.register("gblueprint",
                     // Match Airmace's gradient colors and animation speed.
                     () -> new GBlueprintItem(
-                            new Item.Properties(),
+                            itemProps("gblueprint"),
                             0xF1CE6A,
                             0x92BFBA,
                             144L
@@ -141,7 +130,7 @@ public class ModItems {
     public static final DeferredHolder<Item, Item> DREAM_ESSENCE =
             ITEMS.register("dream_essence",
                     () -> new AnimatedGradientItem(
-                            new Item.Properties(),
+                            itemProps("dream_essence"),
                             0xFF0000,
                             0x424040,
                             144L
@@ -149,5 +138,9 @@ public class ModItems {
 
     public static final DeferredHolder<Item, Item> ICON =
             ITEMS.register("icon",
-                    () -> new Item(new Item.Properties()));
+                    () -> new Item(itemProps("icon")));
+
+    private static Item.Properties itemProps(String id) {
+        return CompatIds.setItemId(new Item.Properties(), Registries.ITEM, FiverkasWeapons.MODID, id);
+    }
 }

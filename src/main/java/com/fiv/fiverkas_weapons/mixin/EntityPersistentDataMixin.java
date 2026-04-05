@@ -1,17 +1,19 @@
 package com.fiv.fiverkas_weapons.mixin;
 
 import com.fiv.fiverkas_weapons.fabric.data.PersistentDataAccessor;
+import net.neoforged.neoforge.common.extensions.IEntityExtension;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
-public abstract class EntityPersistentDataMixin implements PersistentDataAccessor {
+public abstract class EntityPersistentDataMixin implements PersistentDataAccessor, IEntityExtension {
     private static final String FWEAPONS_PERSISTENT_DATA_KEY = "fweapons_persistent_data";
 
     @Unique
@@ -25,17 +27,22 @@ public abstract class EntityPersistentDataMixin implements PersistentDataAccesso
         return fweapons$persistentData;
     }
 
+    @Override
+    public CompoundTag getPersistentData() {
+        return fweapons$getPersistentData();
+    }
+
     @Inject(method = "saveWithoutId", at = @At("TAIL"))
-    private void fweapons$writePersistentData(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
+    private void fweapons$writePersistentData(ValueOutput output, CallbackInfo ci) {
         if (fweapons$persistentData != null && !fweapons$persistentData.isEmpty()) {
-            tag.put(FWEAPONS_PERSISTENT_DATA_KEY, fweapons$persistentData.copy());
+            output.store(FWEAPONS_PERSISTENT_DATA_KEY, CompoundTag.CODEC, fweapons$persistentData.copy());
         }
     }
 
     @Inject(method = "load", at = @At("TAIL"))
-    private void fweapons$readPersistentData(CompoundTag tag, CallbackInfo ci) {
-        if (tag.contains(FWEAPONS_PERSISTENT_DATA_KEY, 10)) {
-            fweapons$persistentData = tag.getCompound(FWEAPONS_PERSISTENT_DATA_KEY).copy();
-        }
+    private void fweapons$readPersistentData(ValueInput input, CallbackInfo ci) {
+        fweapons$persistentData = input.read(FWEAPONS_PERSISTENT_DATA_KEY, CompoundTag.CODEC)
+                .map(CompoundTag::copy)
+                .orElse(null);
     }
 }

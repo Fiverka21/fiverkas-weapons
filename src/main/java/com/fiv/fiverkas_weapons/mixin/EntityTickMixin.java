@@ -13,7 +13,7 @@ public abstract class EntityTickMixin {
     @Inject(method = "tick", at = @At("TAIL"))
     private void fweapons$onEntityTickPost(CallbackInfo ci) {
         Entity self = (Entity) (Object) this;
-        if (self.level().isClientSide) {
+        if (self.level().isClientSide()) {
             return;
         }
         NeoForge.EVENT_BUS.post(new EntityTickEvent.Post(self));

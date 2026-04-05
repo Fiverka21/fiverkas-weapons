@@ -7,15 +7,15 @@
     "POR"
   ],
   "key": {
-    "Y": { "item": "minecraft:yellow_dye" },
-    "C": { "item": "minecraft:cyan_dye" },
-    "P": { "item": "minecraft:pink_dye" },
-    "R": { "item": "minecraft:orange_dye" },
-    "D": { "item": "minecraft:diamond_sword" },
-    "E": { "item": "minecraft:emerald" },
-    "L": { "item": "minecraft:lapis_lazuli" },
-    "O": { "item": "minecraft:ender_eye" },
-    "A": { "item": "minecraft:amethyst_shard" }
+    "Y": "minecraft:yellow_dye",
+    "C": "minecraft:cyan_dye",
+    "P": "minecraft:pink_dye",
+    "R": "minecraft:orange_dye",
+    "D": "minecraft:diamond_sword",
+    "E": "minecraft:emerald",
+    "L": "minecraft:lapis_lazuli",
+    "O": "minecraft:ender_eye",
+    "A": "minecraft:amethyst_shard"
   },
   "result": {
     "count": 1,

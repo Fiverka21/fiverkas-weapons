@@ -7,11 +7,11 @@
     "SOG"
   ],
   "key": {
-    "G": { "item": "minecraft:glowstone_dust" },
-    "O": { "item": "minecraft:orange_dye" },
-    "E": { "item": "minecraft:ender_pearl" },
-    "B": { "item": "minecraft:bow" },
-    "S": { "item": "minecraft:spectral_arrow" }
+    "G": "minecraft:glowstone_dust",
+    "O": "minecraft:orange_dye",
+    "E": "minecraft:ender_pearl",
+    "B": "minecraft:bow",
+    "S": "minecraft:spectral_arrow"
   },
   "result": {
     "count": 1,

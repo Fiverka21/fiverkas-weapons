@@ -2,61 +2,57 @@ package com.fiv.fiverkas_weapons.item;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
-import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import com.fiv.fiverkas_weapons.util.CompatIds;
+import com.fiv.fiverkas_weapons.util.EntityDataUtil;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
 public class BlueKatana extends AnimatedGradientSwordItem {
     private static final int BLUE_LIGHT = 0x66CCFF;
     private static final int BLUE_DEEP = 0x1D3CFF;
     private static final long COLOR_SHIFT_SPEED_MS = 144L;
     private static final int CERULEAN_SHROUD_DURATION_TICKS = 80;
-    private static final Vector3f RED = Vec3.fromRGB24(0xFF0000).toVector3f();
-    private static final DustParticleOptions RED_DUST = new DustParticleOptions(RED, 1.6F);
-    private static final Vector3f CYAN = Vec3.fromRGB24(0x00FFFF).toVector3f();
-    private static final DustParticleOptions CYAN_DUST = new DustParticleOptions(CYAN, 1.3F);
-    private static final Vector3f BLUE = Vec3.fromRGB24(0x0000FF).toVector3f();
-    private static final DustParticleOptions BLUE_DUST = new DustParticleOptions(BLUE, 1.2F);
-    private static final ResourceKey<DamageType> HONOR_DAMAGE = ResourceKey.create(
+    private static final DustParticleOptions RED_DUST = new DustParticleOptions(0xFF0000, 1.6F);
+    private static final DustParticleOptions CYAN_DUST = new DustParticleOptions(0x00FFFF, 1.3F);
+    private static final DustParticleOptions BLUE_DUST = new DustParticleOptions(0x0000FF, 1.2F);
+    private static final ResourceKey<DamageType> HONOR_DAMAGE = CompatIds.resourceKey(
             Registries.DAMAGE_TYPE,
-            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "blue_katana_honor")
+            FiverkasWeapons.MODID,
+            "blue_katana_honor"
     );
 
-    public BlueKatana(Tier tier, Item.Properties properties) {
-        super(tier, properties, BLUE_LIGHT, BLUE_DEEP, COLOR_SHIFT_SPEED_MS);
+    public BlueKatana(Item.Properties properties) {
+        super(properties, BLUE_LIGHT, BLUE_DEEP, COLOR_SHIFT_SPEED_MS);
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             DamageSource honorDamage = new DamageSource(
-                    level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(HONOR_DAMAGE)
+                    level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(HONOR_DAMAGE)
             );
             player.hurt(honorDamage, 2.0F);
             if (player.isAlive()) {
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_Z_TAG, player.getZ());
-                player.addEffect(new MobEffectInstance(ModEffects.ceruleanShroudHolder(), CERULEAN_SHROUD_DURATION_TICKS, 0, false, false, true));
+                var data = EntityDataUtil.getPersistentData(player);
+                data.putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+                data.putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
+                data.putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
+                data.putDouble(CeruleanShroudEffect.LAST_Z_TAG, player.getZ());
+                player.addEffect(new MobEffectInstance(ModEffects.CERULEAN_SHROUD, CERULEAN_SHROUD_DURATION_TICKS, 0, false, false, true));
             }
             if (level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(
@@ -94,6 +90,6 @@ public class BlueKatana extends AnimatedGradientSwordItem {
                 );
             }
         }
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 }

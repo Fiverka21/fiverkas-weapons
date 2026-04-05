@@ -7,9 +7,9 @@
     "ADA"
   ],
   "key": {
-    "A": { "item": "minecraft:amethyst_shard" },
-    "D": { "item": "minecraft:diamond" },
-    "E": { "item": "minecraft:end_stone" }
+    "A": "minecraft:amethyst_shard",
+    "D": "minecraft:diamond",
+    "E": "minecraft:end_stone"
   },
   "result": {
     "count": 1,

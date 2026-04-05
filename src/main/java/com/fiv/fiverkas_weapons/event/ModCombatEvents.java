@@ -2,21 +2,22 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
-import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
+import com.fiv.fiverkas_weapons.util.CompatIds;
+import com.fiv.fiverkas_weapons.util.EntityDataUtil;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +29,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -35,14 +37,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.SpectralArrow;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.BoneMealItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -53,24 +53,21 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -83,11 +80,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ModCombatEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final boolean DEBUG_LOGS = Boolean.getBoolean("fweapons.debug");
+    private static final boolean DEBUG_COMBAT_LOGS = Boolean.getBoolean("fweapons.debugCombatLogs");
     private static final int VAPORIFIED_DURATION_TICKS = 120;
     private static final int SUNSET_DURATION_TICKS = 80;
     private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
@@ -102,9 +98,6 @@ public class ModCombatEvents {
     private static final int THE_FOOL_SPECTRAL_DURATION_TICKS = 200;
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
     private static final Map<UUID, EnumMap<ClientAttackFlag, Long>> CLIENT_ATTACK_FLAGS = new HashMap<>();
-    private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
-    private static final Field ARROW_IN_GROUND_FIELD = resolveArrowField("inGround");
-    private static final Field ARROW_IN_GROUND_TIME_FIELD = resolveArrowField("inGroundTime");
     private static final EquipmentSlot[] CERULEAN_EQUIPMENT_SLOTS = {
             EquipmentSlot.MAINHAND,
             EquipmentSlot.OFFHAND,
@@ -115,31 +108,40 @@ public class ModCombatEvents {
     };
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
+    private static final String BAYONET_IMPACT_ANIMATION = "fweapons:bayonet_impact";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
-    private static final String DUSK_THIRD_ANIMATION = "bettercombat:one_handed_stab";
+    private static final String DUSK_THIRD_ANIMATION_PRIMARY = "bettercombat:dual_handed_stab";
+    private static final String DUSK_THIRD_ANIMATION_FALLBACK = "bettercombat:one_handed_stab";
     private static final String DUSK_THIRD_HITBOX = "FORWARD_BOX";
     private static final String AIRMACE_FALL_DISTANCE_TAG = "fweapons_airmace_fall_distance";
     private static final String AIRMACE_FALL_TICK_TAG = "fweapons_airmace_fall_tick";
     private static final int AIRMACE_FALL_TICK_WINDOW = 2;
-    private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = ResourceKey.create(
+    private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = CompatIds.resourceKey(
             Registries.DAMAGE_TYPE,
-            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
+            FiverkasWeapons.MODID,
+            "vaporified"
     );
-    private static final ResourceKey<DamageType> SUNSET_DAMAGE = ResourceKey.create(
+    private static final ResourceKey<DamageType> SUNSET_DAMAGE = CompatIds.resourceKey(
             Registries.DAMAGE_TYPE,
-            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "sunset")
+            FiverkasWeapons.MODID,
+            "sunset"
     );
-    private static final DustParticleOptions AIRMACE_LIGHT_YELLOW =
-            new DustParticleOptions(new Vector3f(241 / 255F, 206 / 255F, 106 / 255F), 1.25F);
-    private static final DustParticleOptions AIRMACE_BLAND_CYAN =
-            new DustParticleOptions(new Vector3f(146 / 255F, 191 / 255F, 186 / 255F), 1.1F);
-    private static final DustParticleOptions DUSK_SUNSET_DUST =
-            new DustParticleOptions(new Vector3f(91 / 255F, 60 / 255F, 136 / 255F), 1.35F);
-    private static final DustParticleOptions DUSK_SUNSET_LIGHT_DUST =
-            new DustParticleOptions(new Vector3f(120 / 255F, 190 / 255F, 255 / 255F), 1.25F);
-    private static final DustParticleOptions MKOPI_BLACK_DUST = new DustParticleOptions(new Vector3f(0.02F, 0.02F, 0.02F), 1.1F);
+    private static final ResourceKey<MobEffect> SLOWNESS_EFFECT = CompatIds.resourceKey(
+            Registries.MOB_EFFECT,
+            "minecraft",
+            "slowness"
+    );
+    private static final DustParticleOptions AIRMACE_LIGHT_YELLOW = new DustParticleOptions(0xF1CE6A, 1.25F);
+    private static final DustParticleOptions AIRMACE_BLAND_CYAN = new DustParticleOptions(0x92BFBA, 1.1F);
+    private static final DustParticleOptions DUSK_SUNSET_DUST = new DustParticleOptions(0x5B3C88, 1.35F);
+    private static final DustParticleOptions DUSK_SUNSET_LIGHT_DUST = new DustParticleOptions(0x78BEFF, 1.25F);
+    private static final DustParticleOptions MKOPI_BLACK_DUST = new DustParticleOptions(0x050505, 1.1F);
+    private static final Field ARROW_IN_GROUND_FIELD = resolveArrowField("inGround");
+    private static final Field ARROW_IN_GROUND_TIME_FIELD = resolveArrowField("inGroundTime");
+    private static final Method ARROW_GET_BASE_DAMAGE_METHOD = resolveArrowMethod("getBaseDamage");
+    private static final Field ARROW_BASE_DAMAGE_FIELD = resolveArrowField("baseDamage");
     private static final ParticleSpec[] BAYONET_MUZZLE_SPECS = new ParticleSpec[]{
-            new ParticleSpec(ParticleTypes.FLASH, 1, 0.0, 0.0, 0.0, 0.0),
+            new ParticleSpec(ColorParticleOption.create(ParticleTypes.FLASH, 0xFFFFFFFF), 1, 0.0, 0.0, 0.0, 0.0),
             new ParticleSpec(ParticleTypes.FLAME, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1),
             new ParticleSpec(ParticleTypes.LARGE_SMOKE, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.08),
             new ParticleSpec(ParticleTypes.CRIT, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1),
@@ -173,12 +175,6 @@ public class ModCombatEvents {
         }
     }
 
-    private record MethodKey(Class<?> type, String name) {
-    }
-
-    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation) {
-    }
-
     public enum ClientAttackFlag {
         BAYONET_GUNSHOT((byte) 0),
         MKOPI_SLAM((byte) 1),
@@ -208,50 +204,42 @@ public class ModCombatEvents {
         if (!(event.getTarget() instanceof LivingEntity target)) {
             return;
         }
-        if (target.level().isClientSide) {
+        if (target.level().isClientSide()) {
             return;
         }
         LivingEntity attacker = event.getEntity();
-        BetterCombatAttackInfo attackInfo = getBetterCombatAttackInfo(attacker);
-        boolean isAirmaceAttack = isAirmaceAttack(attackInfo);
+        boolean hasVaporwaveSword = attacker.getMainHandItem().is(ModItems.VAPORWAVE_SWORD.get())
+                || attacker.getOffhandItem().is(ModItems.VAPORWAVE_SWORD.get());
+        boolean hasSacrilegious = attacker.getMainHandItem().is(ModItems.SACRILEGIOUS.get())
+                || attacker.getOffhandItem().is(ModItems.SACRILEGIOUS.get());
+        boolean isMkopiSlamAttack = isMkopiSlamAttack(attacker);
+        boolean isBayonetGunshotAttack = isBayonetGunshotAttack(attacker);
+        boolean isDuskThirdAttack = isDuskThirdAttack(attacker);
+        boolean isAirmaceAttack = isAirmaceAttack(attacker);
         if (isAirmaceAttack || isHoldingAirmace(attacker)) {
             recordAirmaceSmash(attacker);
         }
-
-        boolean isMkopiSlamAttack = isMkopiSlamAttack(attacker, attackInfo);
-        boolean isBayonetGunshotAttack = isBayonetGunshotAttack(attacker, attackInfo);
-        boolean isDuskThirdAttack = isDuskThirdAttack(attacker, attackInfo);
-        if (!isMkopiSlamAttack && !isBayonetGunshotAttack && !isDuskThirdAttack) {
+        if (!hasVaporwaveSword && !hasSacrilegious && !isMkopiSlamAttack && !isBayonetGunshotAttack && !isDuskThirdAttack) {
             return;
         }
+        if (hasVaporwaveSword) {
+            debugLog("[fweapons] AttackEntityEvent applying vaporified: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, VAPORIFIED_DURATION_TICKS, 0), attacker);
+        }
+        if (hasSacrilegious) {
+            debugLog("[fweapons] AttackEntityEvent applying sacrilegious effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            applySacrilegiousHitEffects(target, attacker);
+        }
         if (isMkopiSlamAttack) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] AttackEntityEvent applying mkopi slam effects: attacker={} target={}",
-                        attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
+            debugLog("[fweapons] AttackEntityEvent applying mkopi slam effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applyMkopiSlamEffects(target, attacker);
         }
         if (isBayonetGunshotAttack) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] AttackEntityEvent applying bayonet gunshot particles: attacker={} target={}",
-                        attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
+            debugLog("[fweapons] AttackEntityEvent applying bayonet gunshot particles: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applyBayonetGunshotParticles(target);
         }
         if (isDuskThirdAttack) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] AttackEntityEvent applying dusk finisher: attacker={} target={}",
-                        attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
+            debugLog("[fweapons] AttackEntityEvent applying dusk finisher: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applyDuskSunsetFinisher(target, attacker);
         }
     }
@@ -260,7 +248,7 @@ public class ModCombatEvents {
         if (!(event.getProjectile() instanceof AbstractArrow arrow)) {
             return;
         }
-        if (arrow.level().isClientSide) {
+        if (arrow.level().isClientSide()) {
             return;
         }
         ItemStack weapon = arrow.getWeaponItem();
@@ -282,157 +270,6 @@ public class ModCombatEvents {
         swapPositions(attacker, target);
     }
 
-    public static void onLivingDrops(LivingDropsEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (entity.level().isClientSide) {
-            return;
-        }
-        if (!(entity instanceof Warden)) {
-            return;
-        }
-        boolean alreadyDropped = event.getDrops().stream()
-                .anyMatch(drop -> drop.getItem().is(ModItems.DREAM_ESSENCE.get()));
-        if (alreadyDropped) {
-            return;
-        }
-        ItemStack essence = new ItemStack(ModItems.DREAM_ESSENCE.get());
-        ItemEntity drop = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), essence);
-        event.getDrops().add(drop);
-    }
-
-    private static void swapPositions(LivingEntity first, LivingEntity second) {
-        Vec3 firstPos = first.position();
-        Vec3 secondPos = second.position();
-        teleportEntity(first, secondPos);
-        teleportEntity(second, firstPos);
-    }
-
-    private static void applyTheFoolSpectralBonus(AbstractArrow arrow) {
-        if (PersistentData.get(arrow).getBoolean(THE_FOOL_SPECTRAL_BONUS_TAG)) {
-            return;
-        }
-        ItemStack pickup = arrow.getPickupItemStackOrigin();
-        if (!pickup.isEmpty() && pickup.is(Items.SPECTRAL_ARROW)) {
-            arrow.setBaseDamage(arrow.getBaseDamage() + 1.0D);
-        }
-        PersistentData.get(arrow).putBoolean(THE_FOOL_SPECTRAL_BONUS_TAG, true);
-    }
-
-    private static void applyTheFoolSpectralEffect(LivingEntity target, DamageSource source) {
-        if (target.level().isClientSide) {
-            return;
-        }
-        Entity direct = source.getDirectEntity();
-        if (!(direct instanceof AbstractArrow arrow)) {
-            return;
-        }
-        ItemStack weapon = arrow.getWeaponItem();
-        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
-            return;
-        }
-        Entity effectSource = arrow.getEffectSource();
-        target.addEffect(
-                new MobEffectInstance(MobEffects.GLOWING, THE_FOOL_SPECTRAL_DURATION_TICKS, 0),
-                effectSource
-        );
-        LivingEntity sourceLiving = null;
-        if (effectSource instanceof LivingEntity living) {
-            sourceLiving = living;
-        } else if (arrow.getOwner() instanceof LivingEntity ownerLiving) {
-            sourceLiving = ownerLiving;
-        }
-        if (sourceLiving != null) {
-            sourceLiving.addEffect(
-                    new MobEffectInstance(MobEffects.GLOWING, THE_FOOL_SPECTRAL_DURATION_TICKS, 0),
-                    effectSource
-            );
-        }
-    }
-
-    private static void applyTheFoolPotionEffects(LivingEntity target, DamageSource source) {
-        if (target.level().isClientSide) {
-            return;
-        }
-        Entity direct = source.getDirectEntity();
-        if (!(direct instanceof AbstractArrow arrow)) {
-            return;
-        }
-        ItemStack weapon = arrow.getWeaponItem();
-        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
-            return;
-        }
-        PotionContents contents = arrow.getPickupItemStackOrigin()
-                .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-        if (contents.equals(PotionContents.EMPTY)) {
-            return;
-        }
-        Entity effectSource = arrow.getEffectSource();
-        if (contents.potion().isPresent()) {
-            for (MobEffectInstance effectInstance : contents.potion().get().value().getEffects()) {
-                target.addEffect(
-                        new MobEffectInstance(
-                                effectInstance.getEffect(),
-                                Math.max(effectInstance.mapDuration(duration -> duration / 8), 1),
-                                effectInstance.getAmplifier(),
-                                effectInstance.isAmbient(),
-                                effectInstance.isVisible()
-                        ),
-                        effectSource
-                );
-            }
-        }
-        for (MobEffectInstance effectInstance : contents.customEffects()) {
-            target.addEffect(effectInstance, effectSource);
-        }
-    }
-
-    private static Field resolveArrowField(String name) {
-        try {
-            Field field = AbstractArrow.class.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (ReflectiveOperationException ignored) {
-            return null;
-        }
-    }
-
-    private static boolean isArrowInGround(AbstractArrow arrow) {
-        if (ARROW_IN_GROUND_FIELD == null) {
-            return false;
-        }
-        try {
-            return ARROW_IN_GROUND_FIELD.getBoolean(arrow);
-        } catch (IllegalAccessException ignored) {
-            return false;
-        }
-    }
-
-    private static int getArrowInGroundTime(AbstractArrow arrow) {
-        if (ARROW_IN_GROUND_TIME_FIELD == null) {
-            return 0;
-        }
-        try {
-            return ARROW_IN_GROUND_TIME_FIELD.getInt(arrow);
-        } catch (IllegalAccessException ignored) {
-            return 0;
-        }
-    }
-
-    private static void teleportEntity(LivingEntity entity, Vec3 position) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            serverPlayer.teleportTo(
-                    serverPlayer.serverLevel(),
-                    position.x,
-                    position.y,
-                    position.z,
-                    entity.getYRot(),
-                    entity.getXRot()
-            );
-        } else {
-            entity.teleportTo(position.x, position.y, position.z);
-        }
-    }
-
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getAmount() <= 0.0F) {
             return;
@@ -442,6 +279,7 @@ public class ModCombatEvents {
         applySunsetArmorBypass(event);
         applyHonorStrike(event);
         applyAirmaceFallBonus(event);
+        applyFromSource(event.getEntity(), event.getSource());
     }
 
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
@@ -451,7 +289,7 @@ public class ModCombatEvents {
         if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
             return;
         }
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level().isClientSide()) {
             return;
         }
 
@@ -509,20 +347,21 @@ public class ModCombatEvents {
 
     public static void onServerStarting(ServerStartingEvent event) {
         disableBetterCombatReworkedSweepParticles();
+        disableBetterCombatVanillaAttackPacketPath();
     }
 
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         if (event.getNewDamage() <= 0.0F) {
             return;
         }
-        // Apply item hit effects based on the final damage source.
+        // Fallback path for any direct melee damage systems that may skip incoming checks.
         applyFromSource(event.getEntity(), event.getSource());
         applyTheFoolSpectralEffect(event.getEntity(), event.getSource());
         applyTheFoolPotionEffects(event.getEntity(), event.getSource());
     }
 
     public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level().isClientSide()) {
             return;
         }
         if (event.getEntity() instanceof Player) {
@@ -612,7 +451,7 @@ public class ModCombatEvents {
 
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return;
         }
         updateLScytheDashPenalty(player);
@@ -626,9 +465,9 @@ public class ModCombatEvents {
             pruneExpiredAttackFlags(serverPlayer);
         }
 
-        var data = PersistentData.get(player);
-        boolean hasShroud = player.hasEffect(ModEffects.ceruleanShroudHolder());
-        boolean markedInvisible = data.getBoolean(CeruleanShroudEffect.INVISIBLE_TAG);
+        var data = EntityDataUtil.getPersistentData(player);
+        boolean hasShroud = player.hasEffect(ModEffects.CERULEAN_SHROUD);
+        boolean markedInvisible = EntityDataUtil.getBoolean(data, CeruleanShroudEffect.INVISIBLE_TAG);
 
         if (hasShroud) {
             if (!player.isInvisible()) {
@@ -665,12 +504,12 @@ public class ModCombatEvents {
     }
 
     private static void updateLScytheDashPenalty(Player player) {
-        var data = PersistentData.get(player);
+        var data = EntityDataUtil.getPersistentData(player);
         if (!data.contains(LScythe.DASH_ARMOR_EXPIRES_TAG)) {
             LScythe.clearDashArmorPenalty(player);
             return;
         }
-        long expiresAt = data.getLong(LScythe.DASH_ARMOR_EXPIRES_TAG);
+        long expiresAt = EntityDataUtil.getLong(data, LScythe.DASH_ARMOR_EXPIRES_TAG);
         if (expiresAt <= 0L) {
             data.remove(LScythe.DASH_ARMOR_EXPIRES_TAG);
             data.remove(LScythe.DASH_ARMOR_STACKS_TAG);
@@ -684,7 +523,7 @@ public class ModCombatEvents {
             LScythe.clearDashArmorPenalty(player);
             return;
         }
-        int stacks = data.getInt(LScythe.DASH_ARMOR_STACKS_TAG);
+        int stacks = EntityDataUtil.getInt(data, LScythe.DASH_ARMOR_STACKS_TAG);
         if (stacks <= 0) {
             stacks = 1;
             data.putInt(LScythe.DASH_ARMOR_STACKS_TAG, stacks);
@@ -694,7 +533,7 @@ public class ModCombatEvents {
 
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
         LivingEntity target = event.getNewAboutToBeSetTarget();
-        if (target instanceof Player player && player.hasEffect(ModEffects.ceruleanShroudHolder())) {
+        if (target instanceof Player player && player.hasEffect(ModEffects.CERULEAN_SHROUD)) {
             event.setNewAboutToBeSetTarget(null);
         }
     }
@@ -715,11 +554,8 @@ public class ModCombatEvents {
             return;
         }
 
-        // Allow the Airmace to ignore the Breach/Density incompatibility entirely.
-        boolean hasBreachDensity = hasBreachDensity(leftEnchantments) || hasBreachDensity(rightEnchantments);
-        if (!hasBreachDensity) {
-            return;
-        }
+        // Allow the Airmace to combine Breach + Density even though they're normally exclusive.
+        boolean hasSpecialConflict = false;
         Set<net.minecraft.core.Holder<Enchantment>> seen = new HashSet<>(leftEnchantments.keySet());
         for (var entry : rightEnchantments.entrySet()) {
             var enchantment = entry.getKey();
@@ -731,11 +567,16 @@ public class ModCombatEvents {
                     continue;
                 }
                 if (isBreachDensityPair(enchantment, existing)) {
+                    hasSpecialConflict = true;
                     continue;
                 }
                 return;
             }
             seen.add(enchantment);
+        }
+
+        if (!hasSpecialConflict) {
+            return;
         }
 
         ItemStack output = left.copy();
@@ -810,12 +651,176 @@ public class ModCombatEvents {
         output.set(DataComponents.REPAIR_COST, AnvilMenu.calculateIncreasedRepairCost(repairCost));
 
         event.setOutput(output);
-        event.setCost(totalCost);
+        event.setXpCost((int) totalCost);
         event.setMaterialCost(1);
     }
 
+    private static void swapPositions(LivingEntity first, LivingEntity second) {
+        Vec3 firstPos = first.position();
+        Vec3 secondPos = second.position();
+        teleportEntity(first, secondPos);
+        teleportEntity(second, firstPos);
+    }
+
+    private static void applyTheFoolSpectralBonus(AbstractArrow arrow) {
+        if (EntityDataUtil.getBoolean(EntityDataUtil.getPersistentData(arrow), THE_FOOL_SPECTRAL_BONUS_TAG)) {
+            return;
+        }
+        ItemStack pickup = arrow.getPickupItemStackOrigin();
+        if (!pickup.isEmpty() && pickup.is(Items.SPECTRAL_ARROW)) {
+            arrow.setBaseDamage(getArrowBaseDamage(arrow) + 1.0D);
+        }
+        EntityDataUtil.getPersistentData(arrow).putBoolean(THE_FOOL_SPECTRAL_BONUS_TAG, true);
+    }
+
+    private static void applyTheFoolSpectralEffect(LivingEntity target, DamageSource source) {
+        if (target.level().isClientSide()) {
+            return;
+        }
+        Entity direct = source.getDirectEntity();
+        if (!(direct instanceof AbstractArrow arrow)) {
+            return;
+        }
+        ItemStack weapon = arrow.getWeaponItem();
+        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
+            return;
+        }
+        Entity effectSource = arrow.getEffectSource();
+        target.addEffect(
+                new MobEffectInstance(MobEffects.GLOWING, THE_FOOL_SPECTRAL_DURATION_TICKS, 0),
+                effectSource
+        );
+        LivingEntity sourceLiving = null;
+        if (effectSource instanceof LivingEntity living) {
+            sourceLiving = living;
+        } else if (arrow.getOwner() instanceof LivingEntity ownerLiving) {
+            sourceLiving = ownerLiving;
+        }
+        if (sourceLiving != null) {
+            sourceLiving.addEffect(
+                    new MobEffectInstance(MobEffects.GLOWING, THE_FOOL_SPECTRAL_DURATION_TICKS, 0),
+                    effectSource
+            );
+        }
+    }
+
+    private static void applyTheFoolPotionEffects(LivingEntity target, DamageSource source) {
+        if (target.level().isClientSide()) {
+            return;
+        }
+        Entity direct = source.getDirectEntity();
+        if (!(direct instanceof AbstractArrow arrow)) {
+            return;
+        }
+        ItemStack weapon = arrow.getWeaponItem();
+        if (weapon == null || weapon.isEmpty() || !weapon.is(ModItems.THE_FOOL.get())) {
+            return;
+        }
+        PotionContents contents = arrow.getPickupItemStackOrigin()
+                .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        if (contents.equals(PotionContents.EMPTY)) {
+            return;
+        }
+        Entity effectSource = arrow.getEffectSource();
+        if (contents.potion().isPresent()) {
+            for (MobEffectInstance effectInstance : contents.potion().get().value().getEffects()) {
+                target.addEffect(
+                        new MobEffectInstance(
+                                effectInstance.getEffect(),
+                                Math.max(effectInstance.mapDuration(duration -> duration / 8), 1),
+                                effectInstance.getAmplifier(),
+                                effectInstance.isAmbient(),
+                                effectInstance.isVisible()
+                        ),
+                        effectSource
+                );
+            }
+        }
+        for (MobEffectInstance effectInstance : contents.customEffects()) {
+            target.addEffect(effectInstance, effectSource);
+        }
+    }
+
+    private static Field resolveArrowField(String name) {
+        try {
+            Field field = AbstractArrow.class.getDeclaredField(name);
+            field.setAccessible(true);
+            return field;
+        } catch (ReflectiveOperationException ignored) {
+            return null;
+        }
+    }
+
+    private static Method resolveArrowMethod(String name) {
+        try {
+            return AbstractArrow.class.getMethod(name);
+        } catch (ReflectiveOperationException ignored) {
+            return null;
+        }
+    }
+
+    private static boolean isArrowInGround(AbstractArrow arrow) {
+        if (ARROW_IN_GROUND_FIELD == null) {
+            return false;
+        }
+        try {
+            return ARROW_IN_GROUND_FIELD.getBoolean(arrow);
+        } catch (IllegalAccessException ignored) {
+            return false;
+        }
+    }
+
+    private static int getArrowInGroundTime(AbstractArrow arrow) {
+        if (ARROW_IN_GROUND_TIME_FIELD == null) {
+            return 0;
+        }
+        try {
+            return ARROW_IN_GROUND_TIME_FIELD.getInt(arrow);
+        } catch (IllegalAccessException ignored) {
+            return 0;
+        }
+    }
+
+    private static double getArrowBaseDamage(AbstractArrow arrow) {
+        if (ARROW_GET_BASE_DAMAGE_METHOD != null) {
+            try {
+                Object value = ARROW_GET_BASE_DAMAGE_METHOD.invoke(arrow);
+                if (value instanceof Number number) {
+                    return number.doubleValue();
+                }
+            } catch (ReflectiveOperationException ignored) {
+            }
+        }
+        if (ARROW_BASE_DAMAGE_FIELD == null) {
+            return 0.0D;
+        }
+        try {
+            return ARROW_BASE_DAMAGE_FIELD.getDouble(arrow);
+        } catch (IllegalAccessException ignored) {
+            return 0.0D;
+        }
+    }
+
+    private static void teleportEntity(LivingEntity entity, Vec3 position) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            ServerLevel serverLevel = serverPlayer.level();
+            serverPlayer.teleportTo(
+                    serverLevel,
+                    position.x,
+                    position.y,
+                    position.z,
+                    Set.of(),
+                    entity.getYRot(),
+                    entity.getXRot(),
+                    false
+            );
+        } else {
+            entity.teleportTo(position.x, position.y, position.z);
+        }
+    }
+
     private static void applyFromSource(LivingEntity target, DamageSource source) {
-        if (target.level().isClientSide) {
+        if (target.level().isClientSide()) {
             return;
         }
 
@@ -847,8 +852,8 @@ public class ModCombatEvents {
         }
 
         if (!isVaporwaveSword && !isDawn && !isSacrilegious) {
-            if (DEBUG_LOGS && attacker != null && attacker.getType().toString().contains("player")) {
-                LOGGER.info(
+            if (attacker != null && attacker.getType().toString().contains("player")) {
+                debugLog(
                         "[fweapons] skipped source match: msgId={} weapon={} main={} off={}",
                         source.getMsgId(),
                         weaponFromSource,
@@ -860,42 +865,30 @@ public class ModCombatEvents {
         }
 
         if (isVaporwaveSword) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] Damage hook applying vaporified: msgId={} attacker={} target={}",
-                        source.getMsgId(),
-                        attacker == null ? "<none>" : attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
-            target.addEffect(new MobEffectInstance(ModEffects.vaporifiedHolder(), VAPORIFIED_DURATION_TICKS, 0), attacker);
+            debugLog("[fweapons] Damage hook applying vaporified: msgId={} attacker={} target={}",
+                    source.getMsgId(),
+                    attacker == null ? "<none>" : attacker.getName().getString(),
+                    target.getName().getString());
+            target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, VAPORIFIED_DURATION_TICKS, 0), attacker);
         }
         if (isDawn) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] Damage hook applying sunset: msgId={} attacker={} target={}",
-                        source.getMsgId(),
-                        attacker == null ? "<none>" : attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
+            debugLog("[fweapons] Damage hook applying sunset: msgId={} attacker={} target={}",
+                    source.getMsgId(),
+                    attacker == null ? "<none>" : attacker.getName().getString(),
+                    target.getName().getString());
             applySunsetHitEffects(target, attacker);
         }
         if (isSacrilegious) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] Damage hook applying sacrilegious effects: msgId={} attacker={} target={}",
-                        source.getMsgId(),
-                        attacker == null ? "<none>" : attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
+            debugLog("[fweapons] Damage hook applying sacrilegious effects: msgId={} attacker={} target={}",
+                    source.getMsgId(),
+                    attacker == null ? "<none>" : attacker.getName().getString(),
+                    target.getName().getString());
             applySacrilegiousHitEffects(target, attacker);
         }
     }
 
     public static void onBayonetComboAttack(ServerPlayer player) {
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return;
         }
         if (!isHoldingBayonet(player)) {
@@ -946,11 +939,8 @@ public class ModCombatEvents {
                             net.minecraft.server.MinecraftServer.class,
                             net.minecraft.server.level.ServerPlayer.class
                     )
-                    .invoke(null, payload, player.getServer(), player);
+                    .invoke(null, payload, player.level().getServer(), player);
         } catch (ReflectiveOperationException ignored) {
-            if (DEBUG_LOGS) {
-                LOGGER.info("[fweapons] BetterCombat not present or attack animation send failed.");
-            }
         }
     }
 
@@ -973,7 +963,7 @@ public class ModCombatEvents {
     }
 
     private static void applyHonorStrike(LivingIncomingDamageEvent event) {
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level().isClientSide()) {
             return;
         }
 
@@ -981,16 +971,17 @@ public class ModCombatEvents {
         if (!(sourceEntity instanceof LivingEntity attacker)) {
             return;
         }
-        if (!attacker.hasEffect(ModEffects.ceruleanShroudHolder())) {
+        if (!attacker.hasEffect(ModEffects.CERULEAN_SHROUD)) {
             return;
         }
 
         event.setAmount(event.getAmount() * 2.0F);
-        attacker.removeEffect(ModEffects.ceruleanShroudHolder());
-        PersistentData.get(attacker).putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
-        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_X_TAG);
-        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_Y_TAG);
-        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_Z_TAG);
+        attacker.removeEffect(ModEffects.CERULEAN_SHROUD);
+        var data = EntityDataUtil.getPersistentData(attacker);
+        data.putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+        data.remove(CeruleanShroudEffect.LAST_X_TAG);
+        data.remove(CeruleanShroudEffect.LAST_Y_TAG);
+        data.remove(CeruleanShroudEffect.LAST_Z_TAG);
     }
 
     private static void applyVaporifiedArmorBypass(LivingIncomingDamageEvent event) {
@@ -998,8 +989,9 @@ public class ModCombatEvents {
             return;
         }
 
-        // Fabric fallback: emulate reduced protection by scaling incoming damage upward.
-        event.setAmount(event.getAmount() * 1.35F);
+        // Reduce armor and enchantment reductions by 50% (effective half protection).
+        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.5F);
+        event.addReductionModifier(DamageContainer.Reduction.ENCHANTMENTS, (container, reduction) -> reduction * 0.5F);
     }
 
     private static void applySunsetArmorBypass(LivingIncomingDamageEvent event) {
@@ -1007,12 +999,12 @@ public class ModCombatEvents {
             return;
         }
 
-        // Fabric fallback: emulate partial armor bypass with a direct damage increase.
-        event.setAmount(event.getAmount() * 1.2F);
+        // Ignore 60% of armor reduction.
+        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.4F);
     }
 
     private static void applyAirmaceFallBonus(LivingIncomingDamageEvent event) {
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level().isClientSide()) {
             return;
         }
 
@@ -1044,7 +1036,7 @@ public class ModCombatEvents {
             return;
         }
 
-        float fallDistance = attacker.fallDistance;
+        double fallDistance = attacker.fallDistance;
         if (hasRecentAirmaceSmash(attacker)) {
             fallDistance = Math.max(fallDistance, getStoredAirmaceFallDistance(attacker));
         }
@@ -1067,20 +1059,20 @@ public class ModCombatEvents {
             LivingEntity attacker,
             LivingEntity target,
             DamageSource source,
-            float fallDistance,
+            double fallDistance,
             ItemStack airmaceStack
     ) {
         if (!canAirmaceSmash(attacker, fallDistance)) {
             return 0.0F;
         }
 
-        float baseBonus;
-        if (fallDistance <= 3.0F) {
-            baseBonus = 4.0F * fallDistance;
-        } else if (fallDistance <= 8.0F) {
-            baseBonus = 12.0F + 2.0F * (fallDistance - 3.0F);
+        double baseBonus;
+        if (fallDistance <= 3.0D) {
+            baseBonus = 4.0D * fallDistance;
+        } else if (fallDistance <= 8.0D) {
+            baseBonus = 12.0D + 2.0D * (fallDistance - 3.0D);
         } else {
-            baseBonus = 22.0F + fallDistance - 8.0F;
+            baseBonus = 22.0D + fallDistance - 8.0D;
         }
 
         if (attacker.level() instanceof ServerLevel serverLevel) {
@@ -1089,18 +1081,18 @@ public class ModCombatEvents {
                     : airmaceStack;
             float enchantBonus = net.minecraft.world.item.enchantment.EnchantmentHelper
                     .modifyFallBasedDamage(serverLevel, weaponStack, target, source, 0.0F)
-                    * fallDistance;
-            return baseBonus + enchantBonus;
+                    * (float) fallDistance;
+            return (float) baseBonus + enchantBonus;
         }
 
-        return baseBonus;
+        return (float) baseBonus;
     }
 
     private static void clearNearbyMobTargets(ServerLevel serverLevel, Player player) {
         AABB area = player.getBoundingBox().inflate(32.0D);
         for (Mob mob : serverLevel.getEntitiesOfClass(Mob.class, area, mob -> mob.getTarget() == player)) {
             mob.setTarget(null);
-            mob.setLastHurtByPlayer(null);
+            mob.setLastHurtByPlayer((Player) null, 0);
             mob.setLastHurtByMob(null);
         }
     }
@@ -1126,7 +1118,8 @@ public class ModCombatEvents {
     }
 
     private static void applySacrilegiousHitEffects(LivingEntity target, LivingEntity attacker) {
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SACRILEGIOUS_SLOWNESS_DURATION_TICKS, 0), attacker);
+        var slowness = target.level().registryAccess().lookupOrThrow(Registries.MOB_EFFECT).getOrThrow(SLOWNESS_EFFECT);
+        target.addEffect(new MobEffectInstance(slowness, SACRILEGIOUS_SLOWNESS_DURATION_TICKS, 0), attacker);
 
         if (target.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
@@ -1141,23 +1134,23 @@ public class ModCombatEvents {
                     0.0
             );
         }
-        target.addEffect(new MobEffectInstance(ModEffects.bleedHolder(), SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
+        target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
 
     private static void applySunsetHitEffects(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.sunsetHolder());
+        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
         int amplifier = existing == null ? 0 : existing.getAmplifier() + 1;
-        target.addEffect(new MobEffectInstance(ModEffects.sunsetHolder(), SUNSET_DURATION_TICKS, amplifier), attacker);
+        target.addEffect(new MobEffectInstance(ModEffects.SUNSET, SUNSET_DURATION_TICKS, amplifier), attacker);
     }
 
     private static void applyDuskSunsetFinisher(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.sunsetHolder());
+        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
         if (existing == null) {
             return;
         }
 
         int stacks = existing.getAmplifier() + 1;
-        target.removeEffect(ModEffects.sunsetHolder());
+        target.removeEffect(ModEffects.SUNSET);
 
         float bonusDamage = 2.0F * stacks;
         DamageSource source;
@@ -1217,7 +1210,7 @@ public class ModCombatEvents {
     }
 
     public static void recordClientAttackFlag(ServerPlayer player, ClientAttackFlag flag) {
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return;
         }
         if (!isClientAttackFlagValid(player, flag)) {
@@ -1282,99 +1275,113 @@ public class ModCombatEvents {
         };
     }
 
-    private static Object invokeCached(Object target, String methodName) throws ReflectiveOperationException {
-        MethodKey key = new MethodKey(target.getClass(), methodName);
-        Method method = METHOD_CACHE.get(key);
-        if (method == null) {
-            method = target.getClass().getMethod(methodName);
-            method.setAccessible(true);
-            METHOD_CACHE.put(key, method);
-        }
-        return method.invoke(target);
-    }
-
-    private static BetterCombatAttackInfo getBetterCombatAttackInfo(LivingEntity attacker) {
-        try {
-            Object currentAttack = invokeCached(attacker, "getCurrentAttack");
-            if (currentAttack == null) {
-                return null;
-            }
-            Object attackItem = invokeCached(currentAttack, "itemStack");
-            if (!(attackItem instanceof ItemStack attackStack)) {
-                return null;
-            }
-            Object attack = invokeCached(currentAttack, "attack");
-            if (attack == null) {
-                return new BetterCombatAttackInfo(attackStack, null, null);
-            }
-            Object hitbox = invokeCached(attack, "hitbox");
-            Object animation = invokeCached(attack, "animation");
-            return new BetterCombatAttackInfo(attackStack, hitbox, animation);
-        } catch (ReflectiveOperationException ignored) {
-            return null;
-        }
-    }
-
-    private static boolean matchesBetterCombatAttack(
-            BetterCombatAttackInfo info,
-            Item item,
-            String hitbox,
-            String animation
-    ) {
-        if (info == null || !info.stack().is(item)) {
-            return false;
-        }
-        if (hitbox != null) {
-            Object hitboxValue = info.hitbox();
-            if (hitboxValue == null || !hitbox.equals(hitboxValue.toString())) {
-                return false;
-            }
-        }
-        if (animation != null && !animation.equals(info.animation())) {
-            return false;
-        }
-        return true;
-    }
-
     private static boolean isMkopiSlamAttack(LivingEntity attacker) {
-        return isMkopiSlamAttack(attacker, getBetterCombatAttackInfo(attacker));
-    }
+        boolean result = false;
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack != null) {
+                Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+                if (attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.MKOPI.get())) {
+                    Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+                    if (attack != null) {
+                        Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+                        Object animation = attack.getClass().getMethod("animation").invoke(attack);
+                        result = hitbox != null
+                                && "VERTICAL_PLANE".equals(hitbox.toString())
+                                && MKOPI_SLAM_ANIMATION.equals(animation);
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException ignored) {
+            result = false;
+        }
 
-    private static boolean isMkopiSlamAttack(LivingEntity attacker, BetterCombatAttackInfo info) {
-        if (matchesBetterCombatAttack(info, ModItems.MKOPI.get(), "VERTICAL_PLANE", MKOPI_SLAM_ANIMATION)) {
+        if (result) {
             return true;
         }
+
         return consumeClientAttackFlag(attacker, ClientAttackFlag.MKOPI_SLAM);
     }
 
     private static boolean isBayonetGunshotAttack(LivingEntity attacker) {
-        return isBayonetGunshotAttack(attacker, getBetterCombatAttackInfo(attacker));
-    }
+        boolean result = false;
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack != null) {
+                Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+                if (attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.BAYONET.get())) {
+                    Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+                    if (attack != null) {
+                        Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+                        Object animation = attack.getClass().getMethod("animation").invoke(attack);
+                        result = hitbox != null
+                                && BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())
+                                && isBayonetGunshotAnimation(animation);
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException ignored) {
+            result = false;
+        }
 
-    private static boolean isBayonetGunshotAttack(LivingEntity attacker, BetterCombatAttackInfo info) {
-        if (matchesBetterCombatAttack(info, ModItems.BAYONET.get(), BAYONET_GUNSHOT_HITBOX, BAYONET_GUNSHOT_ANIMATION)) {
+        if (result) {
             return true;
         }
+
         return consumeClientAttackFlag(attacker, ClientAttackFlag.BAYONET_GUNSHOT);
     }
 
-    private static boolean isDuskThirdAttack(LivingEntity attacker) {
-        return isDuskThirdAttack(attacker, getBetterCombatAttackInfo(attacker));
+    private static boolean isBayonetGunshotAnimation(Object animation) {
+        if (animation == null) {
+            return false;
+        }
+        String value = animation.toString();
+        return BAYONET_GUNSHOT_ANIMATION.equals(value) || BAYONET_IMPACT_ANIMATION.equals(value);
     }
 
-    private static boolean isDuskThirdAttack(LivingEntity attacker, BetterCombatAttackInfo info) {
-        if (matchesBetterCombatAttack(info, ModItems.DUSK.get(), DUSK_THIRD_HITBOX, DUSK_THIRD_ANIMATION)) {
+    private static boolean isDuskThirdAttack(LivingEntity attacker) {
+        boolean result = false;
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack != null) {
+                Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+                if (attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.DUSK.get())) {
+                    Object attack = currentAttack.getClass().getMethod("attack").invoke(currentAttack);
+                    if (attack != null) {
+                        Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+                        Object animation = attack.getClass().getMethod("animation").invoke(attack);
+                        result = hitbox != null
+                                && DUSK_THIRD_HITBOX.equals(hitbox.toString())
+                                && isDuskThirdAnimation(animation);
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException ignored) {
+            result = false;
+        }
+
+        if (result) {
             return true;
         }
+
         return consumeClientAttackFlag(attacker, ClientAttackFlag.DUSK_THIRD);
     }
 
     private static boolean isAirmaceAttack(LivingEntity attacker) {
-        return isAirmaceAttack(getBetterCombatAttackInfo(attacker));
-    }
+        try {
+            Object currentAttack = attacker.getClass().getMethod("getCurrentAttack").invoke(attacker);
+            if (currentAttack == null) {
+                return false;
+            }
 
-    private static boolean isAirmaceAttack(BetterCombatAttackInfo info) {
-        return matchesBetterCombatAttack(info, ModItems.AIRMACE.get(), null, null);
+            Object attackItem = currentAttack.getClass().getMethod("itemStack").invoke(currentAttack);
+            if (!(attackItem instanceof ItemStack attackStack)) {
+                return false;
+            }
+            return attackStack.is(ModItems.AIRMACE.get());
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
     }
 
     private static boolean isHoldingBayonet(LivingEntity attacker) {
@@ -1397,6 +1404,14 @@ public class ModCombatEvents {
                 || attacker.getOffhandItem().is(ModItems.DUSK.get());
     }
 
+    private static boolean isDuskThirdAnimation(Object animation) {
+        if (animation == null) {
+            return false;
+        }
+        String value = animation.toString();
+        return DUSK_THIRD_ANIMATION_PRIMARY.equals(value) || DUSK_THIRD_ANIMATION_FALLBACK.equals(value);
+    }
+
     private static boolean isBreachDensityPair(net.minecraft.core.Holder<Enchantment> first, net.minecraft.core.Holder<Enchantment> second) {
         return (first.is(Enchantments.BREACH) && second.is(Enchantments.DENSITY))
                 || (first.is(Enchantments.DENSITY) && second.is(Enchantments.BREACH));
@@ -1406,13 +1421,10 @@ public class ModCombatEvents {
         return enchantment.is(Enchantments.BREACH) || enchantment.is(Enchantments.DENSITY);
     }
 
-    private static boolean hasBreachDensity(ItemEnchantments enchantments) {
-        for (var holder : enchantments.keySet()) {
-            if (isBreachDensityEnchantment(holder)) {
-                return true;
-            }
+    private static void debugLog(String message, Object... args) {
+        if (DEBUG_COMBAT_LOGS) {
+            LOGGER.info(message, args);
         }
-        return false;
     }
 
     private static void disableBetterCombatReworkedSweepParticles() {
@@ -1425,6 +1437,15 @@ public class ModCombatEvents {
             }
 
             setBooleanField(config, "reworked_sweeping_emits_particles", false);
+        } catch (ReflectiveOperationException ignored) {
+        }
+    }
+
+    private static void disableBetterCombatVanillaAttackPacketPath() {
+        try {
+            Class<?> attackRequestClass = Class.forName("net.bettercombat.network.Packets$C2S_AttackRequest");
+            Field useVanillaPacketField = attackRequestClass.getField("UseVanillaPacket");
+            useVanillaPacketField.setBoolean(null, false);
         } catch (ReflectiveOperationException ignored) {
         }
     }
@@ -1581,6 +1602,7 @@ public class ModCombatEvents {
                         player,
                         spec.particle,
                         false,
+                        false,
                         x,
                         y,
                         z,
@@ -1594,8 +1616,8 @@ public class ModCombatEvents {
         }
     }
 
-    private static void spawnAirmaceSmashParticles(ServerLevel serverLevel, LivingEntity target, float fallDistance) {
-        int totalCount = Math.min(140, 14 + Math.round(fallDistance * 9.0F));
+    private static void spawnAirmaceSmashParticles(ServerLevel serverLevel, LivingEntity target, double fallDistance) {
+        int totalCount = Math.min(140, 14 + (int) Math.round(fallDistance * 9.0D));
         int primaryCount = totalCount / 2;
         int secondaryCount = totalCount - primaryCount;
         double spread = Math.min(1.6D, 0.35D + fallDistance * 0.08D);
@@ -1628,28 +1650,28 @@ public class ModCombatEvents {
         if (!canAirmaceSmash(attacker, attacker.fallDistance)) {
             return;
         }
-        var data = PersistentData.get(attacker);
-        data.putFloat(AIRMACE_FALL_DISTANCE_TAG, attacker.fallDistance);
+        var data = EntityDataUtil.getPersistentData(attacker);
+        data.putDouble(AIRMACE_FALL_DISTANCE_TAG, attacker.fallDistance);
         data.putInt(AIRMACE_FALL_TICK_TAG, attacker.tickCount);
     }
 
     private static boolean hasRecentAirmaceSmash(LivingEntity attacker) {
-        int recordedTick = PersistentData.get(attacker).getInt(AIRMACE_FALL_TICK_TAG);
+        int recordedTick = EntityDataUtil.getInt(EntityDataUtil.getPersistentData(attacker), AIRMACE_FALL_TICK_TAG);
         return recordedTick != 0 && attacker.tickCount - recordedTick <= AIRMACE_FALL_TICK_WINDOW;
     }
 
-    private static float getStoredAirmaceFallDistance(LivingEntity attacker) {
-        return PersistentData.get(attacker).getFloat(AIRMACE_FALL_DISTANCE_TAG);
+    private static double getStoredAirmaceFallDistance(LivingEntity attacker) {
+        return EntityDataUtil.getDouble(EntityDataUtil.getPersistentData(attacker), AIRMACE_FALL_DISTANCE_TAG);
     }
 
     private static void clearAirmaceSmash(LivingEntity attacker) {
-        var data = PersistentData.get(attacker);
+        var data = EntityDataUtil.getPersistentData(attacker);
         data.remove(AIRMACE_FALL_DISTANCE_TAG);
         data.remove(AIRMACE_FALL_TICK_TAG);
     }
 
-    private static boolean canAirmaceSmash(LivingEntity attacker, float fallDistance) {
-        return fallDistance > 1.5F && !attacker.isFallFlying();
+    private static boolean canAirmaceSmash(LivingEntity attacker, double fallDistance) {
+        return fallDistance > 1.5D && !attacker.isFallFlying();
     }
 
 }

@@ -7,12 +7,12 @@
     "IRT"
   ],
   "key": {
-    "R": { "item": "minecraft:red_dye" },
-    "B": { "item": "minecraft:dragon_breath" },
-    "E": { "item": "fweapons:dream_essence" },
-    "N": { "item": "minecraft:nether_star" },
-    "T": { "item": "minecraft:note_block" },
-    "I": { "item": "minecraft:netherite_ingot" }
+    "R": "minecraft:red_dye",
+    "B": "minecraft:dragon_breath",
+    "E": "fweapons:dream_essence",
+    "N": "minecraft:nether_star",
+    "T": "minecraft:note_block",
+    "I": "minecraft:netherite_ingot"
   },
   "result": {
     "count": 1,

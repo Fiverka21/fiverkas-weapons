@@ -13,7 +13,7 @@ public abstract class PlayerTickMixin {
     @Inject(method = "tick", at = @At("TAIL"))
     private void fweapons$onPlayerTickPost(CallbackInfo ci) {
         Player self = (Player) (Object) this;
-        if (self.level().isClientSide) {
+        if (self.level().isClientSide()) {
             return;
         }
         NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(self));

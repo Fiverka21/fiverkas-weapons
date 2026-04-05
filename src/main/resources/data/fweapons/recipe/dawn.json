@@ -7,9 +7,9 @@
     "BGB"
   ],
   "key": {
-    "B": { "item": "minecraft:gold_ingot" },
-    "G": { "item": "minecraft:glowstone" },
-    "A": { "item": "minecraft:ancient_debris" }
+    "B": "minecraft:gold_ingot",
+    "G": "minecraft:glowstone",
+    "A": "minecraft:ancient_debris"
   },
   "result": {
     "count": 1,

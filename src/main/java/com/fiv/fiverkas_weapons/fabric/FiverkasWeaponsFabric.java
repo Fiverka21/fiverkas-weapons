@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -51,7 +51,7 @@ public class FiverkasWeaponsFabric implements ModInitializer {
             if (!source.isBuiltin()) {
                 return;
             }
-            if (!key.location().equals(ResourceLocation.withDefaultNamespace("entities/warden"))) {
+            if (!key.identifier().equals(Identifier.withDefaultNamespace("entities/warden"))) {
                 return;
             }
             tableBuilder.pool(

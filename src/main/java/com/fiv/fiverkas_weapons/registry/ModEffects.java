@@ -6,8 +6,6 @@ import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
 import com.fiv.fiverkas_weapons.effect.SunsetEffect;
 import com.fiv.fiverkas_weapons.effect.VaporifiedEffect;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -29,20 +27,4 @@ public class ModEffects {
 
     public static final DeferredHolder<MobEffect, SunsetEffect> SUNSET =
             EFFECTS.register("sunset", SunsetEffect::new);
-
-    public static Holder<MobEffect> vaporifiedHolder() {
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(VAPORIFIED.get());
-    }
-
-    public static Holder<MobEffect> bleedHolder() {
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(BLEED.get());
-    }
-
-    public static Holder<MobEffect> ceruleanShroudHolder() {
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(CERULEAN_SHROUD.get());
-    }
-
-    public static Holder<MobEffect> sunsetHolder() {
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(SUNSET.get());
-    }
 }

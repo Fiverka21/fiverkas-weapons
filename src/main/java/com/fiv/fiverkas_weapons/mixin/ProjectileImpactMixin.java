@@ -14,7 +14,7 @@ public abstract class ProjectileImpactMixin {
     @Inject(method = "onHit", at = @At("HEAD"))
     private void fweapons$onProjectileImpact(HitResult hitResult, CallbackInfo ci) {
         Projectile self = (Projectile) (Object) this;
-        if (self.level().isClientSide) {
+        if (self.level().isClientSide()) {
             return;
         }
         NeoForge.EVENT_BUS.post(new ProjectileImpactEvent(self, hitResult));

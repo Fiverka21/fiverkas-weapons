@@ -2,16 +2,14 @@ package com.fiv.fiverkas_weapons.network;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
+import com.fiv.fiverkas_weapons.util.CompatIds;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 
 public record ClientAttackFlagPayload(ModCombatEvents.ClientAttackFlag flag) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ClientAttackFlagPayload> TYPE =
-            new CustomPacketPayload.Type<>(
-                    ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "client_attack_flag")
-            );
+            CompatIds.payloadType(FiverkasWeapons.MODID, "client_attack_flag");
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientAttackFlagPayload> STREAM_CODEC =
             new StreamCodec<>() {

@@ -12,7 +12,6 @@ public class GBlueprintItem extends AnimatedGradientItem {
         super(properties, startColor, endColor, colorShiftSpeedMs);
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.fweapons.gblueprint").withStyle(ChatFormatting.ITALIC));
     }

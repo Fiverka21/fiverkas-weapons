@@ -1,6 +1,5 @@
 package com.fiv.fiverkas_weapons.effect;
 
-import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,14 +8,12 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
+import com.fiv.fiverkas_weapons.util.EntityDataUtil;
+import com.fiv.fiverkas_weapons.util.CompatIds;
 
 public class CeruleanShroudEffect extends MobEffect {
-    private static final Vector3f BLUE = Vec3.fromRGB24(0x0000FF).toVector3f();
-    private static final DustParticleOptions BLUE_DUST = new DustParticleOptions(BLUE, 1.3F);
+    private static final DustParticleOptions BLUE_DUST = new DustParticleOptions(0x0000FF, 1.3F);
     public static final String STEP_PROGRESS_TAG = "fweapons_cerulean_step_progress";
     public static final String INVISIBLE_TAG = "fweapons_cerulean_invisible";
     public static final String LAST_X_TAG = "fweapons_cerulean_last_x";
@@ -27,16 +24,18 @@ public class CeruleanShroudEffect extends MobEffect {
 
     public CeruleanShroudEffect() {
         super(MobEffectCategory.BENEFICIAL, 0x0000FF);
-        addAttributeModifier(
+        CompatIds.addAttributeModifier(
+                this,
                 Attributes.MOVEMENT_SPEED,
-                ResourceLocation.fromNamespaceAndPath("fweapons", "cerulean_shroud_speed"),
+                "fweapons",
+                "cerulean_shroud_speed",
                 0.4D,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
         // Footstep particles are emitted from server player tick for consistent timing.
         // Returning false removes the effect instance in 1.21.1; keep it active.
         return true;
@@ -57,7 +56,7 @@ public class CeruleanShroudEffect extends MobEffect {
             return;
         }
 
-        var data = PersistentData.get(entity);
+        var data = EntityDataUtil.getPersistentData(entity);
         if (!data.contains(LAST_X_TAG)) {
             data.putDouble(LAST_X_TAG, entity.getX());
             data.putDouble(LAST_Y_TAG, entity.getY());
@@ -65,9 +64,9 @@ public class CeruleanShroudEffect extends MobEffect {
             return;
         }
 
-        double lastX = data.getDouble(LAST_X_TAG);
-        double lastY = data.getDouble(LAST_Y_TAG);
-        double lastZ = data.getDouble(LAST_Z_TAG);
+        double lastX = EntityDataUtil.getDouble(data, LAST_X_TAG);
+        double lastY = EntityDataUtil.getDouble(data, LAST_Y_TAG);
+        double lastZ = EntityDataUtil.getDouble(data, LAST_Z_TAG);
         double dx = entity.getX() - lastX;
         double dy = entity.getY() - lastY;
         double dz = entity.getZ() - lastZ;
@@ -89,7 +88,7 @@ public class CeruleanShroudEffect extends MobEffect {
             return;
         }
 
-        double progress = data.getDouble(STEP_PROGRESS_TAG);
+        double progress = EntityDataUtil.getDouble(data, STEP_PROGRESS_TAG);
         progress += dist;
         while (progress >= STEP_DISTANCE) {
             progress -= STEP_DISTANCE;
@@ -102,6 +101,7 @@ public class CeruleanShroudEffect extends MobEffect {
                         viewer,
                         BLUE_DUST,
                         true,
+                        false,
                         x,
                         y,
                         z,

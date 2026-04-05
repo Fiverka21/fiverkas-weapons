@@ -3,6 +3,7 @@ package com.fiv.fiverkas_weapons.effect;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,10 +17,8 @@ public class BleedEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-        if (!entity.level().isClientSide) {
-            entity.hurt(entity.damageSources().generic(), 1.0F);
-        }
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
+        entity.hurt(entity.damageSources().generic(), 1.0F);
         // Returning false removes the effect instance in 1.21.1; keep it active.
         return true;
     }

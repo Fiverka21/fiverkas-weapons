@@ -3,8 +3,8 @@ package net.neoforged.neoforge.registries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 
 import java.util.ArrayList;
@@ -26,8 +26,9 @@ public class DeferredRegister<T> {
     }
 
     public <I extends T> DeferredHolder<T, I> register(String name, Supplier<I> supplier) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, name);
-        DeferredHolder<T, I> holder = new DeferredHolder<>(id);
+        Identifier id = Identifier.fromNamespaceAndPath(namespace, name);
+        ResourceKey<T> key = ResourceKey.create(registryKey, id);
+        DeferredHolder<T, I> holder = new DeferredHolder<>(key, id);
         pending.add(new Pending<>(holder, supplier));
         return holder;
     }
@@ -53,7 +54,7 @@ public class DeferredRegister<T> {
         if (registryKey.equals(Registries.SOUND_EVENT)) {
             return (Registry<T>) BuiltInRegistries.SOUND_EVENT;
         }
-        throw new IllegalStateException("Unsupported deferred registry key: " + registryKey.location());
+        throw new IllegalStateException("Unsupported deferred registry key: " + registryKey.identifier());
     }
 
     @SuppressWarnings("unchecked")

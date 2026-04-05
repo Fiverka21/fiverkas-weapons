@@ -7,11 +7,11 @@
     "BWB"
   ],
   "key": {
-    "L": { "item": "minecraft:lapis_block" },
-    "A": { "item": "minecraft:netherite_axe" },
-    "S": { "item": "minecraft:diamond_sword" },
-    "B": { "item": "minecraft:blackstone_slab" },
-    "W": { "item": "minecraft:blackstone_wall" }
+    "L": "minecraft:lapis_block",
+    "A": "minecraft:netherite_axe",
+    "S": "minecraft:diamond_sword",
+    "B": "minecraft:blackstone_slab",
+    "W": "minecraft:blackstone_wall"
   },
   "result": {
     "count": 1,

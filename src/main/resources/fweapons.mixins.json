@@ -10,13 +10,10 @@
     "LivingEntityDamageMixin",
     "LivingEntityDeathMixin",
     "MobSetTargetMixin",
-    "PlayerSweepAttackMixin",
     "PlayerTickMixin",
     "ProjectileImpactMixin"
   ],
-  "client": [
-    "PlayerRenderMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

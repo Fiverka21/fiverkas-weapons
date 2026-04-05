@@ -14,7 +14,7 @@ public abstract class LivingEntityDeathMixin {
     @Inject(method = "die", at = @At("HEAD"))
     private void fweapons$onLivingDeath(DamageSource source, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (self.level().isClientSide) {
+        if (self.level().isClientSide()) {
             return;
         }
         NeoForge.EVENT_BUS.post(new LivingDeathEvent(self, source));

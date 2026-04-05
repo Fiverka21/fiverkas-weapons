@@ -7,10 +7,10 @@
     "IGG"
   ],
   "key": {
-    "I": { "item": "minecraft:iron_block" },
-    "Q": { "item": "minecraft:quartz_block" },
-    "N": { "item": "minecraft:netherite_sword" },
-    "G": { "item": "minecraft:gunpowder" }
+    "I": "minecraft:iron_block",
+    "Q": "minecraft:quartz_block",
+    "N": "minecraft:netherite_sword",
+    "G": "minecraft:gunpowder"
   },
   "result": {
     "count": 1,

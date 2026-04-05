@@ -7,11 +7,11 @@
     "BWC"
   ],
   "key": {
-    "B": { "item": "minecraft:black_dye" },
-    "C": { "item": "minecraft:cyan_dye" },
-    "Y": { "item": "minecraft:yellow_dye" },
-    "P": { "item": "minecraft:paper" },
-    "W": { "item": "minecraft:wind_charge" }
+    "B": "minecraft:black_dye",
+    "C": "minecraft:cyan_dye",
+    "Y": "minecraft:yellow_dye",
+    "P": "minecraft:paper",
+    "W": "minecraft:wind_charge"
   },
   "result": {
     "count": 1,

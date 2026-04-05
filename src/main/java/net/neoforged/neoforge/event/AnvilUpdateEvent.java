@@ -51,6 +51,10 @@ public class AnvilUpdateEvent {
         this.cost = cost;
     }
 
+    public void setXpCost(int xpCost) {
+        this.cost = xpCost;
+    }
+
     public int getMaterialCost() {
         return materialCost;
     }

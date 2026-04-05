@@ -7,12 +7,12 @@
     "DOG"
   ],
   "key": {
-    "L": { "tag": "minecraft:leaves" },
-    "Y": { "item": "minecraft:oxeye_daisy" },
-    "A": { "item": "minecraft:netherite_axe" },
-    "D": { "item": "minecraft:lime_dye" },
-    "O": { "tag": "minecraft:logs" },
-    "G": { "item": "minecraft:green_dye" }
+    "L": "#minecraft:leaves",
+    "Y": "minecraft:oxeye_daisy",
+    "A": "minecraft:netherite_axe",
+    "D": "minecraft:lime_dye",
+    "O": "#minecraft:logs",
+    "G": "minecraft:green_dye"
   },
   "result": {
     "count": 1,

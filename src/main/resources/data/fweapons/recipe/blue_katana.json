@@ -7,11 +7,11 @@
     "C Y"
   ],
   "key": {
-    "B": { "item": "minecraft:blue_dye" },
-    "L": { "item": "minecraft:lapis_block" },
-    "S": { "item": "minecraft:netherite_sword" },
-    "C": { "item": "minecraft:copper_block" },
-    "Y": { "item": "minecraft:cyan_dye" }
+    "B": "minecraft:blue_dye",
+    "L": "minecraft:lapis_block",
+    "S": "minecraft:netherite_sword",
+    "C": "minecraft:copper_block",
+    "Y": "minecraft:cyan_dye"
   },
   "result": {
     "count": 1,

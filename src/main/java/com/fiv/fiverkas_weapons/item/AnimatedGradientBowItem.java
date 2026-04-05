@@ -21,6 +21,7 @@ public class AnimatedGradientBowItem extends BowItem {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack stack) {
-        return nameCache.getName(getDescriptionId(stack), super.getName(stack));
+        Component baseName = super.getName(stack);
+        return nameCache.getName(baseName, baseName);
     }
 }
