@@ -1,40 +1,39 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
-
-# gradle
-build
-.gradle
-
-# other
-eclipse
-run
-runs
-run-data
-
-repo
-
-# Gradle build
+# Gradle
+/.gradle/
+/.gradle-home/
 /build/
 /out/
-/.gradle/
+
+# Fabric Loom runtime outputs
+/run/
+/runs/
+/run-data/
+
+# Local publish/output scratch
+/repo/
+
+# IntelliJ
 /.idea/
 /*.iml
+/*.ipr
+/*.iws
+
+# Eclipse
+/.classpath
+/.project
+/.settings/
+/.metadata/
+/bin/
+/*.launch
+
+# VS Code
+/.vscode/
+
+# Logs and JVM crash dumps
+*.log
+hs_err_pid*
+replay_pid*
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
