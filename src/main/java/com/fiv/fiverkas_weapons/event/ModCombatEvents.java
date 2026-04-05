@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
@@ -15,12 +16,14 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,6 +42,7 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -58,10 +62,12 @@ import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -77,6 +83,7 @@ import java.util.UUID;
 
 public class ModCombatEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final boolean DEBUG_COMBAT_LOGS = Boolean.getBoolean("fweapons.debugCombatLogs");
     private static final int VAPORIFIED_DURATION_TICKS = 120;
     private static final int SUNSET_DURATION_TICKS = 80;
     private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
@@ -101,6 +108,7 @@ public class ModCombatEvents {
     };
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
+    private static final String BAYONET_IMPACT_ANIMATION = "fweapons:bayonet_impact";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
     private static final String DUSK_THIRD_ANIMATION_PRIMARY = "bettercombat:dual_handed_stab";
     private static final String DUSK_THIRD_ANIMATION_FALLBACK = "bettercombat:one_handed_stab";
@@ -215,23 +223,23 @@ public class ModCombatEvents {
             return;
         }
         if (hasVaporwaveSword) {
-            LOGGER.info("[fweapons] AttackEntityEvent applying vaporified: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            debugLog("[fweapons] AttackEntityEvent applying vaporified: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, VAPORIFIED_DURATION_TICKS, 0), attacker);
         }
         if (hasSacrilegious) {
-            LOGGER.info("[fweapons] AttackEntityEvent applying sacrilegious effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            debugLog("[fweapons] AttackEntityEvent applying sacrilegious effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applySacrilegiousHitEffects(target, attacker);
         }
         if (isMkopiSlamAttack) {
-            LOGGER.info("[fweapons] AttackEntityEvent applying mkopi slam effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            debugLog("[fweapons] AttackEntityEvent applying mkopi slam effects: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applyMkopiSlamEffects(target, attacker);
         }
         if (isBayonetGunshotAttack) {
-            LOGGER.info("[fweapons] AttackEntityEvent applying bayonet gunshot particles: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            debugLog("[fweapons] AttackEntityEvent applying bayonet gunshot particles: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applyBayonetGunshotParticles(target);
         }
         if (isDuskThirdAttack) {
-            LOGGER.info("[fweapons] AttackEntityEvent applying dusk finisher: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
+            debugLog("[fweapons] AttackEntityEvent applying dusk finisher: attacker={} target={}", attacker.getName().getString(), target.getName().getString());
             applyDuskSunsetFinisher(target, attacker);
         }
     }
@@ -351,6 +359,50 @@ public class ModCombatEvents {
         applyTheFoolPotionEffects(event.getEntity(), event.getSource());
     }
 
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
+        if (event.getEntity() instanceof Player) {
+            return;
+        }
+        DamageSource source = event.getSource();
+        ItemStack weapon = source.getWeaponItem();
+        boolean isNatureAxe = weapon != null && !weapon.isEmpty() && weapon.is(ModItems.NATUREAXE.get());
+        Player attackerPlayer = null;
+        Entity sourceEntity = source.getEntity();
+        if (sourceEntity instanceof Player player) {
+            attackerPlayer = player;
+        }
+        if (!isNatureAxe && sourceEntity instanceof LivingEntity attacker) {
+            isNatureAxe = attacker.getMainHandItem().is(ModItems.NATUREAXE.get())
+                    || attacker.getOffhandItem().is(ModItems.NATUREAXE.get());
+        }
+        if (!isNatureAxe) {
+            return;
+        }
+
+        if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        BlockPos feetPos = event.getEntity().blockPosition();
+        ItemStack boneMeal = new ItemStack(Items.BONE_MEAL);
+        if (BoneMealItem.applyBonemeal(boneMeal, serverLevel, feetPos, attackerPlayer)) {
+            if (attackerPlayer != null) {
+                attackerPlayer.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
+            }
+            serverLevel.levelEvent(1505, feetPos, 15);
+            return;
+        }
+        BlockPos below = feetPos.below();
+        if (BoneMealItem.applyBonemeal(boneMeal, serverLevel, below, attackerPlayer)) {
+            if (attackerPlayer != null) {
+                attackerPlayer.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
+            }
+            serverLevel.levelEvent(1505, below, 15);
+        }
+    }
+
     public static void onEntityTickPost(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof SpectralArrow arrow)) {
             return;
@@ -401,8 +453,15 @@ public class ModCombatEvents {
         if (player.level().isClientSide()) {
             return;
         }
+        updateLScytheDashPenalty(player);
         if (player.isSpectator()) {
             return;
+        }
+        if (player.level() instanceof ServerLevel serverLevel) {
+            LScythe.tickDashTrail(serverLevel, player);
+        }
+        if (player instanceof ServerPlayer serverPlayer) {
+            pruneExpiredAttackFlags(serverPlayer);
         }
 
         var data = EntityDataUtil.getPersistentData(player);
@@ -441,6 +500,34 @@ public class ModCombatEvents {
             data.remove(CeruleanShroudEffect.LAST_Z_TAG);
             data.remove(CeruleanShroudEffect.STEP_PROGRESS_TAG);
         }
+    }
+
+    private static void updateLScytheDashPenalty(Player player) {
+        var data = EntityDataUtil.getPersistentData(player);
+        if (!data.contains(LScythe.DASH_ARMOR_EXPIRES_TAG)) {
+            LScythe.clearDashArmorPenalty(player);
+            return;
+        }
+        long expiresAt = EntityDataUtil.getLong(data, LScythe.DASH_ARMOR_EXPIRES_TAG);
+        if (expiresAt <= 0L) {
+            data.remove(LScythe.DASH_ARMOR_EXPIRES_TAG);
+            data.remove(LScythe.DASH_ARMOR_STACKS_TAG);
+            LScythe.clearDashArmorPenalty(player);
+            return;
+        }
+        long now = player.level().getGameTime();
+        if (expiresAt < now) {
+            data.remove(LScythe.DASH_ARMOR_EXPIRES_TAG);
+            data.remove(LScythe.DASH_ARMOR_STACKS_TAG);
+            LScythe.clearDashArmorPenalty(player);
+            return;
+        }
+        int stacks = EntityDataUtil.getInt(data, LScythe.DASH_ARMOR_STACKS_TAG);
+        if (stacks <= 0) {
+            stacks = 1;
+            data.putInt(LScythe.DASH_ARMOR_STACKS_TAG, stacks);
+        }
+        LScythe.ensureDashArmorPenalty(player, stacks);
     }
 
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
@@ -765,7 +852,7 @@ public class ModCombatEvents {
 
         if (!isVaporwaveSword && !isDawn && !isSacrilegious) {
             if (attacker != null && attacker.getType().toString().contains("player")) {
-                LOGGER.info(
+                debugLog(
                         "[fweapons] skipped source match: msgId={} weapon={} main={} off={}",
                         source.getMsgId(),
                         weaponFromSource,
@@ -777,26 +864,101 @@ public class ModCombatEvents {
         }
 
         if (isVaporwaveSword) {
-            LOGGER.info("[fweapons] Damage hook applying vaporified: msgId={} attacker={} target={}",
+            debugLog("[fweapons] Damage hook applying vaporified: msgId={} attacker={} target={}",
                     source.getMsgId(),
                     attacker == null ? "<none>" : attacker.getName().getString(),
                     target.getName().getString());
             target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, VAPORIFIED_DURATION_TICKS, 0), attacker);
         }
         if (isDawn) {
-            LOGGER.info("[fweapons] Damage hook applying sunset: msgId={} attacker={} target={}",
+            debugLog("[fweapons] Damage hook applying sunset: msgId={} attacker={} target={}",
                     source.getMsgId(),
                     attacker == null ? "<none>" : attacker.getName().getString(),
                     target.getName().getString());
             applySunsetHitEffects(target, attacker);
         }
         if (isSacrilegious) {
-            LOGGER.info("[fweapons] Damage hook applying sacrilegious effects: msgId={} attacker={} target={}",
+            debugLog("[fweapons] Damage hook applying sacrilegious effects: msgId={} attacker={} target={}",
                     source.getMsgId(),
                     attacker == null ? "<none>" : attacker.getName().getString(),
                     target.getName().getString());
             applySacrilegiousHitEffects(target, attacker);
         }
+    }
+
+    public static void onBayonetComboAttack(ServerPlayer player) {
+        if (player.level().isClientSide()) {
+            return;
+        }
+        if (!isHoldingBayonet(player)) {
+            return;
+        }
+        spawnPerfectDapEffect(player);
+        playBetterCombatAttackAnimation(player);
+    }
+
+    private static void playBetterCombatAttackAnimation(ServerPlayer player) {
+        try {
+            Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
+            Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
+            Class<?> swingParticlesClass = Class.forName("net.bettercombat.network.Packets$SwingParticles");
+            Class<?> serverNetworkClass = Class.forName("net.bettercombat.network.ServerNetwork");
+
+            Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
+            Object particles = swingParticlesClass.getField("EMPTY").get(null);
+            float length = 1.625f;
+            float upswing = 1.2f;
+            int upswingTicks = Math.round(upswing * 20.0f);
+            Object payload = attackAnimClass
+                    .getConstructor(
+                            int.class,
+                            animatedHandClass,
+                            String.class,
+                            float.class,
+                            float.class,
+                            float.class,
+                            int.class,
+                            swingParticlesClass
+                    )
+                    .newInstance(
+                            player.getId(),
+                            hand,
+                            "fweapons:perfect_hit",
+                            length,
+                            upswing,
+                            0.0f,
+                            upswingTicks,
+                            particles
+                    );
+
+            serverNetworkClass
+                    .getMethod(
+                            "handleAttackAnimation",
+                            attackAnimClass,
+                            net.minecraft.server.MinecraftServer.class,
+                            net.minecraft.server.level.ServerPlayer.class
+                    )
+                    .invoke(null, payload, player.level().getServer(), player);
+        } catch (ReflectiveOperationException ignored) {
+        }
+    }
+
+    private static void spawnPerfectDapEffect(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        Vec3 look = player.getLookAngle().normalize();
+        double x = player.getX() + look.x * 0.7D;
+        double y = player.getEyeY() - 0.2D + look.y * 0.1D;
+        double z = player.getZ() + look.z * 0.7D;
+
+        serverLevel.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 5, 0.2, 0.2, 0.2, 0.0);
+        serverLevel.sendParticles(ParticleTypes.CRIT, x, y, z, 40, 0.4, 0.4, 0.4, 0.12);
+        serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 50, 0.5, 0.5, 0.5, 0.15);
+
+        serverLevel.playSound(null, x, y, z, SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.5f, 1.0f);
+        serverLevel.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0f, 1.0f);
+        serverLevel.playSound(null, x, y, z, SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 1.2f, 1.0f);
     }
 
     private static void applyHonorStrike(LivingIncomingDamageEvent event) {
@@ -1087,6 +1249,23 @@ public class ModCombatEvents {
         return isClientAttackFlagValid(player, flag);
     }
 
+    private static void pruneExpiredAttackFlags(ServerPlayer player) {
+        EnumMap<ClientAttackFlag, Long> flags = CLIENT_ATTACK_FLAGS.get(player.getUUID());
+        if (flags == null) {
+            return;
+        }
+        long now = player.level().getGameTime();
+        for (var iterator = flags.entrySet().iterator(); iterator.hasNext(); ) {
+            var entry = iterator.next();
+            if (entry.getValue() < now) {
+                iterator.remove();
+            }
+        }
+        if (flags.isEmpty()) {
+            CLIENT_ATTACK_FLAGS.remove(player.getUUID());
+        }
+    }
+
     private static boolean isClientAttackFlagValid(LivingEntity attacker, ClientAttackFlag flag) {
         return switch (flag) {
             case BAYONET_GUNSHOT -> isHoldingBayonet(attacker);
@@ -1136,7 +1315,7 @@ public class ModCombatEvents {
                         Object animation = attack.getClass().getMethod("animation").invoke(attack);
                         result = hitbox != null
                                 && BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())
-                                && BAYONET_GUNSHOT_ANIMATION.equals(animation);
+                                && isBayonetGunshotAnimation(animation);
                     }
                 }
             }
@@ -1149,6 +1328,14 @@ public class ModCombatEvents {
         }
 
         return consumeClientAttackFlag(attacker, ClientAttackFlag.BAYONET_GUNSHOT);
+    }
+
+    private static boolean isBayonetGunshotAnimation(Object animation) {
+        if (animation == null) {
+            return false;
+        }
+        String value = animation.toString();
+        return BAYONET_GUNSHOT_ANIMATION.equals(value) || BAYONET_IMPACT_ANIMATION.equals(value);
     }
 
     private static boolean isDuskThirdAttack(LivingEntity attacker) {
@@ -1231,6 +1418,12 @@ public class ModCombatEvents {
 
     private static boolean isBreachDensityEnchantment(net.minecraft.core.Holder<Enchantment> enchantment) {
         return enchantment.is(Enchantments.BREACH) || enchantment.is(Enchantments.DENSITY);
+    }
+
+    private static void debugLog(String message, Object... args) {
+        if (DEBUG_COMBAT_LOGS) {
+            LOGGER.info(message, args);
+        }
     }
 
     private static void disableBetterCombatReworkedSweepParticles() {

@@ -1,6 +1,7 @@
 package com.fiv.fiverkas_weapons.event.client;
 
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
+import com.fiv.fiverkas_weapons.network.BayonetComboAttackPayload;
 import com.fiv.fiverkas_weapons.network.BayonetMuzzleFlashPayload;
 import com.fiv.fiverkas_weapons.network.ClientAttackFlagPayload;
 import com.fiv.fiverkas_weapons.registry.ModItems;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -32,6 +34,7 @@ import java.util.List;
 
 public final class ModCombatClientEvents {
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
+    private static final String BAYONET_IMPACT_ANIMATION = "fweapons:bayonet_impact";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String MKOPI_SLAM_HITBOX = "VERTICAL_PLANE";
@@ -48,7 +51,11 @@ public final class ModCombatClientEvents {
             "net.minecraft.client.renderer.item.properties.ItemPropertyFunction"
     };
     private static final int BURST_COUNT = 18;
+    private static final long[] IMPACT_FRAME_DURATIONS_MS = {300L, 300L, 400L};
+    private static final long IMPACT_FRAME_DURATION_MS = 1000L;
     private static volatile List<?> noTrailParticles;
+    private static boolean bayonetImpactFrameActive = false;
+    private static long bayonetImpactFrameStartTime = 0L;
 
     @FunctionalInterface
     private interface ItemPropertyGetter {
@@ -71,6 +78,7 @@ public final class ModCombatClientEvents {
 
     private static void registerClientRenderHooks() {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
+        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderGuiPost);
     }
 
     private static void registerItemProperties() {
@@ -182,6 +190,47 @@ public final class ModCombatClientEvents {
         }
     }
 
+    public static void triggerBayonetImpactFrame() {
+        bayonetImpactFrameActive = true;
+        bayonetImpactFrameStartTime = System.currentTimeMillis();
+    }
+
+    private static void onRenderGuiPost(RenderGuiEvent.Post event) {
+        if (!bayonetImpactFrameActive) {
+            return;
+        }
+        long elapsed = System.currentTimeMillis() - bayonetImpactFrameStartTime;
+        if (elapsed >= IMPACT_FRAME_DURATION_MS) {
+            bayonetImpactFrameActive = false;
+            return;
+        }
+        long frameTime = elapsed;
+        int frameIndex = 0;
+        for (int i = 0; i < IMPACT_FRAME_DURATIONS_MS.length; i++) {
+            if (frameTime < IMPACT_FRAME_DURATIONS_MS[i]) {
+                frameIndex = i;
+                break;
+            }
+            frameTime -= IMPACT_FRAME_DURATIONS_MS[i];
+            frameIndex = i + 1;
+        }
+        if (frameIndex >= IMPACT_FRAME_DURATIONS_MS.length) {
+            frameIndex = IMPACT_FRAME_DURATIONS_MS.length - 1;
+        }
+        int width = event.getGuiGraphics().guiWidth();
+        int height = event.getGuiGraphics().guiHeight();
+        int alpha;
+        if (frameIndex == 0) {
+            alpha = 70;
+        } else if (frameIndex == 1) {
+            alpha = 95;
+        } else {
+            alpha = 120;
+        }
+        int color = (alpha << 24) | 0xFFFFFF;
+        event.getGuiGraphics().fill(0, 0, width, height, color);
+    }
+
 
     private static void registerBetterCombatAttackStartListener() {
         try {
@@ -202,7 +251,11 @@ public final class ModCombatClientEvents {
 
                         Object attackHand = args[1];
                         if (attackHand != null) {
-                            if (isBayonetThirdAttack(attackHand)) {
+                            if (isBayonetImpactAttack(attackHand)) {
+                                sendToServer(new BayonetComboAttackPayload());
+                                triggerBayonetImpactFrame();
+                            }
+                            if (isBayonetGunshotAttack(attackHand)) {
                                 spawnBayonetGunshotParticles(player);
                                 sendToServer(new BayonetMuzzleFlashPayload());
                             }
@@ -236,7 +289,7 @@ public final class ModCombatClientEvents {
                     listenerClass.getClassLoader(),
                     new Class<?>[]{listenerClass},
                     (proxy, method, args) -> {
-                        if (!"onPlayerAttackStart".equals(method.getName())
+                        if (!"onPlayerAttackHit".equals(method.getName())
                                 || args == null
                                 || args.length < 2) {
                             return null;
@@ -257,7 +310,7 @@ public final class ModCombatClientEvents {
 
     private static void suppressAttackHitSlashEffect(Object attackHand) {
         try {
-            if (!isBayonetThirdAttack(attackHand)) {
+            if (!isBayonetGunshotAttack(attackHand)) {
                 return;
             }
 
@@ -319,7 +372,7 @@ public final class ModCombatClientEvents {
         }
     }
 
-    private static boolean isBayonetThirdAttack(Object attackHand) {
+    private static boolean isBayonetGunshotAttack(Object attackHand) {
         try {
             if (!isBayonetAttack(attackHand)) {
                 return false;
@@ -336,10 +389,33 @@ public final class ModCombatClientEvents {
             }
 
             Object animation = attack.getClass().getMethod("animation").invoke(attack);
-            if (!BAYONET_GUNSHOT_ANIMATION.equals(animation)) {
+            if (!BAYONET_GUNSHOT_ANIMATION.equals(animation) && !BAYONET_IMPACT_ANIMATION.equals(animation)) {
                 return false;
             }
             return true;
+        } catch (ReflectiveOperationException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isBayonetImpactAttack(Object attackHand) {
+        try {
+            if (!isBayonetAttack(attackHand)) {
+                return false;
+            }
+
+            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            if (attack == null) {
+                return false;
+            }
+
+            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            if (hitbox == null || !BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())) {
+                return false;
+            }
+
+            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            return BAYONET_IMPACT_ANIMATION.equals(animation);
         } catch (ReflectiveOperationException ignored) {
             return false;
         }

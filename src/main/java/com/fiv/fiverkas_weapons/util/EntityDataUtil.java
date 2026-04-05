@@ -20,6 +20,10 @@ public final class EntityDataUtil {
         return data.getInt(key).orElse(0);
     }
 
+    public static long getLong(CompoundTag data, String key) {
+        return data.getLong(key).orElse(0L);
+    }
+
     public static boolean getBoolean(CompoundTag data, String key) {
         return data.getBoolean(key).orElse(false);
     }

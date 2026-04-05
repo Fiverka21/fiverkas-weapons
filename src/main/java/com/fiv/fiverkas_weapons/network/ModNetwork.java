@@ -23,6 +23,11 @@ public final class ModNetwork {
                 ClientAttackFlagPayload.STREAM_CODEC,
                 ModNetwork::handleClientAttackFlag
         );
+        registrar.playToServer(
+                BayonetComboAttackPayload.TYPE,
+                BayonetComboAttackPayload.STREAM_CODEC,
+                ModNetwork::handleBayonetComboAttack
+        );
     }
 
     private static void handleBayonetMuzzleFlash(BayonetMuzzleFlashPayload payload, IPayloadContext context) {
@@ -45,6 +50,15 @@ public final class ModNetwork {
                 return;
             }
             ModCombatEvents.recordClientAttackFlag(player, payload.flag());
+        });
+    }
+
+    private static void handleBayonetComboAttack(BayonetComboAttackPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (!(context.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            ModCombatEvents.onBayonetComboAttack(player);
         });
     }
 }

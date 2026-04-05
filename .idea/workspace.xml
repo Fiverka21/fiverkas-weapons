@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="04e3edb7-58c8-4684-bc0a-d3749a5dde52" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/META-INF/jarjar/net.neoforged.neoforge-coremods-21.11.37-beta.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/config/bettercombat/server.json5" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/config/bettercombat/server.json5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-1.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-1.log.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-2.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-2.log.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-3.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-3.log.gz" afterDir="false" />
@@ -18,7 +16,6 @@
       <change beforePath="$PROJECT_DIR$/runs/client/logs/latest.log" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/latest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/DIM-1/data/raids.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/DIM-1/data/raids.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/DIM1/data/raids_end.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/DIM1/data/raids_end.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/advancements/380df991-f603-344c-a090-369bad2a924a.json" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/advancements/380df991-f603-344c-a090-369bad2a924a.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/data/raids.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/data/raids.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/data/random_sequences.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/data/random_sequences.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.-1.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.-1.-1.mca" afterDir="false" />
@@ -42,20 +39,13 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/FiverkasWeapons.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/FiverkasWeapons.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/ModCombatEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/ModCombatEvents.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/client/ModCombatClientEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/client/ModCombatClientEvents.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientSwordItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientSwordItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/ModNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/ModNetwork.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModCreativeTabs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModCreativeTabs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModEffects.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModEffects.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModItems.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModItems.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModSounds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModSounds.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/util/EntityDataUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/util/EntityDataUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/lang/en_us.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/sounds.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/airmace.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/airmace.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/damage_type/no_knockback.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/damage_type/no_knockback.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/durability.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/durability.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/fire_aspect.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/fire_aspect.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/sword.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/sword.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/weapon.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/weapon.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/swords.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/swords.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +54,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="253" />
+    <option name="cachedIndexableFilesCount" value="3158" />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -112,6 +102,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -219,7 +210,9 @@
       <workItem from="1774285967829" duration="3773000" />
       <workItem from="1774291301765" duration="300000" />
       <workItem from="1774291610453" duration="276000" />
-      <workItem from="1774291900538" duration="2280000" />
+      <workItem from="1774291900538" duration="2912000" />
+      <workItem from="1775409205649" duration="3053000" />
+      <workItem from="1775412322270" duration="1983000" />
     </task>
     <servers />
   </component>

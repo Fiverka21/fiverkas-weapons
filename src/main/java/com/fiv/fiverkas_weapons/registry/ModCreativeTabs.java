@@ -16,7 +16,7 @@ public class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FWEAPONS_TAB =
             CREATIVE_MODE_TABS.register("fweapons_tab", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
                     .title(Component.translatable("itemGroup.fweapons_tab"))
-                    .icon(() -> new ItemStack(ModItems.VAPORWAVE_SWORD.get()))
+                    .icon(() -> new ItemStack(ModItems.ICON.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.VAPORWAVE_SWORD.get());
                         output.accept(ModItems.SACRILEGIOUS.get());
@@ -24,8 +24,10 @@ public class ModCreativeTabs {
                         output.accept(ModItems.BAYONET.get());
                         output.accept(ModItems.BLUE_KATANA.get());
                         output.accept(ModItems.AIRMACE.get());
+                        output.accept(ModItems.NATUREAXE.get());
                         output.accept(ModItems.DAWN.get());
                         output.accept(ModItems.DUSK.get());
+                        output.accept(ModItems.LSCYTHE.get());
                         output.accept(ModItems.THE_FOOL.get());
                         output.accept(ModItems.GBLUEPRINT.get());
                         output.accept(ModItems.DREAM_ESSENCE.get());

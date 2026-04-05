@@ -8,7 +8,9 @@ import com.fiv.fiverkas_weapons.item.BlueKatana;
 import com.fiv.fiverkas_weapons.item.Dawn;
 import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
+import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.item.Mkopi;
+import com.fiv.fiverkas_weapons.item.NatureAxe;
 import com.fiv.fiverkas_weapons.item.Sacrilegious;
 import com.fiv.fiverkas_weapons.item.TheFoolBow;
 import com.fiv.fiverkas_weapons.item.VaporwaveSword;
@@ -74,6 +76,15 @@ public class ModItems {
                                     .sword(ToolMaterial.DIAMOND, 4, -2.6f)
                     ));
 
+    public static final DeferredHolder<Item, NatureAxe> NATUREAXE =
+            ITEMS.register("natureaxe",
+                    () -> new NatureAxe(
+                            itemProps("natureaxe")
+                                    .stacksTo(1)
+                                    .fireResistant()
+                                    .axe(ToolMaterial.NETHERITE, 6.0F, -2.6F)
+                    ));
+
     public static final DeferredHolder<Item, Dawn> DAWN =
             ITEMS.register("dawn",
                     () -> new Dawn(
@@ -88,6 +99,14 @@ public class ModItems {
                             itemProps("dusk")
                                     .stacksTo(1)
                                     .sword(ToolMaterial.DIAMOND, 0, -1.4f)
+                    ));
+
+    public static final DeferredHolder<Item, LScythe> LSCYTHE =
+            ITEMS.register("lscythe",
+                    () -> new LScythe(
+                            itemProps("lscythe")
+                                    .stacksTo(1)
+                                    .sword(ToolMaterial.DIAMOND, 8, -2.8f)
                     ));
 
     public static final DeferredHolder<Item, Item> THE_FOOL =
@@ -116,6 +135,10 @@ public class ModItems {
                             0x424040,
                             144L
                     ));
+
+    public static final DeferredHolder<Item, Item> ICON =
+            ITEMS.register("icon",
+                    () -> new Item(itemProps("icon")));
 
     private static Item.Properties itemProps(String id) {
         return CompatIds.setItemId(new Item.Properties(), Registries.ITEM, FiverkasWeapons.MODID, id);

@@ -1,0 +1,27 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "fweapons:item/natureaxe"
+  },  "display": {
+  "thirdperson_righthand": {
+    "rotation": [0, -90, 55],
+    "translation": [0, 5, 0],
+    "scale": [1.4, 1.4, 0.75]
+  },
+  "thirdperson_lefthand": {
+    "rotation": [0, 90, -55],
+    "translation": [0, 5, 0],
+    "scale": [1.4, 1.4, 0.75]
+  },
+  "firstperson_righthand": {
+    "rotation": [0, -90, 25],
+    "translation": [0, 0, 0],
+    "scale": [1, 1, 0.75]
+  },
+  "firstperson_lefthand": {
+    "rotation": [0, 90, -25],
+    "translation": [0, 0, 0],
+    "scale": [1, 1, 0.75]
+  }
+}
+}
