@@ -146,4 +146,8 @@ public class ModItems {
                             0x424040,
                             144L
                     ));
+
+    public static final DeferredHolder<Item, Item> ICON =
+            ITEMS.register("icon",
+                    () -> new Item(new Item.Properties()));
 }

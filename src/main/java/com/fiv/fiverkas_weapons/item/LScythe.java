@@ -44,6 +44,7 @@ public class LScythe extends AnimatedGradientSwordItem {
     private static final int DARK_BLUE = 0x0B1D4A;
     private static final long COLOR_SHIFT_SPEED_MS = 144L;
     private static final double CHAIN_RADIUS = 2.0D;
+    private static final double CHAIN_WEATHER_MULTIPLIER = 2.0D;
     private static final int MAX_CHAINS = 6;
     private static final float CHAIN_DAMAGE_MULTIPLIER = 0.5F;
     private static final Vector3f LIGHT_BLUE = Vec3.fromRGB24(0x66CCFF).toVector3f();
@@ -122,12 +123,13 @@ public class LScythe extends AnimatedGradientSwordItem {
             LivingEntity attacker,
             float chainDamage
     ) {
+        double chainRadius = getChainRadius(level);
         Set<UUID> hit = new HashSet<>();
         hit.add(initialTarget.getUUID());
         // Avoid chaining into mobs already hit by the initial attack.
         List<LivingEntity> initialHits = level.getEntitiesOfClass(
                 LivingEntity.class,
-                initialTarget.getBoundingBox().inflate(CHAIN_RADIUS),
+                initialTarget.getBoundingBox().inflate(chainRadius),
                 entity -> entity.isAlive()
                         && entity != attacker
                         && entity.getLastHurtByMob() == attacker
@@ -141,7 +143,7 @@ public class LScythe extends AnimatedGradientSwordItem {
         DamageSource source = createChainDamageSource(attacker, initialTarget);
 
         for (int chain = 0; chain < MAX_CHAINS; chain++) {
-            LivingEntity next = findNextTarget(level, current, attacker, hit);
+            LivingEntity next = findNextTarget(level, current, attacker, hit, chainRadius);
             if (next == null) {
                 break;
             }
@@ -156,11 +158,12 @@ public class LScythe extends AnimatedGradientSwordItem {
             ServerLevel level,
             LivingEntity current,
             LivingEntity attacker,
-            Set<UUID> hit
+            Set<UUID> hit,
+            double chainRadius
     ) {
         List<LivingEntity> candidates = level.getEntitiesOfClass(
                 LivingEntity.class,
-                current.getBoundingBox().inflate(CHAIN_RADIUS),
+                current.getBoundingBox().inflate(chainRadius),
                 entity -> entity.isAlive()
                         && entity != attacker
                         && !hit.contains(entity.getUUID())
@@ -170,6 +173,13 @@ public class LScythe extends AnimatedGradientSwordItem {
         }
         candidates.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(current)));
         return candidates.get(0);
+    }
+
+    private static double getChainRadius(ServerLevel level) {
+        if (level.isRaining() || level.isThundering()) {
+            return CHAIN_RADIUS * CHAIN_WEATHER_MULTIPLIER;
+        }
+        return CHAIN_RADIUS;
     }
 
     private static DamageSource createChainDamageSource(LivingEntity attacker, LivingEntity target) {
