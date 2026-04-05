@@ -16,7 +16,7 @@ public class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FWEAPONS_TAB =
             CREATIVE_MODE_TABS.register("fweapons_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.fweapons_tab"))
-                    .icon(() -> new ItemStack(ModItems.VAPORWAVE_SWORD.get()))
+                    .icon(() -> new ItemStack(ModItems.ICON.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.VAPORWAVE_SWORD.get());
                         output.accept(ModItems.SACRILEGIOUS.get());
