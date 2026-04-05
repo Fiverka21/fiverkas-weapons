@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
@@ -613,8 +614,12 @@ public class ModCombatEvents {
         if (player.level().isClientSide) {
             return;
         }
+        updateLScytheDashPenalty(player);
         if (player.isSpectator()) {
             return;
+        }
+        if (player.level() instanceof ServerLevel serverLevel) {
+            LScythe.tickDashTrail(serverLevel, player);
         }
         if (player instanceof ServerPlayer serverPlayer) {
             pruneExpiredAttackFlags(serverPlayer);
@@ -656,6 +661,34 @@ public class ModCombatEvents {
             data.remove(CeruleanShroudEffect.LAST_Z_TAG);
             data.remove(CeruleanShroudEffect.STEP_PROGRESS_TAG);
         }
+    }
+
+    private static void updateLScytheDashPenalty(Player player) {
+        var data = player.getPersistentData();
+        if (!data.contains(LScythe.DASH_ARMOR_EXPIRES_TAG)) {
+            LScythe.clearDashArmorPenalty(player);
+            return;
+        }
+        long expiresAt = data.getLong(LScythe.DASH_ARMOR_EXPIRES_TAG);
+        if (expiresAt <= 0L) {
+            data.remove(LScythe.DASH_ARMOR_EXPIRES_TAG);
+            data.remove(LScythe.DASH_ARMOR_STACKS_TAG);
+            LScythe.clearDashArmorPenalty(player);
+            return;
+        }
+        long now = player.level().getGameTime();
+        if (expiresAt < now) {
+            data.remove(LScythe.DASH_ARMOR_EXPIRES_TAG);
+            data.remove(LScythe.DASH_ARMOR_STACKS_TAG);
+            LScythe.clearDashArmorPenalty(player);
+            return;
+        }
+        int stacks = data.getInt(LScythe.DASH_ARMOR_STACKS_TAG);
+        if (stacks <= 0) {
+            stacks = 1;
+            data.putInt(LScythe.DASH_ARMOR_STACKS_TAG, stacks);
+        }
+        LScythe.ensureDashArmorPenalty(player, stacks);
     }
 
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {

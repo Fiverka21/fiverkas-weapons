@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LAL",
+    "LSL",
+    "BBB"
+  ],
+  "key": {
+    "L": { "item": "minecraft:lapis_block" },
+    "A": { "item": "minecraft:netherite_axe" },
+    "S": { "item": "minecraft:diamond_sword" },
+    "B": { "item": "minecraft:blackstone_slab" }
+  },
+  "result": {
+    "count": 1,
+    "id": "fweapons:lscythe"
+  }
+}
