@@ -14,7 +14,7 @@ public class ModCreativeTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, FiverkasWeapons.MODID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FWEAPONS_TAB =
-            CREATIVE_MODE_TABS.register("fweapons_tab", () -> CreativeModeTab.builder()
+            CREATIVE_MODE_TABS.register("fweapons_tab", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
                     .title(Component.translatable("itemGroup.fweapons_tab"))
                     .icon(() -> new ItemStack(ModItems.ICON.get()))
                     .displayItems((parameters, output) -> {

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
+import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,9 +24,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Holder;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import org.joml.Vector3f;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,22 +60,6 @@ public class LScythe extends AnimatedGradientSwordItem {
 
     public LScythe(Tier tier, Item.Properties properties) {
         super(tier, properties, WHITE, DARK_BLUE, COLOR_SHIFT_SPEED_MS);
-    }
-
-    @Override
-    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
-        if (enchantment.is(Enchantments.FIRE_ASPECT)) {
-            return false;
-        }
-        return super.supportsEnchantment(stack, enchantment);
-    }
-
-    @Override
-    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
-        if (enchantment.is(Enchantments.FIRE_ASPECT)) {
-            return false;
-        }
-        return super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
@@ -240,7 +222,7 @@ public class LScythe extends AnimatedGradientSwordItem {
         }
         if (!player.level().isClientSide) {
             long now = player.level().getGameTime();
-            var data = player.getPersistentData();
+            var data = PersistentData.get(player);
             long previousExpiresAt = data.getLong(DASH_ARMOR_EXPIRES_TAG);
             int stacks = data.getInt(DASH_ARMOR_STACKS_TAG);
             if (previousExpiresAt > now && stacks > 0) {
@@ -284,7 +266,7 @@ public class LScythe extends AnimatedGradientSwordItem {
     }
 
     private static void startDashTrail(Player player) {
-        var data = player.getPersistentData();
+        var data = PersistentData.get(player);
         long now = player.level().getGameTime();
         data.putLong(DASH_TRAIL_EXPIRES_TAG, now + DASH_TRAIL_DURATION_TICKS);
         data.remove(DASH_HIT_USED_TAG);
@@ -294,7 +276,7 @@ public class LScythe extends AnimatedGradientSwordItem {
     }
 
     public static void tickDashTrail(ServerLevel level, Player player) {
-        var data = player.getPersistentData();
+        var data = PersistentData.get(player);
         if (!data.contains(DASH_TRAIL_EXPIRES_TAG)) {
             return;
         }
@@ -339,7 +321,7 @@ public class LScythe extends AnimatedGradientSwordItem {
     }
 
     private static void clearDashTrailData(Player player) {
-        var data = player.getPersistentData();
+        var data = PersistentData.get(player);
         data.remove(DASH_TRAIL_EXPIRES_TAG);
         data.remove(DASH_HIT_USED_TAG);
         data.remove(DASH_TRAIL_LAST_X_TAG);
@@ -388,11 +370,11 @@ public class LScythe extends AnimatedGradientSwordItem {
         DamageSource source = player.damageSources().playerAttack(player);
         closest.hurt(source, baseDamage);
         applyChainLightning(level, closest, player, baseDamage * CHAIN_DAMAGE_MULTIPLIER);
-        player.getPersistentData().putBoolean(DASH_HIT_USED_TAG, true);
+        PersistentData.get(player).putBoolean(DASH_HIT_USED_TAG, true);
     }
 
     private static void tryDashCollisionHit(ServerLevel level, Player player) {
-        var data = player.getPersistentData();
+        var data = PersistentData.get(player);
         if (data.getBoolean(DASH_HIT_USED_TAG)) {
             return;
         }

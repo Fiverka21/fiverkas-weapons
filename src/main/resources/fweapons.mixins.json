@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "com.fiv.fiverkas_weapons.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AnvilMenuMixin",
+    "EntityPersistentDataMixin",
+    "EntityTickMixin",
+    "ItemCombinerMenuAccessor",
+    "LivingEntityDamageMixin",
+    "LivingEntityDeathMixin",
+    "MobSetTargetMixin",
+    "PlayerSweepAttackMixin",
+    "PlayerTickMixin",
+    "ProjectileImpactMixin"
+  ],
+  "client": [
+    "PlayerRenderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

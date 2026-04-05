@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "Some unique weapons, based on BetterCombat",
+  "authors": [
+    "Fiverka",
+    "Pantoflik"
+  ],
+  "license": "All Rights Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.fiv.fiverkas_weapons.fabric.FiverkasWeaponsFabric"
+    ],
+    "client": [
+      "com.fiv.fiverkas_weapons.fabric.FiverkasWeaponsFabricClient"
+    ]
+  },
+  "mixins": [
+    "fweapons.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "fabric-api": "*",
+    "bettercombat": "*"
+  }
+}
