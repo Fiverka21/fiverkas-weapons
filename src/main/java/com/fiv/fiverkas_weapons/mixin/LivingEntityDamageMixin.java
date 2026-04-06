@@ -7,6 +7,7 @@ import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,8 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityDamageMixin {
+    @Shadow
+    protected abstract void actuallyHurt(DamageSource source, float amount);
+
     @Unique
     private boolean fweapons$rewrappingHurt;
+    @Unique
+    private boolean fweapons$rewrappingActuallyHurt;
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void fweapons$onHurtHead(
@@ -41,9 +47,12 @@ public abstract class LivingEntityDamageMixin {
         }
 
         fweapons$rewrappingHurt = true;
-        boolean result = self.hurt(source, adjusted);
-        fweapons$rewrappingHurt = false;
-        cir.setReturnValue(result);
+        try {
+            boolean result = self.hurt(source, adjusted);
+            cir.setReturnValue(result);
+        } finally {
+            fweapons$rewrappingHurt = false;
+        }
     }
 
     @Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
@@ -53,7 +62,7 @@ public abstract class LivingEntityDamageMixin {
             CallbackInfo ci
     ) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (self.level().isClientSide) {
+        if (self.level().isClientSide || fweapons$rewrappingActuallyHurt) {
             return;
         }
 
@@ -64,10 +73,17 @@ public abstract class LivingEntityDamageMixin {
             ci.cancel();
             return;
         }
-        if (Math.abs(adjusted - amount) > 1.0E-4F) {
-            // Fabric fallback: this hook cannot safely rewrite the internal actuallyHurt amount
-            // without unstable method shadowing across mappings.
+        if (Math.abs(adjusted - amount) <= 1.0E-4F) {
+            return;
         }
+
+        fweapons$rewrappingActuallyHurt = true;
+        try {
+            this.actuallyHurt(source, adjusted);
+        } finally {
+            fweapons$rewrappingActuallyHurt = false;
+        }
+        ci.cancel();
     }
 
     @Inject(method = "actuallyHurt", at = @At("TAIL"))

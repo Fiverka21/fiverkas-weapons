@@ -35,8 +35,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.SpectralArrow;
@@ -64,7 +62,6 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -280,24 +277,6 @@ public class ModCombatEvents {
             return;
         }
         swapPositions(attacker, target);
-    }
-
-    public static void onLivingDrops(LivingDropsEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (entity.level().isClientSide) {
-            return;
-        }
-        if (!(entity instanceof Warden)) {
-            return;
-        }
-        boolean alreadyDropped = event.getDrops().stream()
-                .anyMatch(drop -> drop.getItem().is(ModItems.DREAM_ESSENCE.get()));
-        if (alreadyDropped) {
-            return;
-        }
-        ItemStack essence = new ItemStack(ModItems.DREAM_ESSENCE.get());
-        ItemEntity drop = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), essence);
-        event.getDrops().add(drop);
     }
 
     private static void swapPositions(LivingEntity first, LivingEntity second) {
