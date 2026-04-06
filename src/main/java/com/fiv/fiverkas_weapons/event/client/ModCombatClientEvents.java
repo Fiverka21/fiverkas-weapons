@@ -23,8 +23,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ModCombatClientEvents {
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
@@ -47,8 +50,16 @@ public final class ModCombatClientEvents {
     private static final int IMPACT_FRAME_HEIGHT = 1080;
     private static final long IMPACT_FRAME_DURATION_MS = 1000L;
     private static final float IMPACT_FRAME_SCALE = 1.4F;
+    private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
+    private static final Map<FieldKey, Field> FIELD_CACHE = new ConcurrentHashMap<>();
     private static boolean bayonetImpactFrameActive = false;
     private static long bayonetImpactFrameStartTime = 0L;
+
+    private record MethodKey(Class<?> type, String name) {
+    }
+
+    private record FieldKey(Class<?> type, String name) {
+    }
 
     private ModCombatClientEvents() {
     }
@@ -65,8 +76,8 @@ public final class ModCombatClientEvents {
     }
 
     private static void registerClientRenderHooks() {
-        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
-        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderGuiPost);
+        NeoForge.EVENT_BUS.addListener(RenderPlayerEvent.Pre.class, ModCombatClientEvents::onRenderPlayerPre);
+        NeoForge.EVENT_BUS.addListener(RenderGuiEvent.Post.class, ModCombatClientEvents::onRenderGuiPost);
     }
 
     private static void registerItemProperties() {
@@ -171,11 +182,12 @@ public final class ModCombatClientEvents {
 
                         Object attackHand = args[1];
                         if (attackHand != null) {
-                            if (isBayonetImpactAttack(attackHand)) {
+                            boolean bayonetImpactAttack = isBayonetImpactAttack(attackHand);
+                            if (bayonetImpactAttack) {
                                 PacketDistributor.sendToServer(new BayonetComboAttackPayload());
                                 triggerBayonetImpactFrame();
                             }
-                            if (isBayonetGunshotAttack(attackHand)) {
+                            if (bayonetImpactAttack || isBayonetGunshotAttack(attackHand)) {
                                 spawnBayonetGunshotParticles(player);
                                 PacketDistributor.sendToServer(new BayonetMuzzleFlashPayload());
                             }
@@ -234,7 +246,7 @@ public final class ModCombatClientEvents {
                 return;
             }
 
-            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            Object attack = invokeCached(attackHand, "attack");
             if (attack == null) {
                 return;
             }
@@ -247,18 +259,17 @@ public final class ModCombatClientEvents {
     }
 
     private static void setAttackField(Object attack, String fieldName, Object value) throws ReflectiveOperationException {
-        Field field = attack.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        Field field = getCachedField(attack.getClass(), fieldName);
         field.set(attack, value);
     }
 
     private static boolean isBayonetAttack(Object attackHand) throws ReflectiveOperationException {
-        Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
+        Object attackItem = invokeCached(attackHand, "itemStack");
         return attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.BAYONET.get());
     }
 
     private static boolean isDuskAttack(Object attackHand) throws ReflectiveOperationException {
-        Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
+        Object attackItem = invokeCached(attackHand, "itemStack");
         return attackItem instanceof ItemStack attackStack && attackStack.is(ModItems.DUSK.get());
     }
 
@@ -287,17 +298,17 @@ public final class ModCombatClientEvents {
                 return false;
             }
 
-            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            Object attack = invokeCached(attackHand, "attack");
             if (attack == null) {
                 return false;
             }
 
-            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            Object hitbox = invokeCached(attack, "hitbox");
             if (hitbox == null || !BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())) {
                 return false;
             }
 
-            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            Object animation = invokeCached(attack, "animation");
             if (!BAYONET_GUNSHOT_ANIMATION.equals(animation) && !BAYONET_IMPACT_ANIMATION.equals(animation)) {
                 return false;
             }
@@ -313,17 +324,17 @@ public final class ModCombatClientEvents {
                 return false;
             }
 
-            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            Object attack = invokeCached(attackHand, "attack");
             if (attack == null) {
                 return false;
             }
 
-            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            Object hitbox = invokeCached(attack, "hitbox");
             if (hitbox == null || !BAYONET_GUNSHOT_HITBOX.equals(hitbox.toString())) {
                 return false;
             }
 
-            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            Object animation = invokeCached(attack, "animation");
             return BAYONET_IMPACT_ANIMATION.equals(animation);
         } catch (ReflectiveOperationException ignored) {
             return false;
@@ -336,17 +347,17 @@ public final class ModCombatClientEvents {
                 return false;
             }
 
-            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            Object attack = invokeCached(attackHand, "attack");
             if (attack == null) {
                 return false;
             }
 
-            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            Object hitbox = invokeCached(attack, "hitbox");
             if (hitbox == null || !DUSK_THIRD_HITBOX.equals(hitbox.toString())) {
                 return false;
             }
 
-            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            Object animation = invokeCached(attack, "animation");
             if (!DUSK_THIRD_ANIMATION.equals(animation)) {
                 return false;
             }
@@ -358,26 +369,48 @@ public final class ModCombatClientEvents {
 
     private static boolean isMkopiSlamAttack(Object attackHand) {
         try {
-            Object attackItem = attackHand.getClass().getMethod("itemStack").invoke(attackHand);
+            Object attackItem = invokeCached(attackHand, "itemStack");
             if (!(attackItem instanceof ItemStack attackStack) || !attackStack.is(ModItems.MKOPI.get())) {
                 return false;
             }
 
-            Object attack = attackHand.getClass().getMethod("attack").invoke(attackHand);
+            Object attack = invokeCached(attackHand, "attack");
             if (attack == null) {
                 return false;
             }
 
-            Object hitbox = attack.getClass().getMethod("hitbox").invoke(attack);
+            Object hitbox = invokeCached(attack, "hitbox");
             if (hitbox == null || !MKOPI_SLAM_HITBOX.equals(hitbox.toString())) {
                 return false;
             }
 
-            Object animation = attack.getClass().getMethod("animation").invoke(attack);
+            Object animation = invokeCached(attack, "animation");
             return MKOPI_SLAM_ANIMATION.equals(animation);
         } catch (ReflectiveOperationException ignored) {
             return false;
         }
+    }
+
+    private static Object invokeCached(Object target, String methodName) throws ReflectiveOperationException {
+        MethodKey key = new MethodKey(target.getClass(), methodName);
+        Method method = METHOD_CACHE.get(key);
+        if (method == null) {
+            method = target.getClass().getMethod(methodName);
+            method.setAccessible(true);
+            METHOD_CACHE.put(key, method);
+        }
+        return method.invoke(target);
+    }
+
+    private static Field getCachedField(Class<?> type, String fieldName) throws ReflectiveOperationException {
+        FieldKey key = new FieldKey(type, fieldName);
+        Field field = FIELD_CACHE.get(key);
+        if (field == null) {
+            field = type.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            FIELD_CACHE.put(key, field);
+        }
+        return field;
     }
 
     private static void spawnBayonetGunshotParticles(LocalPlayer player) {

@@ -5,19 +5,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class SimpleEventBus implements IEventBus {
-    private final List<Consumer<Object>> listeners = new CopyOnWriteArrayList<>();
+    private final List<Listener<?>> listeners = new CopyOnWriteArrayList<>();
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> void addListener(Consumer<T> listener) {
-        listeners.add((Consumer<Object>) listener);
+    public <T> void addListener(Class<T> eventType, Consumer<? super T> listener) {
+        listeners.add(new Listener<>(eventType, listener));
     }
 
     public void post(Object event) {
-        for (Consumer<Object> listener : listeners) {
-            try {
-                listener.accept(event);
-            } catch (ClassCastException ignored) {
+        for (Listener<?> listener : listeners) {
+            listener.dispatch(event);
+        }
+    }
+
+    private record Listener<T>(Class<T> eventType, Consumer<? super T> listener) {
+        private void dispatch(Object event) {
+            if (eventType.isInstance(event)) {
+                listener.accept(eventType.cast(event));
             }
         }
     }

@@ -12,6 +12,11 @@
 # Local publish/output scratch
 /repo/
 
+# Accidental top-level extracted artifacts
+/net/
+/assets/
+/data/
+
 # IntelliJ
 /.idea/
 /*.iml

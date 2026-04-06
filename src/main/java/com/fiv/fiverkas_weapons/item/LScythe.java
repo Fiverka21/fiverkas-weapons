@@ -1,6 +1,5 @@
 package com.fiv.fiverkas_weapons.item;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -153,8 +152,16 @@ public class LScythe extends AnimatedGradientSwordItem {
         if (candidates.isEmpty()) {
             return null;
         }
-        candidates.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(current)));
-        return candidates.get(0);
+        LivingEntity nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (LivingEntity candidate : candidates) {
+            double distance = candidate.distanceToSqr(current);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = candidate;
+            }
+        }
+        return nearest;
     }
 
     private static double getChainRadius(ServerLevel level) {
