@@ -211,9 +211,14 @@ public class ModCombatEvents {
             return;
         }
         LivingEntity attacker = event.getEntity();
+        if (!isRelevantSpecialAttackWeapon(attacker)) {
+            return;
+        }
+
+        boolean holdingAirmace = isHoldingAirmace(attacker);
         BetterCombatAttackInfo attackInfo = getBetterCombatAttackInfo(attacker);
         boolean isAirmaceAttack = isAirmaceAttack(attackInfo);
-        if (isAirmaceAttack || isHoldingAirmace(attacker)) {
+        if (isAirmaceAttack || holdingAirmace) {
             recordAirmaceSmash(attacker);
         }
 
@@ -1377,6 +1382,31 @@ public class ModCombatEvents {
         return matchesBetterCombatAttack(info, ModItems.AIRMACE.get(), null, null);
     }
 
+    private static boolean isRelevantSpecialAttackWeapon(LivingEntity attacker) {
+        if (isRelevantSpecialAttackWeapon(attacker.getMainHandItem())
+                || isRelevantSpecialAttackWeapon(attacker.getOffhandItem())) {
+            return true;
+        }
+        if (attacker instanceof ServerPlayer player) {
+            EnumMap<ClientAttackFlag, Long> flags = CLIENT_ATTACK_FLAGS.get(player.getUUID());
+            if (flags != null && !flags.isEmpty()) {
+                return true;
+            }
+        }
+        ItemStack weaponItem = attacker.getWeaponItem();
+        return weaponItem != null && isRelevantSpecialAttackWeapon(weaponItem);
+    }
+
+    private static boolean isRelevantSpecialAttackWeapon(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        return stack.is(ModItems.AIRMACE.get())
+                || stack.is(ModItems.MKOPI.get())
+                || stack.is(ModItems.BAYONET.get())
+                || stack.is(ModItems.DUSK.get());
+    }
+
     private static boolean isHoldingBayonet(LivingEntity attacker) {
         return attacker.getMainHandItem().is(ModItems.BAYONET.get())
                 || attacker.getOffhandItem().is(ModItems.BAYONET.get());
@@ -1571,12 +1601,21 @@ public class ModCombatEvents {
             double z,
             ParticleSpec[] specs
     ) {
+        if (specs.length == 0) {
+            return;
+        }
         ServerPlayer attackerPlayer = attacker instanceof ServerPlayer player ? player : null;
-        for (ServerPlayer player : serverLevel.players()) {
-            if (attackerPlayer != null && player == attackerPlayer) {
-                continue;
-            }
-            for (ParticleSpec spec : specs) {
+        List<ServerPlayer> viewers = serverLevel.players();
+        int eligibleViewers = viewers.size() - (attackerPlayer == null ? 0 : 1);
+        if (eligibleViewers <= 0) {
+            return;
+        }
+
+        for (ParticleSpec spec : specs) {
+            for (ServerPlayer player : viewers) {
+                if (attackerPlayer != null && player == attackerPlayer) {
+                    continue;
+                }
                 serverLevel.sendParticles(
                         player,
                         spec.particle,
@@ -1614,13 +1653,16 @@ public class ModCombatEvents {
             double dx = random.nextGaussian();
             double dy = random.nextGaussian() * 0.6D;
             double dz = random.nextGaussian();
-            Vec3 direction = new Vec3(dx, dy, dz);
-            if (direction.lengthSqr() < 1.0E-6) {
+            double lengthSq = dx * dx + dy * dy + dz * dz;
+            if (lengthSq < 1.0E-6D) {
                 continue;
             }
-            direction = direction.normalize();
+            double invLength = 1.0D / Math.sqrt(lengthSq);
+            dx *= invLength;
+            dy *= invLength;
+            dz *= invLength;
             DustParticleOptions particle = (i & 1) == 0 ? AIRMACE_LIGHT_YELLOW : AIRMACE_BLAND_CYAN;
-            serverLevel.sendParticles(particle, x, y, z, 0, direction.x, direction.y, direction.z, burstSpeed);
+            serverLevel.sendParticles(particle, x, y, z, 0, dx, dy, dz, burstSpeed);
         }
     }
 

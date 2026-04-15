@@ -13,6 +13,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
+import java.util.List;
+
 public class CeruleanShroudEffect extends MobEffect {
     private static final Vector3f BLUE = Vec3.fromRGB24(0x0000FF).toVector3f();
     private static final DustParticleOptions BLUE_DUST = new DustParticleOptions(BLUE, 1.3F);
@@ -90,13 +92,16 @@ public class CeruleanShroudEffect extends MobEffect {
 
         double progress = data.getDouble(STEP_PROGRESS_TAG);
         progress += dist;
-        while (progress >= STEP_DISTANCE) {
-            progress -= STEP_DISTANCE;
+        int emitSteps = (int) (progress / STEP_DISTANCE);
+        if (emitSteps > 0) {
+            progress -= emitSteps * STEP_DISTANCE;
             double x = entity.getX();
             double y = entity.getY() + 0.05D;
             double z = entity.getZ();
             double xzSpread = Math.max(0.1D, entity.getBbWidth() * 0.32D);
-            for (ServerPlayer viewer : serverLevel.players()) {
+            int particleCount = emitSteps * STEP_PARTICLE_COUNT;
+            List<ServerPlayer> viewers = serverLevel.players();
+            for (ServerPlayer viewer : viewers) {
                 serverLevel.sendParticles(
                         viewer,
                         BLUE_DUST,
@@ -104,7 +109,7 @@ public class CeruleanShroudEffect extends MobEffect {
                         x,
                         y,
                         z,
-                        STEP_PARTICLE_COUNT,
+                        particleCount,
                         xzSpread,
                         0.02D,
                         xzSpread,
