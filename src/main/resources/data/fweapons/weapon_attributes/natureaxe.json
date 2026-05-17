@@ -29,6 +29,7 @@
     "attacks": [
       {
         "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1.1,
         "angle": 90,
         "upswing": 0.3,
         "animation": "bettercombat:one_handed_slash_horizontal_right",
@@ -38,6 +39,7 @@
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1.1,
         "angle": 90,
         "upswing": 0.3,
         "animation": "bettercombat:one_handed_slash_horizontal_left",

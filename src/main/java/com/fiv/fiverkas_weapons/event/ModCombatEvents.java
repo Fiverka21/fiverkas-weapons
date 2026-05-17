@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
@@ -452,6 +453,7 @@ public class ModCombatEvents {
         if (event.getNewDamage() <= 0.0F) {
             return;
         }
+        applyHcbowProjectileDamageBonus(event);
         if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
             return;
         }
@@ -499,6 +501,18 @@ public class ModCombatEvents {
         if (adjusted != event.getNewDamage()) {
             event.setNewDamage(adjusted);
         }
+    }
+
+    private static void applyHcbowProjectileDamageBonus(LivingDamageEvent.Pre event) {
+        if (!isHcbowProjectileDamageSource(event.getSource())) {
+            return;
+        }
+        event.setNewDamage(event.getNewDamage() * HCBowItem.DAMAGE_MULTIPLIER);
+    }
+
+    private static boolean isHcbowProjectileDamageSource(DamageSource source) {
+        Entity direct = source.getDirectEntity();
+        return direct != null && direct.getPersistentData().getBoolean(HCBowItem.PROJECTILE_DAMAGE_TAG);
     }
 
     public static void onSweepAttack(SweepAttackEvent event) {

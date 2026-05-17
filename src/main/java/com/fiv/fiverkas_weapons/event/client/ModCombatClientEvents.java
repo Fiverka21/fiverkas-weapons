@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.event.client;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
+import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.network.BayonetComboAttackPayload;
 import com.fiv.fiverkas_weapons.network.BayonetMuzzleFlashPayload;
 import com.fiv.fiverkas_weapons.network.ClientAttackFlagPayload;
@@ -9,10 +10,14 @@ import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
@@ -95,6 +100,45 @@ public final class ModCombatClientEvents {
                 ResourceLocation.withDefaultNamespace("pulling"),
                 (stack, level, entity, seed) ->
                         entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
+        );
+        ItemProperties.register(
+                ModItems.HCBOW.get(),
+                ResourceLocation.withDefaultNamespace("pull"),
+                (stack, level, entity, seed) -> {
+                    if (entity == null) {
+                        return 0.0F;
+                    }
+                    return CrossbowItem.isCharged(stack)
+                            ? 0.0F
+                            : (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks())
+                            / (float) HCBowItem.getChargeDuration(stack, entity);
+                }
+        );
+        ItemProperties.register(
+                ModItems.HCBOW.get(),
+                ResourceLocation.withDefaultNamespace("pulling"),
+                (stack, level, entity, seed) ->
+                        entity != null
+                                && entity.isUsingItem()
+                                && entity.getUseItem() == stack
+                                && !CrossbowItem.isCharged(stack)
+                                ? 1.0F
+                                : 0.0F
+        );
+        ItemProperties.register(
+                ModItems.HCBOW.get(),
+                ResourceLocation.withDefaultNamespace("charged"),
+                (stack, level, entity, seed) -> CrossbowItem.isCharged(stack) ? 1.0F : 0.0F
+        );
+        ItemProperties.register(
+                ModItems.HCBOW.get(),
+                ResourceLocation.withDefaultNamespace("firework"),
+                (stack, level, entity, seed) -> {
+                    ChargedProjectiles chargedProjectiles = stack.get(DataComponents.CHARGED_PROJECTILES);
+                    return chargedProjectiles != null && chargedProjectiles.contains(Items.FIREWORK_ROCKET)
+                            ? 1.0F
+                            : 0.0F;
+                }
         );
     }
 
