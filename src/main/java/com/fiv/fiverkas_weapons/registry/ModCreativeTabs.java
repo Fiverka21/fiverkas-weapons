@@ -20,6 +20,7 @@ public class ModCreativeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.VAPORWAVE_SWORD.get());
                         output.accept(ModItems.SACRILEGIOUS.get());
+                        output.accept(ModItems.ANTEM.get());
                         output.accept(ModItems.MKOPI.get());
                         output.accept(ModItems.BAYONET.get());
                         output.accept(ModItems.BLUE_KATANA.get());
@@ -29,6 +30,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.DUSK.get());
                         output.accept(ModItems.LSCYTHE.get());
                         output.accept(ModItems.THE_FOOL.get());
+                        output.accept(ModItems.HCBOW.get());
                         output.accept(ModItems.GBLUEPRINT.get());
                         output.accept(ModItems.DREAM_ESSENCE.get());
                     })
