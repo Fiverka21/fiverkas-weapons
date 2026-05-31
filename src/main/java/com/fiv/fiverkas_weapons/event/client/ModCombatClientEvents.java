@@ -19,6 +19,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +31,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Axis;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -42,11 +44,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class ModCombatClientEvents {
     private static final int ANTEM_THIRD_PATTERN_INDEX = 2;
     private static final int ANTEM_FOURTH_PATTERN_INDEX = 3;
+    private static final int ANTEM_SEVENTH_PATTERN_INDEX = 6;
     private static final long ANTEM_HEAT_TIMEOUT_MS = 2000L;
     private static final String ANTEM_PATTERN_RESOURCE_PATH =
             "data/" + FiverkasWeapons.MODID + "/weapon_attributes/antem.json";
@@ -59,12 +63,17 @@ public final class ModCombatClientEvents {
     private static final String DUSK_THIRD_HITBOX = "FORWARD_BOX";
     private static final String TRAIL_PARTICLE_TYPE_NONE = "none";
     private static final int BURST_COUNT = 18;
+    private static final int ANTEM_FIRE_PARTICLE_COUNT = 48;
+    private static final int ANTEM_WIND_PARTICLE_COUNT = 24;
+    private static final double MKOPI_RENDER_SHAKE_TRANSLATE = 0.055D;
+    private static final float MKOPI_RENDER_SHAKE_ROTATE_DEGREES = 3.2F;
     private static final List<?> NO_TRAIL_PARTICLES = createNoTrailParticles();
     private static final List<AttackSignature> ANTEM_ATTACK_PATTERN = loadAntemAttackPattern();
     private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
     private static final Map<Integer, AntemPatternState> ANTEM_PATTERN_STATES = new ConcurrentHashMap<>();
     private static final Map<Integer, Boolean> ANTEM_HEAT_ACTIVE = new ConcurrentHashMap<>();
     private static final Map<Integer, Long> ANTEM_HEAT_STARTED_AT_MS = new ConcurrentHashMap<>();
+    private static final Set<Integer> MKOPI_SHAKE_RENDER_PUSHED = ConcurrentHashMap.newKeySet();
     private static final ResourceLocation[] IMPACT_FRAMES = {
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame0.png"),
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame1.png"),
@@ -113,6 +122,7 @@ public final class ModCombatClientEvents {
 
     private static void registerClientRenderHooks() {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
+        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPost);
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderGuiPost);
     }
 
@@ -188,7 +198,37 @@ public final class ModCombatClientEvents {
     private static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
         if (event.getEntity().hasEffect(ModEffects.CERULEAN_SHROUD)) {
             event.setCanceled(true);
+            return;
         }
+        if (isUsingMkopi(event.getEntity())) {
+            applyMkopiRenderShake(event);
+        }
+    }
+
+    private static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
+        if (MKOPI_SHAKE_RENDER_PUSHED.remove(event.getEntity().getId())) {
+            event.getPoseStack().popPose();
+        }
+    }
+
+    private static boolean isUsingMkopi(Player player) {
+        return player.isUsingItem() && player.getUseItem().is(ModItems.MKOPI.get());
+    }
+
+    private static void applyMkopiRenderShake(RenderPlayerEvent.Pre event) {
+        Player player = event.getEntity();
+        float time = (float) player.tickCount + event.getPartialTick();
+        double x = Math.sin(time * 3.9F) * MKOPI_RENDER_SHAKE_TRANSLATE;
+        double y = Math.sin(time * 5.1F) * MKOPI_RENDER_SHAKE_TRANSLATE * 0.45D;
+        double z = Math.cos(time * 4.4F) * MKOPI_RENDER_SHAKE_TRANSLATE;
+        float zRot = (float) Math.sin(time * 5.7F) * MKOPI_RENDER_SHAKE_ROTATE_DEGREES;
+        float xRot = (float) Math.cos(time * 4.8F) * MKOPI_RENDER_SHAKE_ROTATE_DEGREES * 0.55F;
+
+        event.getPoseStack().pushPose();
+        event.getPoseStack().translate(x, y, z);
+        event.getPoseStack().mulPose(Axis.ZP.rotationDegrees(zRot));
+        event.getPoseStack().mulPose(Axis.XP.rotationDegrees(xRot));
+        MKOPI_SHAKE_RENDER_PUSHED.add(player.getId());
     }
 
     public static void triggerBayonetImpactFrame() {
@@ -282,7 +322,13 @@ public final class ModCombatClientEvents {
                                 PacketDistributor.sendToServer(new BayonetComboAttackPayload());
                                 triggerBayonetImpactFrame();
                             }
-                            updateAntemPatternState(player, attackInfo);
+                            int antemPatternIndex = updateAntemPatternState(player, attackInfo);
+                            if (antemPatternIndex == ANTEM_THIRD_PATTERN_INDEX) {
+                                spawnAntemFireParticles(player);
+                            }
+                            if (antemPatternIndex == ANTEM_SEVENTH_PATTERN_INDEX) {
+                                spawnAntemWindParticles(player);
+                            }
                             if (isBayonetGunshotAttack(attackInfo)) {
                                 spawnBayonetGunshotParticles(player);
                                 PacketDistributor.sendToServer(new BayonetMuzzleFlashPayload());
@@ -383,9 +429,9 @@ public final class ModCombatClientEvents {
         return true;
     }
 
-    private static void updateAntemPatternState(LivingEntity entity, AttackHandInfo attackInfo) {
+    private static int updateAntemPatternState(LivingEntity entity, AttackHandInfo attackInfo) {
         if (ANTEM_ATTACK_PATTERN.size() <= ANTEM_THIRD_PATTERN_INDEX) {
-            return;
+            return -1;
         }
 
         int entityId = entity.getId();
@@ -394,7 +440,7 @@ public final class ModCombatClientEvents {
         if (attackInfo == null || attackInfo.attack() == null || !attackInfo.stack().is(ModItems.ANTEM.get())) {
             state.reset();
             ANTEM_HEAT_ACTIVE.put(entityId, wasHeatActive);
-            return;
+            return -1;
         }
 
         AttackSignature signature = new AttackSignature(attackInfo.hitbox(), attackInfo.animation());
@@ -414,6 +460,7 @@ public final class ModCombatClientEvents {
         }
 
         ANTEM_HEAT_ACTIVE.put(entityId, state.heatActive);
+        return nextPatternIndex;
     }
 
     private static boolean isPatternIndexMatch(int index, int expectedIndex, AttackSignature signature) {
@@ -583,6 +630,53 @@ public final class ModCombatClientEvents {
             return false;
         }
         return MKOPI_SLAM_ANIMATION.equals(attackInfo.animation());
+    }
+
+    private static void spawnAntemFireParticles(LocalPlayer player) {
+        RandomSource random = player.getRandom();
+        double y = player.getY() + 1.0D;
+
+        for (int i = 0; i < ANTEM_FIRE_PARTICLE_COUNT; i++) {
+            double angle = (Math.PI * 2.0D * i) / ANTEM_FIRE_PARTICLE_COUNT;
+            double radius = 0.65D + random.nextDouble() * 0.55D;
+            double x = player.getX() + Math.cos(angle) * radius;
+            double z = player.getZ() + Math.sin(angle) * radius;
+            double velocityScale = 0.045D + random.nextDouble() * 0.035D;
+            double dx = Math.cos(angle) * velocityScale;
+            double dz = Math.sin(angle) * velocityScale;
+            double dy = 0.03D + random.nextDouble() * 0.06D;
+
+            player.level().addParticle(ParticleTypes.FLAME, x, y + random.nextDouble() * 0.5D, z, dx, dy, dz);
+            if ((i & 1) == 0) {
+                player.level().addParticle(ParticleTypes.SMALL_FLAME, x, y + 0.25D, z, dx * 0.7D, dy, dz * 0.7D);
+            }
+            if (i % 3 == 0) {
+                player.level().addParticle(ParticleTypes.LAVA, x, y - 0.15D, z, dx * 0.2D, 0.02D, dz * 0.2D);
+            }
+        }
+    }
+
+    private static void spawnAntemWindParticles(LocalPlayer player) {
+        RandomSource random = player.getRandom();
+        double y = player.getY() + 0.8D;
+
+        player.level().addParticle(ParticleTypes.GUST_EMITTER_SMALL, player.getX(), y + 0.4D, player.getZ(), 0.0D, 0.0D, 0.0D);
+
+        for (int i = 0; i < ANTEM_WIND_PARTICLE_COUNT; i++) {
+            double angle = (Math.PI * 2.0D * i) / ANTEM_WIND_PARTICLE_COUNT;
+            double radius = 0.45D + random.nextDouble() * 1.0D;
+            double x = player.getX() + Math.cos(angle) * radius;
+            double z = player.getZ() + Math.sin(angle) * radius;
+            double velocityScale = 0.08D + random.nextDouble() * 0.08D;
+            double dx = Math.cos(angle) * velocityScale;
+            double dz = Math.sin(angle) * velocityScale;
+            double dy = 0.02D + random.nextDouble() * 0.04D;
+
+            player.level().addParticle(ParticleTypes.SMALL_GUST, x, y + random.nextDouble() * 0.7D, z, dx, dy, dz);
+            if (i % 4 == 0) {
+                player.level().addParticle(ParticleTypes.CLOUD, x, y + 0.15D, z, dx * 0.25D, 0.0D, dz * 0.25D);
+            }
+        }
     }
 
     private static void spawnBayonetGunshotParticles(LocalPlayer player) {

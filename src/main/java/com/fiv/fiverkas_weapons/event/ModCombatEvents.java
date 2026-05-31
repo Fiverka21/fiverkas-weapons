@@ -4,6 +4,7 @@ import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
 import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.item.LScythe;
+import com.fiv.fiverkas_weapons.item.Mkopi;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
@@ -645,6 +646,7 @@ public class ModCombatEvents {
         }
         if (player.level() instanceof ServerLevel serverLevel) {
             LScythe.tickDashTrail(serverLevel, player);
+            Mkopi.tickDestinationParticles(serverLevel, player);
         }
         if (player instanceof ServerPlayer serverPlayer) {
             pruneExpiredAttackFlags(serverPlayer);
