@@ -1,5 +1,9 @@
 package com.fiv.fiverkas_weapons.event.client;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.item.HCBowItem;
@@ -14,6 +18,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -30,11 +35,21 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class ModCombatClientEvents {
+    private static final int ANTEM_THIRD_PATTERN_INDEX = 2;
+    private static final int ANTEM_FOURTH_PATTERN_INDEX = 3;
+    private static final long ANTEM_HEAT_TIMEOUT_MS = 2000L;
+    private static final String ANTEM_PATTERN_RESOURCE_PATH =
+            "data/" + FiverkasWeapons.MODID + "/weapon_attributes/antem.json";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
     private static final String BAYONET_IMPACT_ANIMATION = "fweapons:bayonet_impact";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
@@ -45,7 +60,11 @@ public final class ModCombatClientEvents {
     private static final String TRAIL_PARTICLE_TYPE_NONE = "none";
     private static final int BURST_COUNT = 18;
     private static final List<?> NO_TRAIL_PARTICLES = createNoTrailParticles();
+    private static final List<AttackSignature> ANTEM_ATTACK_PATTERN = loadAntemAttackPattern();
     private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, AntemPatternState> ANTEM_PATTERN_STATES = new ConcurrentHashMap<>();
+    private static final Map<Integer, Boolean> ANTEM_HEAT_ACTIVE = new ConcurrentHashMap<>();
+    private static final Map<Integer, Long> ANTEM_HEAT_STARTED_AT_MS = new ConcurrentHashMap<>();
     private static final ResourceLocation[] IMPACT_FRAMES = {
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame0.png"),
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame1.png"),
@@ -63,6 +82,19 @@ public final class ModCombatClientEvents {
     }
 
     private record AttackHandInfo(ItemStack stack, Object attack, String hitbox, String animation) {
+    }
+
+    private record AttackSignature(String hitbox, String animation) {
+    }
+
+    private static final class AntemPatternState {
+        private int patternIndex = -1;
+        private boolean heatActive = false;
+
+        private void reset() {
+            patternIndex = -1;
+            heatActive = false;
+        }
     }
 
     private ModCombatClientEvents() {
@@ -139,6 +171,17 @@ public final class ModCombatClientEvents {
                             ? 1.0F
                             : 0.0F;
                 }
+        );
+        ItemProperties.register(
+                ModItems.ANTEM.get(),
+                ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "antem_heat"),
+                (stack, level, entity, seed) -> isAntemHeatActive(stack, entity) ? 1.0F : 0.0F
+        );
+        ItemProperties.register(
+                ModItems.DSHIELD.get(),
+                ResourceLocation.withDefaultNamespace("blocking"),
+                (stack, level, entity, seed) ->
+                        entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
         );
     }
 
@@ -239,6 +282,7 @@ public final class ModCombatClientEvents {
                                 PacketDistributor.sendToServer(new BayonetComboAttackPayload());
                                 triggerBayonetImpactFrame();
                             }
+                            updateAntemPatternState(player, attackInfo);
                             if (isBayonetGunshotAttack(attackInfo)) {
                                 spawnBayonetGunshotParticles(player);
                                 PacketDistributor.sendToServer(new BayonetMuzzleFlashPayload());
@@ -313,6 +357,134 @@ public final class ModCombatClientEvents {
         Field field = attack.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(attack, value);
+    }
+
+    private static boolean isAntemHeatActive(ItemStack stack, Object entity) {
+        if (!(entity instanceof LivingEntity livingEntity) || !stack.is(ModItems.ANTEM.get())) {
+            return false;
+        }
+        if (ANTEM_ATTACK_PATTERN.size() <= ANTEM_THIRD_PATTERN_INDEX) {
+            return false;
+        }
+        int entityId = livingEntity.getId();
+        if (!ANTEM_HEAT_ACTIVE.getOrDefault(entityId, false)) {
+            return false;
+        }
+        Long startedAtMs = ANTEM_HEAT_STARTED_AT_MS.get(entityId);
+        if (startedAtMs == null) {
+            ANTEM_HEAT_ACTIVE.put(entityId, false);
+            return false;
+        }
+        if (System.currentTimeMillis() - startedAtMs >= ANTEM_HEAT_TIMEOUT_MS) {
+            ANTEM_HEAT_ACTIVE.put(entityId, false);
+            ANTEM_HEAT_STARTED_AT_MS.remove(entityId);
+            return false;
+        }
+        return true;
+    }
+
+    private static void updateAntemPatternState(LivingEntity entity, AttackHandInfo attackInfo) {
+        if (ANTEM_ATTACK_PATTERN.size() <= ANTEM_THIRD_PATTERN_INDEX) {
+            return;
+        }
+
+        int entityId = entity.getId();
+        AntemPatternState state = ANTEM_PATTERN_STATES.computeIfAbsent(entityId, id -> new AntemPatternState());
+        boolean wasHeatActive = state.heatActive;
+        if (attackInfo == null || attackInfo.attack() == null || !attackInfo.stack().is(ModItems.ANTEM.get())) {
+            state.reset();
+            ANTEM_HEAT_ACTIVE.put(entityId, wasHeatActive);
+            return;
+        }
+
+        AttackSignature signature = new AttackSignature(attackInfo.hitbox(), attackInfo.animation());
+        int nextPatternIndex = advanceAntemPattern(state.patternIndex, signature);
+
+        state.patternIndex = nextPatternIndex;
+
+        if (wasHeatActive && isPatternIndexMatch(nextPatternIndex, ANTEM_FOURTH_PATTERN_INDEX, signature)) {
+            // Heat window closes on the normal 4th attack start.
+            state.heatActive = false;
+            ANTEM_HEAT_STARTED_AT_MS.remove(entityId);
+        }
+
+        if (!state.heatActive && isPatternIndexMatch(nextPatternIndex, ANTEM_THIRD_PATTERN_INDEX, signature)) {
+            state.heatActive = true;
+            ANTEM_HEAT_STARTED_AT_MS.put(entityId, System.currentTimeMillis());
+        }
+
+        ANTEM_HEAT_ACTIVE.put(entityId, state.heatActive);
+    }
+
+    private static boolean isPatternIndexMatch(int index, int expectedIndex, AttackSignature signature) {
+        return index == expectedIndex
+                && ANTEM_ATTACK_PATTERN.size() > expectedIndex
+                && matchesAttackSignature(signature, ANTEM_ATTACK_PATTERN.get(expectedIndex));
+    }
+
+    private static int advanceAntemPattern(int currentPatternIndex, AttackSignature signature) {
+        int patternSize = ANTEM_ATTACK_PATTERN.size();
+        if (patternSize == 0 || signature == null) {
+            return -1;
+        }
+
+        int expectedNextIndex = (currentPatternIndex + 1) % patternSize;
+        if (matchesAttackSignature(signature, ANTEM_ATTACK_PATTERN.get(expectedNextIndex))) {
+            return expectedNextIndex;
+        }
+        if (matchesAttackSignature(signature, ANTEM_ATTACK_PATTERN.get(0))) {
+            return 0;
+        }
+        return -1;
+    }
+
+    private static boolean matchesAttackSignature(AttackSignature left, AttackSignature right) {
+        if (left == null || right == null) {
+            return false;
+        }
+        return Objects.equals(left.hitbox(), right.hitbox())
+                && Objects.equals(left.animation(), right.animation());
+    }
+
+    private static List<AttackSignature> loadAntemAttackPattern() {
+        try (InputStream stream = ModCombatClientEvents.class.getClassLoader()
+                .getResourceAsStream(ANTEM_PATTERN_RESOURCE_PATH)) {
+            if (stream == null) {
+                return List.of();
+            }
+            JsonElement rootElement = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+            if (!rootElement.isJsonObject()) {
+                return List.of();
+            }
+            JsonObject root = rootElement.getAsJsonObject();
+            JsonObject attributes = root.getAsJsonObject("attributes");
+            if (attributes == null) {
+                return List.of();
+            }
+            JsonArray attacks = attributes.getAsJsonArray("attacks");
+            if (attacks == null) {
+                return List.of();
+            }
+
+            List<AttackSignature> pattern = new ArrayList<>(attacks.size());
+            for (JsonElement attackElement : attacks) {
+                if (!attackElement.isJsonObject()) {
+                    continue;
+                }
+                JsonObject attack = attackElement.getAsJsonObject();
+                String hitbox = readJsonString(attack, "hitbox");
+                String animation = readJsonString(attack, "animation");
+                pattern.add(new AttackSignature(hitbox, animation));
+            }
+            return pattern;
+        } catch (RuntimeException | java.io.IOException ignored) {
+            return List.of();
+        }
+    }
+
+    private static String readJsonString(JsonObject json, String key) {
+        JsonElement element = json.get(key);
+        return element != null && element.isJsonPrimitive() ? element.getAsString() : null;
     }
 
     private static Object invokeCached(Object target, String methodName) throws ReflectiveOperationException {

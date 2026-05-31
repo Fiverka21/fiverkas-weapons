@@ -5,6 +5,7 @@ import com.fiv.fiverkas_weapons.item.Airmace;
 import com.fiv.fiverkas_weapons.item.AnimatedGradientItem;
 import com.fiv.fiverkas_weapons.item.Bayonet;
 import com.fiv.fiverkas_weapons.item.BlueKatana;
+import com.fiv.fiverkas_weapons.item.DShieldItem;
 import com.fiv.fiverkas_weapons.item.Dawn;
 import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
@@ -17,10 +18,12 @@ import com.fiv.fiverkas_weapons.item.TheFoolBow;
 import com.fiv.fiverkas_weapons.item.VaporwaveSword;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -168,4 +171,12 @@ public class ModItems {
     public static final DeferredHolder<Item, Item> ICON =
             ITEMS.register("icon",
                     () -> new Item(new Item.Properties()));
+
+    public static final DeferredHolder<Item, DShieldItem> DSHIELD =
+            ITEMS.register("dshield",
+                    () -> new DShieldItem(
+                            new Item.Properties()
+                                    .durability(672)
+                                    .component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)
+                    ));
 }
