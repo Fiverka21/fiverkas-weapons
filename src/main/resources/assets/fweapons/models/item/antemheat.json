@@ -1,0 +1,6 @@
+{
+  "parent": "fweapons:item/antem",
+  "textures": {
+    "layer0": "fweapons:item/antemheat"
+  }
+}

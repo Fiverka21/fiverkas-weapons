@@ -101,6 +101,11 @@ public class ModCombatEvents {
     private static final long CLIENT_ATTACK_FLAG_WINDOW_TICKS = 8L;
     private static final int THE_FOOL_SPECTRAL_DURATION_TICKS = 200;
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
+    private static final int ANTEM_FIRE_COMBO_INDEX = 4;
+    private static final int ANTEM_KNOCKBACK_COMBO_INDEX = 7;
+    private static final float ANTEM_FIRE_SECONDS = 4.0F;
+    private static final double ANTEM_BASE_KNOCKBACK = 0.4D;
+    private static final double ANTEM_KNOCKBACK_MULTIPLIER = 8.0D;
     private static final Map<UUID, EnumMap<ClientAttackFlag, Long>> CLIENT_ATTACK_FLAGS = new HashMap<>();
     private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
     private static final Field ARROW_IN_GROUND_FIELD = resolveArrowField("inGround");
@@ -176,7 +181,7 @@ public class ModCombatEvents {
     private record MethodKey(Class<?> type, String name) {
     }
 
-    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation) {
+    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation, int comboCurrent) {
     }
 
     public enum ClientAttackFlag {
@@ -218,6 +223,7 @@ public class ModCombatEvents {
 
         boolean holdingAirmace = isHoldingAirmace(attacker);
         BetterCombatAttackInfo attackInfo = getBetterCombatAttackInfo(attacker);
+        applyAntemComboEffects(target, attacker, attackInfo);
         boolean isAirmaceAttack = isAirmaceAttack(attackInfo);
         if (isAirmaceAttack || holdingAirmace) {
             recordAirmaceSmash(attacker);
@@ -1323,14 +1329,37 @@ public class ModCombatEvents {
                 return null;
             }
             Object attack = invokeCached(currentAttack, "attack");
+            Object combo = invokeCached(currentAttack, "combo");
+            int comboCurrent = 0;
+            if (combo != null) {
+                Object comboCurrentValue = invokeCached(combo, "current");
+                if (comboCurrentValue instanceof Number number) {
+                    comboCurrent = number.intValue();
+                }
+            }
             if (attack == null) {
-                return new BetterCombatAttackInfo(attackStack, null, null);
+                return new BetterCombatAttackInfo(attackStack, null, null, comboCurrent);
             }
             Object hitbox = invokeCached(attack, "hitbox");
             Object animation = invokeCached(attack, "animation");
-            return new BetterCombatAttackInfo(attackStack, hitbox, animation);
+            return new BetterCombatAttackInfo(attackStack, hitbox, animation, comboCurrent);
         } catch (ReflectiveOperationException ignored) {
             return null;
+        }
+    }
+
+    private static void applyAntemComboEffects(LivingEntity target, LivingEntity attacker, BetterCombatAttackInfo info) {
+        if (info == null || !info.stack().is(ModItems.ANTEM.get())) {
+            return;
+        }
+
+        int comboIndex = info.comboCurrent();
+        if (comboIndex == ANTEM_FIRE_COMBO_INDEX) {
+            target.igniteForSeconds(ANTEM_FIRE_SECONDS);
+        }
+        if (comboIndex == ANTEM_KNOCKBACK_COMBO_INDEX) {
+            double strength = ANTEM_BASE_KNOCKBACK * ANTEM_KNOCKBACK_MULTIPLIER;
+            target.knockback(strength, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
     }
 
@@ -1418,7 +1447,8 @@ public class ModCombatEvents {
         return stack.is(ModItems.AIRMACE.get())
                 || stack.is(ModItems.MKOPI.get())
                 || stack.is(ModItems.BAYONET.get())
-                || stack.is(ModItems.DUSK.get());
+                || stack.is(ModItems.DUSK.get())
+                || stack.is(ModItems.ANTEM.get());
     }
 
     private static boolean isHoldingBayonet(LivingEntity attacker) {
