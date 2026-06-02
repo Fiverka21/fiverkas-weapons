@@ -8,6 +8,10 @@ import com.fiv.fiverkas_weapons.item.Mkopi;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
@@ -74,6 +78,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.lang.reflect.Field;
@@ -82,6 +89,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,11 +110,15 @@ public class ModCombatEvents {
     private static final long CLIENT_ATTACK_FLAG_WINDOW_TICKS = 8L;
     private static final int THE_FOOL_SPECTRAL_DURATION_TICKS = 200;
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
-    private static final int ANTEM_FIRE_COMBO_INDEX = 4;
-    private static final int ANTEM_KNOCKBACK_COMBO_INDEX = 7;
+    // Zero-based indices into data/fweapons/weapon_attributes/antem.json attacks.
+    private static final int ANTEM_FIRE_PATTERN_INDEX = 2;
+    private static final int ANTEM_KNOCKBACK_PATTERN_INDEX = 6;
     private static final float ANTEM_FIRE_SECONDS = 4.0F;
     private static final double ANTEM_BASE_KNOCKBACK = 0.4D;
     private static final double ANTEM_KNOCKBACK_MULTIPLIER = 8.0D;
+    private static final String ANTEM_PATTERN_RESOURCE_PATH =
+            "data/" + FiverkasWeapons.MODID + "/weapon_attributes/antem.json";
+    private static final List<AttackSignature> ANTEM_ATTACK_PATTERN = loadAntemAttackPattern();
     private static final Map<UUID, EnumMap<ClientAttackFlag, Long>> CLIENT_ATTACK_FLAGS = new HashMap<>();
     private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
     private static final Field ARROW_IN_GROUND_FIELD = resolveArrowField("inGround");
@@ -182,7 +194,10 @@ public class ModCombatEvents {
     private record MethodKey(Class<?> type, String name) {
     }
 
-    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation, int comboCurrent) {
+    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation, int attackPatternIndex) {
+    }
+
+    private record AttackSignature(String hitbox, String animation) {
     }
 
     public enum ClientAttackFlag {
@@ -224,7 +239,7 @@ public class ModCombatEvents {
 
         boolean holdingAirmace = isHoldingAirmace(attacker);
         BetterCombatAttackInfo attackInfo = getBetterCombatAttackInfo(attacker);
-        applyAntemComboEffects(target, attacker, attackInfo);
+        applyAntemPatternEffects(target, attacker, attackInfo);
         boolean isAirmaceAttack = isAirmaceAttack(attackInfo);
         if (isAirmaceAttack || holdingAirmace) {
             recordAirmaceSmash(attacker);
@@ -1331,38 +1346,97 @@ public class ModCombatEvents {
                 return null;
             }
             Object attack = invokeCached(currentAttack, "attack");
-            Object combo = invokeCached(currentAttack, "combo");
-            int comboCurrent = 0;
-            if (combo != null) {
-                Object comboCurrentValue = invokeCached(combo, "current");
-                if (comboCurrentValue instanceof Number number) {
-                    comboCurrent = number.intValue();
-                }
-            }
+            int attackPatternIndex = readAttackPatternIndex(currentAttack);
             if (attack == null) {
-                return new BetterCombatAttackInfo(attackStack, null, null, comboCurrent);
+                return new BetterCombatAttackInfo(attackStack, null, null, attackPatternIndex);
             }
             Object hitbox = invokeCached(attack, "hitbox");
             Object animation = invokeCached(attack, "animation");
-            return new BetterCombatAttackInfo(attackStack, hitbox, animation, comboCurrent);
+            return new BetterCombatAttackInfo(attackStack, hitbox, animation, attackPatternIndex);
         } catch (ReflectiveOperationException ignored) {
             return null;
         }
     }
 
-    private static void applyAntemComboEffects(LivingEntity target, LivingEntity attacker, BetterCombatAttackInfo info) {
+    private static int readAttackPatternIndex(Object currentAttack) throws ReflectiveOperationException {
+        Object combo = invokeCached(currentAttack, "combo");
+        if (combo == null) {
+            return -1;
+        }
+        Object comboCurrentValue = invokeCached(combo, "current");
+        if (!(comboCurrentValue instanceof Number number)) {
+            return -1;
+        }
+        int currentAttackNumber = number.intValue();
+        return currentAttackNumber > 0 ? currentAttackNumber - 1 : -1;
+    }
+
+    private static void applyAntemPatternEffects(LivingEntity target, LivingEntity attacker, BetterCombatAttackInfo info) {
         if (info == null || !info.stack().is(ModItems.ANTEM.get())) {
             return;
         }
 
-        int comboIndex = info.comboCurrent();
-        if (comboIndex == ANTEM_FIRE_COMBO_INDEX) {
+        if (isAntemPatternAttack(info, ANTEM_FIRE_PATTERN_INDEX)) {
             target.igniteForSeconds(ANTEM_FIRE_SECONDS);
         }
-        if (comboIndex == ANTEM_KNOCKBACK_COMBO_INDEX) {
+        if (isAntemPatternAttack(info, ANTEM_KNOCKBACK_PATTERN_INDEX)) {
             double strength = ANTEM_BASE_KNOCKBACK * ANTEM_KNOCKBACK_MULTIPLIER;
             target.knockback(strength, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
+    }
+
+    private static boolean isAntemPatternAttack(BetterCombatAttackInfo info, int patternIndex) {
+        if (info.attackPatternIndex() != patternIndex || ANTEM_ATTACK_PATTERN.size() <= patternIndex) {
+            return false;
+        }
+        AttackSignature attack = ANTEM_ATTACK_PATTERN.get(patternIndex);
+        return matchesBetterCombatAttack(info, ModItems.ANTEM.get(), attack.hitbox(), attack.animation());
+    }
+
+    private static List<AttackSignature> loadAntemAttackPattern() {
+        try (InputStream stream = ModCombatEvents.class.getClassLoader()
+                .getResourceAsStream(ANTEM_PATTERN_RESOURCE_PATH)) {
+            if (stream == null) {
+                return List.of();
+            }
+            JsonElement rootElement = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+            if (!rootElement.isJsonObject()) {
+                return List.of();
+            }
+            JsonObject root = rootElement.getAsJsonObject();
+            JsonObject attributes = root.getAsJsonObject("attributes");
+            if (attributes == null) {
+                return List.of();
+            }
+            JsonArray attacks = attributes.getAsJsonArray("attacks");
+            if (attacks == null) {
+                return List.of();
+            }
+
+            List<AttackSignature> pattern = new ArrayList<>(attacks.size());
+            for (JsonElement attackElement : attacks) {
+                if (!attackElement.isJsonObject()) {
+                    continue;
+                }
+                JsonObject attack = attackElement.getAsJsonObject();
+                pattern.add(new AttackSignature(
+                        readJsonString(attack, "hitbox"),
+                        readJsonString(attack, "animation")
+                ));
+            }
+            return pattern;
+        } catch (RuntimeException | java.io.IOException ignored) {
+            return List.of();
+        }
+    }
+
+    private static String readJsonString(JsonObject json, String key) {
+        JsonElement element = json.get(key);
+        return element != null && element.isJsonPrimitive() ? element.getAsString() : null;
+    }
+
+    private static String stringValue(Object value) {
+        return value == null ? null : value.toString();
     }
 
     private static boolean matchesBetterCombatAttack(
@@ -1375,12 +1449,11 @@ public class ModCombatEvents {
             return false;
         }
         if (hitbox != null) {
-            Object hitboxValue = info.hitbox();
-            if (hitboxValue == null || !hitbox.equals(hitboxValue.toString())) {
+            if (!Objects.equals(hitbox, stringValue(info.hitbox()))) {
                 return false;
             }
         }
-        if (animation != null && !animation.equals(info.animation())) {
+        if (animation != null && !Objects.equals(animation, stringValue(info.animation()))) {
             return false;
         }
         return true;
