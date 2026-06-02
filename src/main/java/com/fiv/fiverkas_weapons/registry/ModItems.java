@@ -57,7 +57,9 @@ public class ModItems {
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f))
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f)),
+                            0xFFFFFF,
+                            0xFF5A00
                     ));
 
     public static final DeferredHolder<Item, Mkopi> MKOPI =

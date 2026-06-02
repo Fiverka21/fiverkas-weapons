@@ -3,6 +3,7 @@ package com.fiv.fiverkas_weapons.item;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 final class AnimatedGradientNameCache {
     private static final long NAME_CACHE_REFRESH_MS = 1000L;
@@ -11,6 +12,7 @@ final class AnimatedGradientNameCache {
     private final int startColor;
     private final int endColor;
     private final long colorShiftSpeedMs;
+    private final ResourceLocation fallbackFont;
 
     private long nextNameRefreshMs;
     private String cachedBaseName = "";
@@ -20,9 +22,14 @@ final class AnimatedGradientNameCache {
     private Component cachedGradientName = Component.empty();
 
     AnimatedGradientNameCache(int startColor, int endColor, long colorShiftSpeedMs) {
+        this(startColor, endColor, colorShiftSpeedMs, null);
+    }
+
+    AnimatedGradientNameCache(int startColor, int endColor, long colorShiftSpeedMs, ResourceLocation font) {
         this.startColor = startColor;
         this.endColor = endColor;
         this.colorShiftSpeedMs = Math.max(1L, colorShiftSpeedMs);
+        this.fallbackFont = font;
     }
 
     Component getName(String descriptionId, Component fallback) {
@@ -41,15 +48,18 @@ final class AnimatedGradientNameCache {
         if (frame != cachedGradientFrame) {
             cachedGradientFrame = frame;
             float timeOffset = (frame * GRADIENT_FRAME_MS) / (float) colorShiftSpeedMs;
+            ResourceLocation font = WeaponNameFonts.forDescriptionId(descriptionId, fallbackFont);
             MutableComponent gradientName = Component.empty();
 
             for (int i = 0; i < cachedGlyphs.length; i++) {
                 float wave = (float) ((Math.sin((i + timeOffset) * 0.55f) + 1.0d) * 0.5d);
                 int color = blend(startColor, endColor, wave);
 
-                gradientName.append(
-                        Component.literal(cachedGlyphs[i]).withColor(color)
-                );
+                MutableComponent glyph = Component.literal(cachedGlyphs[i]).withColor(color);
+                if (font != null) {
+                    glyph.withStyle(style -> style.withFont(font));
+                }
+                gradientName.append(glyph);
             }
 
             cachedGradientName = gradientName;
