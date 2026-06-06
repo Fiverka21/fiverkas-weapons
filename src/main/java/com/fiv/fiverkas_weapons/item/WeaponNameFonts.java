@@ -22,6 +22,8 @@ public final class WeaponNameFonts {
             item("gblueprint", "supereagle"),
             item("bayonet", "deathshallows"),
             item("blue_katana", "miyukatsu"),
+            item("dawn", "hollowegenesis"),
+            item("dusk", "hollowegenesis"),
             item("lscythe", "bledek"),
             item("sacrilegious", "oldenglishfive"),
             item("antem", "oldenglishfive"),
