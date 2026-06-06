@@ -11,8 +11,4 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
     public Sacrilegious(Tier tier, Item.Properties properties) {
         super(tier, properties, BLUE, YELLOW, COLOR_SHIFT_SPEED_MS);
     }
-
-    public Sacrilegious(Tier tier, Item.Properties properties, int startColor, int endColor) {
-        super(tier, properties, startColor, endColor, COLOR_SHIFT_SPEED_MS);
-    }
 }

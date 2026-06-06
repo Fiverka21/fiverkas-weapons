@@ -18,10 +18,16 @@ public final class WeaponNameFonts {
     private static final String DESCRIPTION_ID_PREFIX = "item." + FiverkasWeapons.MODID + ".";
 
     private static final Map<String, String> ITEM_FONTS = Map.ofEntries(
+            item("airmace", "supereagle"),
+            item("gblueprint", "supereagle"),
+            item("bayonet", "deathshallows"),
             item("blue_katana", "miyukatsu"),
+            item("lscythe", "bledek"),
             item("sacrilegious", "oldenglishfive"),
             item("antem", "oldenglishfive"),
+            item("natureaxe", "simbiot"),
             item("mkopi", "tfsadistic"),
+            item("thefool", "runefate"),
             item("dream_essence", "tfsadistic")
     );
 

@@ -2,7 +2,7 @@
   "providers": [
     {
       "type": "ttf",
-      "file": "fweapons:oldenglishfive.ttf",
+      "file": "fweapons:simbiot.ttf",
       "size": 8.0,
       "oversample": 6.0
     },
