@@ -2,8 +2,8 @@
   "providers": [
     {
       "type": "ttf",
-      "file": "fweapons:oldenglishfive.ttf",
-      "size": 8.0,
+      "file": "fweapons:bledek.ttf",
+      "size": 12.0,
       "oversample": 6.0
     },
     {

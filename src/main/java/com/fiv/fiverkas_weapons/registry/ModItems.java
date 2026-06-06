@@ -3,6 +3,7 @@ package com.fiv.fiverkas_weapons.registry;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.item.Airmace;
 import com.fiv.fiverkas_weapons.item.AnimatedGradientItem;
+import com.fiv.fiverkas_weapons.item.Antem;
 import com.fiv.fiverkas_weapons.item.Bayonet;
 import com.fiv.fiverkas_weapons.item.BlueKatana;
 import com.fiv.fiverkas_weapons.item.DShieldItem;
@@ -51,15 +52,13 @@ public class ModItems {
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f))
                     ));
 
-    public static final DeferredHolder<Item, Sacrilegious> ANTEM =
+    public static final DeferredHolder<Item, Antem> ANTEM =
             ITEMS.register("antem",
-                    () -> new Sacrilegious(
+                    () -> new Antem(
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f)),
-                            0xFFFFFF,
-                            0xFF5A00
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f))
                     ));
 
     public static final DeferredHolder<Item, Mkopi> MKOPI =
