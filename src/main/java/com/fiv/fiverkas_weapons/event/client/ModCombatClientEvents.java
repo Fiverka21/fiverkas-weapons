@@ -237,20 +237,16 @@ public final class ModCombatClientEvents {
     // Called from network when server wants the client to show a sacrilegious slam visual fallback
     public static void handleSacrilegiousSlamClient(int playerId, String animationName) {
         try {
-            System.out.println("[fweapons] handleSacrilegiousSlamClient received for playerId=" + playerId + " animation=" + animationName);
             // Find the player entity in the client world
             if (Minecraft.getInstance().level == null) {
-                System.out.println("[fweapons] client level is null; cannot show animation");
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] client level is null; cannot show animation");
                 return;
             }
             var entity = Minecraft.getInstance().level.getEntity(playerId);
             if (!(entity instanceof Player player)) {
-                System.out.println("[fweapons] player entity with id " + playerId + " is not a Player (found " + (entity == null ? "null" : entity.getClass().getName()) + ")");
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] player entity with id {} is not a Player (found {})", playerId, entity == null ? "null" : entity.getClass().getName());
                 return;
             }
-            System.out.println("[fweapons] found player " + player.getName().getString() + " on client; attempting animation");
             if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] found player {} on client; attempting animation", player.getName().getString());
 
             // First attempt: if the player supports BetterCombat's Client-side animatable interface, invoke it directly
@@ -263,18 +259,12 @@ public final class ModCombatClientEvents {
                     // animationName is typically namespaced (e.g. "bettercombat:two_handed_slam")
                     try {
                         playMethod.invoke(player, animationName, twoHanded, 1.625f, 1.2f);
-                        System.out.println("[fweapons] PlayerAttackAnimatable.playAttackAnimation invoked on player " + player.getName().getString());
                         if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] PlayerAttackAnimatable.playAttackAnimation invoked on player {}", player.getName().getString());
-                        System.out.println("[fweapons] Continuing to forced playback fallbacks as well");
                     } catch (ReflectiveOperationException e) {
-                        System.out.println("[fweapons] PlayerAttackAnimatable path failed: " + e);
-                        e.printStackTrace(System.out);
                         if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] PlayerAttackAnimatable path failed", e);
                     }
                 }
             } catch (ReflectiveOperationException e) {
-                System.out.println("[fweapons] PlayerAttackAnimatable path failed (outer): " + e);
-                e.printStackTrace(System.out);
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] PlayerAttackAnimatable path failed", e);
             }
 
@@ -312,7 +302,6 @@ public final class ModCombatClientEvents {
 
             // Stronger fallback: try to force-play the two_handed_slam keyframe animation using the player-animation library
             try {
-                System.out.println("[fweapons] attempting forced player-animation-lib playback for two_handed_slam");
                 if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] attempting forced player-animation-lib playback for two_handed_slam");
                 Class<?> animationCodecsClass = Class.forName("dev.kosmx.playerAnim.minecraftApi.codec.AnimationCodecs");
                 Class<?> keyframeAnimationClass = Class.forName("dev.kosmx.playerAnim.core.data.KeyframeAnimation");
@@ -322,12 +311,10 @@ public final class ModCombatClientEvents {
                 String resourcePath = "assets/fweapons/player_animations/two_handed_slam.json";
                 Object keyframeAnim = null;
                 java.io.InputStream in = ModCombatClientEvents.class.getClassLoader().getResourceAsStream(resourcePath);
-                System.out.println("[fweapons] resourceStream for " + resourcePath + " = " + (in != null));
                 if (in != null) {
                     try {
                         java.lang.reflect.Method decode = animationCodecsClass.getMethod("deserialize", String.class, java.io.InputStream.class);
                         java.util.Collection<?> parsed = (java.util.Collection<?>) decode.invoke(null, "json", in);
-                        System.out.println("[fweapons] parsed animations count = " + (parsed == null ? "null" : parsed.size()));
                         if (parsed != null && !parsed.isEmpty()) {
                             keyframeAnim = parsed.iterator().next();
                         }
@@ -339,19 +326,16 @@ public final class ModCombatClientEvents {
                 if (keyframeAnim == null) {
                     // try parsing directly with AnimationJson.GSON
                     java.io.InputStream in2 = ModCombatClientEvents.class.getClassLoader().getResourceAsStream(resourcePath);
-                    System.out.println("[fweapons] fallback resourceStream2 for " + resourcePath + " = " + (in2 != null));
                     if (in2 != null) {
                         try {
                             Class<?> animationJsonClass = Class.forName("dev.kosmx.playerAnim.core.data.gson.AnimationJson");
                             Object gson = animationJsonClass.getField("GSON").get(null);
                             java.lang.reflect.Method fromJson = gson.getClass().getMethod("fromJson", java.io.Reader.class, Class.class);
                             keyframeAnim = fromJson.invoke(gson, new java.io.InputStreamReader(in2, StandardCharsets.UTF_8), keyframeAnimationClass);
-                            System.out.println("[fweapons] parsed keyframeAnim via GSON: " + (keyframeAnim != null));
                         } finally {
                             try { in2.close(); } catch (Exception ignored) {}
                         }
                     } else {
-                        System.out.println("[fweapons] could not find resource " + resourcePath + " on classpath");
                         if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] could not find resource {} on classpath", resourcePath);
                     }
                 }
@@ -359,7 +343,6 @@ public final class ModCombatClientEvents {
                 if (keyframeAnim != null) {
                     Constructor<?> ctor = keyframePlayerClass.getConstructor(keyframeAnimationClass);
                     Object animPlayer = ctor.newInstance(keyframeAnim);
-                    System.out.println("[fweapons] constructed KeyframeAnimationPlayer: " + animPlayer);
 
                     Class<?> abstractClientPlayerClass = Class.forName("net.minecraft.client.player.AbstractClientPlayer");
                     Object animStack = playerAnimationAccessClass.getMethod("getPlayerAnimLayer", abstractClientPlayerClass).invoke(null, player);
@@ -367,7 +350,6 @@ public final class ModCombatClientEvents {
                     boolean addedLayer = false;
                     try {
                         animStack.getClass().getMethod("addAnimLayer", int.class, Class.forName("dev.kosmx.playerAnim.api.layered.IAnimation")).invoke(animStack, 50, animPlayer);
-                        System.out.println("[fweapons] added anim layer to player animation stack via addAnimLayer");
                         addedLayer = true;
                     } catch (NoSuchMethodException nsme) {
                         // try alternative add methods
@@ -388,7 +370,6 @@ public final class ModCombatClientEvents {
                                     }
                                     if (ok) {
                                         m.invoke(animStack, args);
-                                        System.out.println("[fweapons] added anim layer via " + m.getName());
                                         addedLayer = true;
                                         break;
                                     }
@@ -396,11 +377,9 @@ public final class ModCombatClientEvents {
                             } catch (Throwable ignored) {}
                         }
                     } catch (Throwable t) {
-                        try { System.out.println("[fweapons] failed addAnimLayer: " + t); } catch (Throwable ignored) {}
                     }
 
                     if (!addedLayer) {
-                        System.out.println("[fweapons] no layer add method succeeded");
                     }
 
                     // Try to set first-person mode on animPlayer if possible
@@ -427,18 +406,15 @@ public final class ModCombatClientEvents {
                                                 }
                                                 if (chosen == null) chosen = consts[0];
                                                 m.invoke(animPlayer, chosen);
-                                                System.out.println("[fweapons] set first-person via " + m.getName() + " to " + chosen);
                                                 setFP = true;
                                                 break;
                                             }
                                         } else if (pt == boolean.class) {
                                             m.invoke(animPlayer, true);
-                                            System.out.println("[fweapons] set first-person via " + m.getName() + "(true)");
                                             setFP = true;
                                             break;
                                         } else if (pt == int.class) {
                                             m.invoke(animPlayer, 1);
-                                            System.out.println("[fweapons] set first-person via " + m.getName() + "(1)");
                                             setFP = true;
                                             break;
                                         }
@@ -446,7 +422,6 @@ public final class ModCombatClientEvents {
                                 }
                             }
                         }
-                        if (!setFP) System.out.println("[fweapons] no first-person setter found on animPlayer");
                     } catch (Throwable ignored) {}
 
                     // Try to start/play/restart the animPlayer
@@ -456,17 +431,12 @@ public final class ModCombatClientEvents {
                             String nm = m.getName().toLowerCase();
                             if (nm.equals("start") || nm.equals("play") || nm.contains("start") || nm.contains("play") || nm.contains("restart") || nm.contains("begin") || nm.contains("reset")) {
                                 try {
-                                    if (m.getParameterCount() == 0) { m.invoke(animPlayer); System.out.println("[fweapons] invoked " + m.getName() + "()"); started = true; break; }
                                     else if (m.getParameterCount() == 1) {
                                         Class<?> pt = m.getParameterTypes()[0];
-                                        if (pt == float.class || pt == double.class) { m.invoke(animPlayer, 0.0f); System.out.println("[fweapons] invoked " + m.getName() + "(0.0f)"); started = true; break; }
-                                        else if (pt == int.class) { m.invoke(animPlayer, 0); System.out.println("[fweapons] invoked " + m.getName() + "(0)"); started = true; break; }
-                                        else if (pt == boolean.class) { m.invoke(animPlayer, true); System.out.println("[fweapons] invoked " + m.getName() + "(true)"); started = true; break; }
                                     }
                                 } catch (Throwable ignored) {}
                             }
                         }
-                        if (!started) System.out.println("[fweapons] no start/play method invoked on animPlayer");
                     } catch (Throwable ignored) {}
 
                     // Try ticking/updating animStack to force immediate frame
@@ -475,16 +445,12 @@ public final class ModCombatClientEvents {
                             String nm = m.getName().toLowerCase();
                             if (nm.equals("tick") || nm.equals("update") || nm.equals("onupdate") || nm.contains("tick")) {
                                 try {
-                                    if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == float.class) { m.invoke(animStack, 1.0f); System.out.println("[fweapons] ticked animStack via " + m.getName() + "(1.0f)"); }
-                                    else if (m.getParameterCount() == 0) { m.invoke(animStack); System.out.println("[fweapons] ticked animStack via " + m.getName() + "()"); }
                                 } catch (Throwable ignored) {}
                             }
                         }
                     } catch (Throwable ignored) {}
 
                     // Diagnostics: isActive/isPlaying
-                    try { Method isActive = animPlayer.getClass().getMethod("isActive"); Object val = isActive.invoke(animPlayer); System.out.println("[fweapons] animPlayer.isActive() = " + val); } catch (NoSuchMethodException ignored) {}
-                    try { Method isPlaying = animPlayer.getClass().getMethod("isPlaying"); Object val = isPlaying.invoke(animPlayer); System.out.println("[fweapons] animPlayer.isPlaying() = " + val); } catch (NoSuchMethodException ignored) {}
 
                     // Diagnostic: inspect animStack fields for lists/collections to see active layers
                     try {
@@ -492,9 +458,6 @@ public final class ModCombatClientEvents {
                             f.setAccessible(true);
                             Object v = null;
                             try { v = f.get(animStack); } catch (Throwable ignored) {}
-                            if (v instanceof java.util.Collection) { System.out.println("[fweapons] animStack field " + f.getName() + " is Collection size=" + ((java.util.Collection<?>) v).size()); }
-                            else if (v != null) { System.out.println("[fweapons] animStack field " + f.getName() + " type=" + v.getClass().getName()); }
-                            else { System.out.println("[fweapons] animStack field " + f.getName() + " is null"); }
                         }
                     } catch (Throwable ignored) {}
 
@@ -505,8 +468,6 @@ public final class ModCombatClientEvents {
                             if (name.contains("layer") || name.contains("layers") || name.contains("active")) {
                                 try {
                                     Object res = m.getParameterCount() == 0 ? m.invoke(animStack) : null;
-                                    if (res instanceof java.util.Collection) { System.out.println("[fweapons] animStack." + m.getName() + "() -> Collection size=" + ((java.util.Collection<?>) res).size()); }
-                                    else if (res != null) { System.out.println("[fweapons] animStack." + m.getName() + "() -> " + res); }
                                 } catch (Throwable ignored) {}
                             }
                         }
@@ -544,7 +505,6 @@ public final class ModCombatClientEvents {
             }
             if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] Particle/sound fallback shown for player {}", player.getName().getString());
         } catch (Throwable ignored) {
-            if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] Unexpected error in handleSacrilegiousSlamClient", ignored);
         }
     }
 
@@ -617,19 +577,14 @@ public final class ModCombatClientEvents {
 
             try {
                 clientNetworkClass.getMethod("handleAttackAnimation", attackAnimClass).invoke(null, payload);
-                System.out.println("[fweapons] clientNetwork.handleAttackAnimation invoked for player " + player.getName().getString());
                 if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] clientNetwork handleAttackAnimation invoked locally for player {}", player.getName().getString());
             } catch (ReflectiveOperationException e) {
-                System.out.println("[fweapons] triggerLocalSacrilegiousSlam clientNetwork path failed: " + e);
-                e.printStackTrace(System.out);
-                if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] triggerLocalSacrilegiousSlam clientNetwork path failed", e);
                 // If reflection fails, do nothing; server fallback will show particles.
             }
 
             // New: attempt to send a real BetterCombat C2S_AttackRequest from the client so the server
             // creates the proper internal attack state (preferred over server-side reflective invocation).
             try {
-                System.out.println("[fweapons] triggerLocalSacrilegiousSlam: attempting to construct/send C2S_AttackRequest from client");
                 Class<?> attackReqClass = Class.forName("net.bettercombat.network.Packets$C2S_AttackRequest");
                 Constructor<?> attackCtor = null;
                 try {
@@ -675,26 +630,18 @@ public final class ModCombatClientEvents {
                         try {
                             Method sendMethod = clientConn.getClass().getMethod("send", Class.forName("net.minecraft.network.protocol.Packet"));
                             sendMethod.invoke(clientConn, attackReq);
-                            System.out.println("[fweapons] Sent C2S_AttackRequest from client for sacrilegious slam");
                         } catch (NoSuchMethodException nsme) {
                             try {
                                 Method sendAny = clientConn.getClass().getMethod("send", Object.class);
                                 sendAny.invoke(clientConn, attackReq);
-                                System.out.println("[fweapons] Sent C2S_AttackRequest via send(Object) fallback");
                             } catch (Throwable t) {
-                                System.out.println("[fweapons] Failed to send C2S_AttackRequest: " + t);
-                                t.printStackTrace(System.out);
                             }
                         }
                     } else {
-                        System.out.println("[fweapons] client connection not found; cannot send C2S_AttackRequest");
                     }
                 } else {
-                    System.out.println("[fweapons] C2S_AttackRequest constructor not found on client");
                 }
             } catch (ReflectiveOperationException e) {
-                System.out.println("[fweapons] reflection error constructing C2S_AttackRequest: " + e);
-                e.printStackTrace(System.out);
             }
 
         // As a stronger fallback, try to invoke BetterCombat's client 'attack start' publisher so the
@@ -839,7 +786,6 @@ public final class ModCombatClientEvents {
             // ignore
         }
         } catch (Throwable t) {
-            if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] unexpected error in triggerLocalSacrilegiousSlam", t);
         }
     }
 

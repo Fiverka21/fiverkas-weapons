@@ -79,9 +79,7 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
         player.hasImpulse = true;
         if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.hurtMarked = true;
-            System.out.println("[fweapons] Sacrilegious: Launching player, about to call sacrilegious slam animation");
             ModCombatEvents.playSacrilegiousSlamAnimation(serverPlayer);
-            System.out.println("[fweapons] Sacrilegious: Finished calling sacrilegious slam animation");
             // Also swing the sword to provide fallback visual feedback
             serverPlayer.swing(InteractionHand.MAIN_HAND);
         }
