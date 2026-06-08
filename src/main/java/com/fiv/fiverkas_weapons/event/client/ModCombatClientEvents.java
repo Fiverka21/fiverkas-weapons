@@ -396,7 +396,7 @@ public final class ModCombatClientEvents {
                                 }
                             }
                         }
-                        if (!setFP)
+                        if (!setFP) {}
                     } catch (Throwable ignored) {}
                     // Try to start/play/restart the animPlayer
                     try {
@@ -415,7 +415,7 @@ public final class ModCombatClientEvents {
                                 } catch (Throwable ignored) {}
                             }
                         }
-                        if (!started)
+                        if (!started) {}
                     } catch (Throwable ignored) {}
                     // Try ticking/updating animStack to force immediate frame
                     try {
