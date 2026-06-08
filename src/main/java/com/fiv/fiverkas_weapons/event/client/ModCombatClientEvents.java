@@ -1,5 +1,4 @@
 package com.fiv.fiverkas_weapons.event.client;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,7 +36,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -52,7 +50,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 public final class ModCombatClientEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final boolean DEBUG_LOGS_CLIENT = Boolean.getBoolean("fweapons.debug");
@@ -95,46 +92,36 @@ public final class ModCombatClientEvents {
     private static final float IMPACT_FRAME_SCALE = 1.4F;
     private static boolean bayonetImpactFrameActive = false;
     private static long bayonetImpactFrameStartTime = 0L;
-
     private record MethodKey(Class<?> type, String name) {
     }
-
     private record AttackHandInfo(ItemStack stack, Object attack, String hitbox, String animation) {
     }
-
     private record AttackSignature(String hitbox, String animation) {
     }
-
     private static final class AntemPatternState {
         private int patternIndex = -1;
         private boolean heatActive = false;
-
         private void reset() {
             patternIndex = -1;
             heatActive = false;
         }
     }
-
     private ModCombatClientEvents() {
     }
-
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ModCombatClientEvents::init);
     }
-
     private static void init() {
         registerClientRenderHooks();
         registerItemProperties();
         registerBetterCombatAttackStartListener();
         registerBetterCombatAttackHitListener();
     }
-
     private static void registerClientRenderHooks() {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPost);
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderGuiPost);
     }
-
     private static void registerItemProperties() {
         ItemProperties.register(
                 ModItems.THE_FOOL.get(),
@@ -203,7 +190,6 @@ public final class ModCombatClientEvents {
                         entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
         );
     }
-
     private static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
         if (event.getEntity().hasEffect(ModEffects.CERULEAN_SHROUD)) {
             event.setCanceled(true);
@@ -212,7 +198,6 @@ public final class ModCombatClientEvents {
         if (isUsingMkopi(event.getEntity())) {
             applyMkopiRenderShake(event);
         }
-
         // Detect local player using Sacrilegious and trigger local client-side animation once
         if (event.getEntity() instanceof LocalPlayer local) {
             boolean usingSac = local.isUsingItem() && local.getUseItem().is(ModItems.SACRILEGIOUS.get());
@@ -227,18 +212,17 @@ public final class ModCombatClientEvents {
             }
         }
     }
-
     private static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
         if (MKOPI_SHAKE_RENDER_PUSHED.remove(event.getEntity().getId())) {
             event.getPoseStack().popPose();
         }
     }
-
     // Called from network when server wants the client to show a sacrilegious slam visual fallback
     public static void handleSacrilegiousSlamClient(int playerId, String animationName) {
         try {
             // Find the player entity in the client world
             if (Minecraft.getInstance().level == null) {
+                System.out.println("[fweapons] client level is null; cannot show animation");
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] client level is null; cannot show animation");
                 return;
             }
@@ -247,8 +231,8 @@ public final class ModCombatClientEvents {
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] player entity with id {} is not a Player (found {})", playerId, entity == null ? "null" : entity.getClass().getName());
                 return;
             }
+            System.out.println("[fweapons] found player " + player.getName().getString() + " on client; attempting animation");
             if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] found player {} on client; attempting animation", player.getName().getString());
-
             // First attempt: if the player supports BetterCombat's Client-side animatable interface, invoke it directly
             try {
                 Class<?> playerAnimatableClass = Class.forName("net.bettercombat.client.animation.PlayerAttackAnimatable");
@@ -267,19 +251,16 @@ public final class ModCombatClientEvents {
             } catch (ReflectiveOperationException e) {
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] PlayerAttackAnimatable path failed", e);
             }
-
             // Fallback: try to drive BetterCombat client-side to play the actual animation via ClientNetwork packet
             try {
                 Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
                 Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
                 Class<?> clientNetworkClass = Class.forName("net.bettercombat.network.ClientNetwork");
-
                 Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
                 // length/upswing values chosen to match server-side
                 float length = 1.625f;
                 float upswing = 1.2f;
                 int upswingTicks = Math.round(upswing * 20.0f);
-
                 Object payload = attackAnimClass
                         .getConstructor(
                                 int.class,
@@ -292,14 +273,12 @@ public final class ModCombatClientEvents {
                                 Class.forName("net.bettercombat.network.Packets$SwingParticles")
                         )
                         .newInstance(player.getId(), hand, animationName, length, upswing, 0.0f, upswingTicks, null);
-
                 // Call client-side handler to play animation locally for this player
                 clientNetworkClass.getMethod("handleAttackAnimation", attackAnimClass).invoke(null, payload);
                 return;
             } catch (ReflectiveOperationException e) {
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] ClientNetwork.handleAttackAnimation fallback failed", e);
             }
-
             // Stronger fallback: try to force-play the two_handed_slam keyframe animation using the player-animation library
             try {
                 if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] attempting forced player-animation-lib playback for two_handed_slam");
@@ -307,7 +286,6 @@ public final class ModCombatClientEvents {
                 Class<?> keyframeAnimationClass = Class.forName("dev.kosmx.playerAnim.core.data.KeyframeAnimation");
                 Class<?> keyframePlayerClass = Class.forName("dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer");
                 Class<?> playerAnimationAccessClass = Class.forName("dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess");
-
                 String resourcePath = "assets/fweapons/player_animations/two_handed_slam.json";
                 Object keyframeAnim = null;
                 java.io.InputStream in = ModCombatClientEvents.class.getClassLoader().getResourceAsStream(resourcePath);
@@ -322,7 +300,6 @@ public final class ModCombatClientEvents {
                         try { in.close(); } catch (Exception ignored) {}
                     }
                 }
-
                 if (keyframeAnim == null) {
                     // try parsing directly with AnimationJson.GSON
                     java.io.InputStream in2 = ModCombatClientEvents.class.getClassLoader().getResourceAsStream(resourcePath);
@@ -339,11 +316,9 @@ public final class ModCombatClientEvents {
                         if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] could not find resource {} on classpath", resourcePath);
                     }
                 }
-
                 if (keyframeAnim != null) {
                     Constructor<?> ctor = keyframePlayerClass.getConstructor(keyframeAnimationClass);
                     Object animPlayer = ctor.newInstance(keyframeAnim);
-
                     Class<?> abstractClientPlayerClass = Class.forName("net.minecraft.client.player.AbstractClientPlayer");
                     Object animStack = playerAnimationAccessClass.getMethod("getPlayerAnimLayer", abstractClientPlayerClass).invoke(null, player);
                     // add animation layer at high priority
@@ -377,11 +352,10 @@ public final class ModCombatClientEvents {
                             } catch (Throwable ignored) {}
                         }
                     } catch (Throwable t) {
+                        try {  } catch (Throwable ignored) {}
                     }
-
                     if (!addedLayer) {
                     }
-
                     // Try to set first-person mode on animPlayer if possible
                     try {
                         boolean setFP = false;
@@ -422,8 +396,8 @@ public final class ModCombatClientEvents {
                                 }
                             }
                         }
+                        if (!setFP)
                     } catch (Throwable ignored) {}
-
                     // Try to start/play/restart the animPlayer
                     try {
                         boolean started = false;
@@ -431,36 +405,44 @@ public final class ModCombatClientEvents {
                             String nm = m.getName().toLowerCase();
                             if (nm.equals("start") || nm.equals("play") || nm.contains("start") || nm.contains("play") || nm.contains("restart") || nm.contains("begin") || nm.contains("reset")) {
                                 try {
+                                    if (m.getParameterCount() == 0) { m.invoke(animPlayer);  started = true; break; }
                                     else if (m.getParameterCount() == 1) {
                                         Class<?> pt = m.getParameterTypes()[0];
+                                        if (pt == float.class || pt == double.class) { m.invoke(animPlayer, 0.0f);  started = true; break; }
+                                        else if (pt == int.class) { m.invoke(animPlayer, 0);  started = true; break; }
+                                        else if (pt == boolean.class) { m.invoke(animPlayer, true);  started = true; break; }
                                     }
                                 } catch (Throwable ignored) {}
                             }
                         }
+                        if (!started)
                     } catch (Throwable ignored) {}
-
                     // Try ticking/updating animStack to force immediate frame
                     try {
                         for (Method m : animStack.getClass().getMethods()) {
                             String nm = m.getName().toLowerCase();
                             if (nm.equals("tick") || nm.equals("update") || nm.equals("onupdate") || nm.contains("tick")) {
                                 try {
+                                    if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == float.class) { m.invoke(animStack, 1.0f);  }
+                                    else if (m.getParameterCount() == 0) { m.invoke(animStack);  }
                                 } catch (Throwable ignored) {}
                             }
                         }
                     } catch (Throwable ignored) {}
-
                     // Diagnostics: isActive/isPlaying
-
+                    try { Method isActive = animPlayer.getClass().getMethod("isActive"); Object val = isActive.invoke(animPlayer);  } catch (NoSuchMethodException ignored) {}
+                    try { Method isPlaying = animPlayer.getClass().getMethod("isPlaying"); Object val = isPlaying.invoke(animPlayer);  } catch (NoSuchMethodException ignored) {}
                     // Diagnostic: inspect animStack fields for lists/collections to see active layers
                     try {
                         for (Field f : animStack.getClass().getDeclaredFields()) {
                             f.setAccessible(true);
                             Object v = null;
                             try { v = f.get(animStack); } catch (Throwable ignored) {}
+                            if (v instanceof java.util.Collection) {  }
+                            else if (v != null) {  }
+                            else {  }
                         }
                     } catch (Throwable ignored) {}
-
                     // Try calling common accessor methods on animStack to enumerate layers
                     try {
                         for (Method m : animStack.getClass().getMethods()) {
@@ -468,18 +450,18 @@ public final class ModCombatClientEvents {
                             if (name.contains("layer") || name.contains("layers") || name.contains("active")) {
                                 try {
                                     Object res = m.getParameterCount() == 0 ? m.invoke(animStack) : null;
+                                    if (res instanceof java.util.Collection) {  }
+                                    else if (res != null) {  }
                                 } catch (Throwable ignored) {}
                             }
                         }
                     } catch (Throwable ignored) {}
-
                     if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] forced two_handed_slam animation played for player {}", player.getName().getString());
                     return;
                 }
             } catch (Throwable t) {
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] forced player-animation-lib playback failed", t);
             }
-
             // Spawn some visible particles at the player's position for visual feedback
             Vec3 pos = player.position();
             RandomSource random = Minecraft.getInstance().level.getRandom();
@@ -489,7 +471,6 @@ public final class ModCombatClientEvents {
                 double dz = (random.nextDouble() - 0.5) * 0.6;
                 Minecraft.getInstance().level.addParticle(ParticleTypes.CRIT, pos.x + dx, pos.y + 0.6 + dy, pos.z + dz, dx * 0.2, dy * 0.2, dz * 0.2);
             }
-
             // Play a sound locally to make the slam feel impactful
             if (Minecraft.getInstance().level != null) {
                 Minecraft.getInstance().level.playSound(
@@ -507,11 +488,9 @@ public final class ModCombatClientEvents {
         } catch (Throwable ignored) {
         }
     }
-
     private static boolean isUsingMkopi(Player player) {
         return player.isUsingItem() && player.getUseItem().is(ModItems.MKOPI.get());
     }
-
     private static void applyMkopiRenderShake(RenderPlayerEvent.Pre event) {
         Player player = event.getEntity();
         float time = (float) player.tickCount + event.getPartialTick();
@@ -520,39 +499,32 @@ public final class ModCombatClientEvents {
         double z = Math.cos(time * 4.4F) * MKOPI_RENDER_SHAKE_TRANSLATE;
         float zRot = (float) Math.sin(time * 5.7F) * MKOPI_RENDER_SHAKE_ROTATE_DEGREES;
         float xRot = (float) Math.cos(time * 4.8F) * MKOPI_RENDER_SHAKE_ROTATE_DEGREES * 0.55F;
-
         event.getPoseStack().pushPose();
         event.getPoseStack().translate(x, y, z);
         event.getPoseStack().mulPose(Axis.ZP.rotationDegrees(zRot));
         event.getPoseStack().mulPose(Axis.XP.rotationDegrees(xRot));
         MKOPI_SHAKE_RENDER_PUSHED.add(player.getId());
     }
-
     public static void triggerBayonetImpactFrame() {
         bayonetImpactFrameActive = true;
         bayonetImpactFrameStartTime = System.currentTimeMillis();
     }
-
     private static void triggerLocalSacrilegiousSlam(LocalPlayer player) {
         try {
             Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
             Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
             Class<?> clientNetworkClass = Class.forName("net.bettercombat.network.ClientNetwork");
             Class<?> swingParticlesClass = Class.forName("net.bettercombat.network.Packets$SwingParticles");
-
             Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
             float length = 1.625f;
             float upswing = 1.2f;
             int upswingTicks = Math.round(upswing * 20.0f);
-
             Object particles = swingParticlesClass.getField("EMPTY").get(null);
-
             // Stop the local use action so BetterCombat's attack animation can play instead of the generic use animation.
             try {
                 player.stopUsingItem();
             } catch (Throwable ignoredStop) {
             }
-
             Object payload = attackAnimClass
                     .getConstructor(
                             int.class,
@@ -574,14 +546,12 @@ public final class ModCombatClientEvents {
                             upswingTicks,
                             particles
                     );
-
             try {
                 clientNetworkClass.getMethod("handleAttackAnimation", attackAnimClass).invoke(null, payload);
                 if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] clientNetwork handleAttackAnimation invoked locally for player {}", player.getName().getString());
             } catch (ReflectiveOperationException e) {
                 // If reflection fails, do nothing; server fallback will show particles.
             }
-
             // New: attempt to send a real BetterCombat C2S_AttackRequest from the client so the server
             // creates the proper internal attack state (preferred over server-side reflective invocation).
             try {
@@ -598,12 +568,10 @@ public final class ModCombatClientEvents {
                         }
                     }
                 }
-
                 if (attackCtor != null) {
                     int lastIndex = 5;
                     int selectedSlot = 0;
                     try { selectedSlot = player.getInventory().selected; } catch (Throwable ignored) {}
-
                     Object attackReq;
                     if (attackCtor.getParameterCount() == 5) {
                         attackReq = attackCtor.newInstance(lastIndex, false, selectedSlot, 0, new int[0]);
@@ -613,7 +581,6 @@ public final class ModCombatClientEvents {
                         args[0] = lastIndex;
                         attackReq = attackCtor.newInstance((Object[]) args);
                     }
-
                     Object clientConn = null;
                     try {
                         clientConn = Minecraft.getInstance().getConnection();
@@ -625,7 +592,6 @@ public final class ModCombatClientEvents {
                             clientConn = connField.get(player);
                         } catch (Throwable ignored) {}
                     }
-
                     if (clientConn != null) {
                         try {
                             Method sendMethod = clientConn.getClass().getMethod("send", Class.forName("net.minecraft.network.protocol.Packet"));
@@ -638,19 +604,18 @@ public final class ModCombatClientEvents {
                             }
                         }
                     } else {
+                        System.out.println("[fweapons] client connection not found; cannot send C2S_AttackRequest");
                     }
                 } else {
                 }
             } catch (ReflectiveOperationException e) {
             }
-
         // As a stronger fallback, try to invoke BetterCombat's client 'attack start' publisher so the
         // animation runs within the mod's normal attack flow. Try to construct an attack-hand object
         // and call any publisher methods reflectively.
         try {
             Class<?> eventsClass = Class.forName("net.bettercombat.api.client.BetterCombatClientEvents");
             Object attackStartPublisher = eventsClass.getField("ATTACK_START").get(null);
-
             Method[] methods = attackStartPublisher.getClass().getMethods();
             for (Method m : methods) {
                 Class<?>[] params = m.getParameterTypes();
@@ -665,10 +630,8 @@ public final class ModCombatClientEvents {
                     // no local player class found for some reason; skip
                     continue;
                 }
-
                 Class<?> attackHandType = params[1];
                 Object attackHandObj = null;
-
                 // Try to create a proxy instance if the attack hand type is an interface
                 if (attackHandType.isInterface()) {
                     // try to find an 'attack' nested type by inspecting the methods of attackHandType
@@ -688,7 +651,6 @@ public final class ModCombatClientEvents {
                         }
                         return null;
                     };
-
                     // Build attack-hand proxy implementing attackHandType
                     InvocationHandler attackHandHandler = (proxy, method, args) -> {
                         String name = method.getName();
@@ -731,7 +693,6 @@ public final class ModCombatClientEvents {
                         }
                         return null;
                     };
-
                     attackHandObj = java.lang.reflect.Proxy.newProxyInstance(
                             attackHandType.getClassLoader(),
                             new Class<?>[]{attackHandType},
@@ -740,7 +701,6 @@ public final class ModCombatClientEvents {
                     } catch (Throwable ignored) {
                     }
                 }
-
                 // Attempt to invoke publisher method with (player, attackHandObj) if we constructed one
                 if (attackHandObj != null) {
                     try {
@@ -773,7 +733,6 @@ public final class ModCombatClientEvents {
                             }
                         } catch (Throwable ignoreSetCur) {
                         }
-
                         m.invoke(attackStartPublisher, player, attackHandObj);
                         return; // success
                     } catch (ReflectiveOperationException | IllegalArgumentException ex) {
@@ -788,7 +747,6 @@ public final class ModCombatClientEvents {
         } catch (Throwable t) {
         }
     }
-
     private static void onRenderGuiPost(RenderGuiEvent.Post event) {
         if (!bayonetImpactFrameActive) {
             return;
@@ -812,7 +770,6 @@ public final class ModCombatClientEvents {
             frameIndex = IMPACT_FRAMES.length - 1;
         }
         ResourceLocation frame = IMPACT_FRAMES[frameIndex];
-
         int width = event.getGuiGraphics().guiWidth();
         int height = event.getGuiGraphics().guiHeight();
         float fitScale = Math.min(
@@ -841,13 +798,11 @@ public final class ModCombatClientEvents {
         );
         event.getGuiGraphics().pose().popPose();
     }
-
     private static void registerBetterCombatAttackStartListener() {
         try {
             Class<?> eventsClass = Class.forName("net.bettercombat.api.client.BetterCombatClientEvents");
             Object attackStartPublisher = eventsClass.getField("ATTACK_START").get(null);
             Class<?> listenerClass = Class.forName("net.bettercombat.api.client.BetterCombatClientEvents$PlayerAttackStart");
-
             Object listener = Proxy.newProxyInstance(
                     listenerClass.getClassLoader(),
                     new Class<?>[]{listenerClass},
@@ -858,7 +813,6 @@ public final class ModCombatClientEvents {
                                 || !(args[0] instanceof LocalPlayer player)) {
                             return null;
                         }
-
                         Object attackHand = args[1];
                         if (attackHand != null) {
                             AttackHandInfo attackInfo;
@@ -870,7 +824,6 @@ public final class ModCombatClientEvents {
                             if (attackInfo == null) {
                                 return null;
                             }
-
                             if (isBayonetImpactAttack(attackInfo)) {
                                 PacketDistributor.sendToServer(new BayonetComboAttackPayload());
                                 triggerBayonetImpactFrame();
@@ -900,18 +853,15 @@ public final class ModCombatClientEvents {
                         return null;
                     }
             );
-
             attackStartPublisher.getClass().getMethod("register", Object.class).invoke(attackStartPublisher, listener);
         } catch (ReflectiveOperationException ignored) {
         }
     }
-
     private static void registerBetterCombatAttackHitListener() {
         try {
             Class<?> eventsClass = Class.forName("net.bettercombat.api.client.BetterCombatClientEvents");
             Object attackHitPublisher = eventsClass.getField("ATTACK_HIT").get(null);
             Class<?> listenerClass = Class.forName("net.bettercombat.api.client.BetterCombatClientEvents$PlayerAttackHit");
-
             Object listener = Proxy.newProxyInstance(
                     listenerClass.getClassLoader(),
                     new Class<?>[]{listenerClass},
@@ -921,7 +871,6 @@ public final class ModCombatClientEvents {
                                 || args.length < 2) {
                             return null;
                         }
-
                         Object attackHand = args[1];
                         if (attackHand != null) {
                             suppressAttackHitSlashEffect(attackHand);
@@ -929,12 +878,10 @@ public final class ModCombatClientEvents {
                         return null;
                     }
             );
-
             attackHitPublisher.getClass().getMethod("register", Object.class).invoke(attackHitPublisher, listener);
         } catch (ReflectiveOperationException ignored) {
         }
     }
-
     private static void suppressAttackHitSlashEffect(Object attackHand) {
         try {
             AttackHandInfo attackInfo = readAttackHandInfo(attackHand);
@@ -944,20 +891,17 @@ public final class ModCombatClientEvents {
             if (attackInfo.attack() == null) {
                 return;
             }
-
             if (!NO_TRAIL_PARTICLES.isEmpty()) {
                 setAttackField(attackInfo.attack(), "trail_particles", NO_TRAIL_PARTICLES);
             }
         } catch (ReflectiveOperationException ignored) {
         }
     }
-
     private static void setAttackField(Object attack, String fieldName, Object value) throws ReflectiveOperationException {
         Field field = attack.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(attack, value);
     }
-
     private static boolean isAntemHeatActive(ItemStack stack, Object entity) {
         if (!(entity instanceof LivingEntity livingEntity) || !stack.is(ModItems.ANTEM.get())) {
             return false;
@@ -981,12 +925,10 @@ public final class ModCombatClientEvents {
         }
         return true;
     }
-
     private static int updateAntemPatternState(LivingEntity entity, AttackHandInfo attackInfo) {
         if (ANTEM_ATTACK_PATTERN.size() <= ANTEM_THIRD_PATTERN_INDEX) {
             return -1;
         }
-
         int entityId = entity.getId();
         AntemPatternState state = ANTEM_PATTERN_STATES.computeIfAbsent(entityId, id -> new AntemPatternState());
         boolean wasHeatActive = state.heatActive;
@@ -995,39 +937,31 @@ public final class ModCombatClientEvents {
             ANTEM_HEAT_ACTIVE.put(entityId, wasHeatActive);
             return -1;
         }
-
         AttackSignature signature = new AttackSignature(attackInfo.hitbox(), attackInfo.animation());
         int nextPatternIndex = advanceAntemPattern(state.patternIndex, signature);
-
         state.patternIndex = nextPatternIndex;
-
         if (wasHeatActive && isPatternIndexMatch(nextPatternIndex, ANTEM_FOURTH_PATTERN_INDEX, signature)) {
             // Heat window closes on the normal 4th attack start.
             state.heatActive = false;
             ANTEM_HEAT_STARTED_AT_MS.remove(entityId);
         }
-
         if (!state.heatActive && isPatternIndexMatch(nextPatternIndex, ANTEM_THIRD_PATTERN_INDEX, signature)) {
             state.heatActive = true;
             ANTEM_HEAT_STARTED_AT_MS.put(entityId, System.currentTimeMillis());
         }
-
         ANTEM_HEAT_ACTIVE.put(entityId, state.heatActive);
         return nextPatternIndex;
     }
-
     private static boolean isPatternIndexMatch(int index, int expectedIndex, AttackSignature signature) {
         return index == expectedIndex
                 && ANTEM_ATTACK_PATTERN.size() > expectedIndex
                 && matchesAttackSignature(signature, ANTEM_ATTACK_PATTERN.get(expectedIndex));
     }
-
     private static int advanceAntemPattern(int currentPatternIndex, AttackSignature signature) {
         int patternSize = ANTEM_ATTACK_PATTERN.size();
         if (patternSize == 0 || signature == null) {
             return -1;
         }
-
         int expectedNextIndex = (currentPatternIndex + 1) % patternSize;
         if (matchesAttackSignature(signature, ANTEM_ATTACK_PATTERN.get(expectedNextIndex))) {
             return expectedNextIndex;
@@ -1037,7 +971,6 @@ public final class ModCombatClientEvents {
         }
         return -1;
     }
-
     private static boolean matchesAttackSignature(AttackSignature left, AttackSignature right) {
         if (left == null || right == null) {
             return false;
@@ -1045,7 +978,6 @@ public final class ModCombatClientEvents {
         return Objects.equals(left.hitbox(), right.hitbox())
                 && Objects.equals(left.animation(), right.animation());
     }
-
     private static List<AttackSignature> loadAntemAttackPattern() {
         try (InputStream stream = ModCombatClientEvents.class.getClassLoader()
                 .getResourceAsStream(ANTEM_PATTERN_RESOURCE_PATH)) {
@@ -1065,7 +997,6 @@ public final class ModCombatClientEvents {
             if (attacks == null) {
                 return List.of();
             }
-
             List<AttackSignature> pattern = new ArrayList<>(attacks.size());
             for (JsonElement attackElement : attacks) {
                 if (!attackElement.isJsonObject()) {
@@ -1081,12 +1012,10 @@ public final class ModCombatClientEvents {
             return List.of();
         }
     }
-
     private static String readJsonString(JsonObject json, String key) {
         JsonElement element = json.get(key);
         return element != null && element.isJsonPrimitive() ? element.getAsString() : null;
     }
-
     private static Object invokeCached(Object target, String methodName) throws ReflectiveOperationException {
         MethodKey key = new MethodKey(target.getClass(), methodName);
         Method method = METHOD_CACHE.get(key);
@@ -1097,7 +1026,6 @@ public final class ModCombatClientEvents {
         }
         return method.invoke(target);
     }
-
     private static AttackHandInfo readAttackHandInfo(Object attackHand) throws ReflectiveOperationException {
         Object attackItem = invokeCached(attackHand, "itemStack");
         if (!(attackItem instanceof ItemStack attackStack)) {
@@ -1116,7 +1044,6 @@ public final class ModCombatClientEvents {
                 animation == null ? null : animation.toString()
         );
     }
-
     private static List<?> createNoTrailParticles() {
         try {
             Class<?> particlePlacementClass = Class.forName("net.bettercombat.api.fx.ParticlePlacement");
@@ -1135,15 +1062,12 @@ public final class ModCombatClientEvents {
             return List.of();
         }
     }
-
     private static boolean isBayonetAttack(AttackHandInfo attackInfo) {
         return attackInfo != null && attackInfo.stack().is(ModItems.BAYONET.get());
     }
-
     private static boolean isDuskAttack(AttackHandInfo attackInfo) {
         return attackInfo != null && attackInfo.stack().is(ModItems.DUSK.get());
     }
-
     private static boolean isBayonetGunshotAttack(AttackHandInfo attackInfo) {
         if (!isBayonetAttack(attackInfo)) {
             return false;
@@ -1154,7 +1078,6 @@ public final class ModCombatClientEvents {
         return BAYONET_GUNSHOT_ANIMATION.equals(attackInfo.animation())
                 || BAYONET_IMPACT_ANIMATION.equals(attackInfo.animation());
     }
-
     private static boolean isBayonetImpactAttack(AttackHandInfo attackInfo) {
         if (!isBayonetAttack(attackInfo)) {
             return false;
@@ -1164,7 +1087,6 @@ public final class ModCombatClientEvents {
         }
         return BAYONET_IMPACT_ANIMATION.equals(attackInfo.animation());
     }
-
     private static boolean isDuskThirdAttack(AttackHandInfo attackInfo) {
         if (!isDuskAttack(attackInfo)) {
             return false;
@@ -1174,7 +1096,6 @@ public final class ModCombatClientEvents {
         }
         return DUSK_THIRD_ANIMATION.equals(attackInfo.animation());
     }
-
     private static boolean isMkopiSlamAttack(AttackHandInfo attackInfo) {
         if (attackInfo == null || !attackInfo.stack().is(ModItems.MKOPI.get())) {
             return false;
@@ -1184,11 +1105,9 @@ public final class ModCombatClientEvents {
         }
         return MKOPI_SLAM_ANIMATION.equals(attackInfo.animation());
     }
-
     private static void spawnAntemFireParticles(LocalPlayer player) {
         RandomSource random = player.getRandom();
         double y = player.getY() + 1.0D;
-
         for (int i = 0; i < ANTEM_FIRE_PARTICLE_COUNT; i++) {
             double angle = (Math.PI * 2.0D * i) / ANTEM_FIRE_PARTICLE_COUNT;
             double radius = 0.65D + random.nextDouble() * 0.55D;
@@ -1198,7 +1117,6 @@ public final class ModCombatClientEvents {
             double dx = Math.cos(angle) * velocityScale;
             double dz = Math.sin(angle) * velocityScale;
             double dy = 0.03D + random.nextDouble() * 0.06D;
-
             player.level().addParticle(ParticleTypes.FLAME, x, y + random.nextDouble() * 0.5D, z, dx, dy, dz);
             if ((i & 1) == 0) {
                 player.level().addParticle(ParticleTypes.SMALL_FLAME, x, y + 0.25D, z, dx * 0.7D, dy, dz * 0.7D);
@@ -1208,13 +1126,10 @@ public final class ModCombatClientEvents {
             }
         }
     }
-
     private static void spawnAntemWindParticles(LocalPlayer player) {
         RandomSource random = player.getRandom();
         double y = player.getY() + 0.8D;
-
         player.level().addParticle(ParticleTypes.GUST_EMITTER_SMALL, player.getX(), y + 0.4D, player.getZ(), 0.0D, 0.0D, 0.0D);
-
         for (int i = 0; i < ANTEM_WIND_PARTICLE_COUNT; i++) {
             double angle = (Math.PI * 2.0D * i) / ANTEM_WIND_PARTICLE_COUNT;
             double radius = 0.45D + random.nextDouble() * 1.0D;
@@ -1224,23 +1139,19 @@ public final class ModCombatClientEvents {
             double dx = Math.cos(angle) * velocityScale;
             double dz = Math.sin(angle) * velocityScale;
             double dy = 0.02D + random.nextDouble() * 0.04D;
-
             player.level().addParticle(ParticleTypes.SMALL_GUST, x, y + random.nextDouble() * 0.7D, z, dx, dy, dz);
             if (i % 4 == 0) {
                 player.level().addParticle(ParticleTypes.CLOUD, x, y + 0.15D, z, dx * 0.25D, 0.0D, dz * 0.25D);
             }
         }
     }
-
     private static void spawnBayonetGunshotParticles(LocalPlayer player) {
         Vec3 look = player.getLookAngle().normalize();
         double x = player.getX() + look.x * 1.2D;
         double y = player.getEyeY() - 0.2D + look.y * 0.2D;
         double z = player.getZ() + look.z * 1.2D;
         RandomSource random = player.getRandom();
-
         player.level().addParticle(ParticleTypes.FLASH, x, y, z, 0.0, 0.0, 0.0);
-
         for (int i = 0; i < BURST_COUNT; i++) {
             player.level().addParticle(
                     ParticleTypes.FLAME,

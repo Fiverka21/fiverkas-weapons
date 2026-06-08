@@ -1,5 +1,4 @@
 package com.fiv.fiverkas_weapons.item;
-
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,12 +14,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import org.jetbrains.annotations.NotNull;
-
 public class Sacrilegious extends AnimatedGradientSwordItem {
     private static final int BLUE = 0x332EBF;
     private static final int YELLOW = 0xBABF2E;
     private static final long COLOR_SHIFT_SPEED_MS = 144L;
-
     // Artorias slam constants
     public static final String SLAM_AIRBORNE_TAG = "fweapons_artorias_airborne";
     public static final int SLAM_COOLDOWN_TICKS = 160;
@@ -28,11 +25,9 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
     public static final int SLAM_MIN_AIRBORNE_TICKS = 4;
     private static final double LAUNCH_HORIZONTAL_SPEED = 1.2D;
     private static final double LAUNCH_VERTICAL_SPEED = 0.75D;
-
     public Sacrilegious(Tier tier, Item.Properties properties) {
         super(tier, properties, BLUE, YELLOW, COLOR_SHIFT_SPEED_MS);
     }
-
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             @NotNull Level level,
@@ -53,7 +48,6 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
             }
             return InteractionResultHolder.fail(stack);
         }
-
         if (player.getCooldowns().isOnCooldown(item)) {
             return InteractionResultHolder.fail(stack);
         }
@@ -61,7 +55,6 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
         launchPlayer(player);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
-
     public static void launchPlayer(Player player) {
         Vec3 look = player.getLookAngle();
         double horizontalLength = Math.sqrt(look.x * look.x + look.z * look.z);
@@ -85,7 +78,6 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
         }
         player.resetFallDistance();
         player.getPersistentData().putLong(SLAM_AIRBORNE_TAG, player.level().getGameTime());
-
         // Add visual feedback for the slam activation
         if (player.level() instanceof ServerLevel serverLevel) {
             // Add particle effects to make the slam more visible

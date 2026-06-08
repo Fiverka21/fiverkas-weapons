@@ -1,5 +1,4 @@
 package com.fiv.fiverkas_weapons.network;
-
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.event.client.ModCombatClientEvents;
 import com.fiv.fiverkas_weapons.registry.ModItems;
@@ -10,11 +9,9 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.network.PacketDistributor;
-
 public final class ModNetwork {
     private ModNetwork() {
     }
-
     public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToServer(
@@ -48,7 +45,6 @@ public final class ModNetwork {
                 ModNetwork::handleSacrilegiousSlam
         );
     }
-
     private static void handleBayonetMuzzleFlash(BayonetMuzzleFlashPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) {
@@ -62,7 +58,6 @@ public final class ModNetwork {
             ModCombatEvents.spawnBayonetGunshotMuzzleParticles(player);
         });
     }
-
     private static void handleClientAttackFlag(ClientAttackFlagPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) {
@@ -71,7 +66,6 @@ public final class ModNetwork {
             ModCombatEvents.recordClientAttackFlag(player, payload.flag());
         });
     }
-
     private static void handleBayonetComboAttack(BayonetComboAttackPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) {
@@ -80,15 +74,12 @@ public final class ModNetwork {
             ModCombatEvents.onBayonetComboAttack(player);
         });
     }
-
     private static void handleBayonetImpactFrame(BayonetImpactFramePayload payload, IPayloadContext context) {
         context.enqueueWork(ModCombatClientEvents::triggerBayonetImpactFrame);
     }
-
     private static void handleSacrilegiousSlam(SacrilegiousSlamPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> ModCombatClientEvents.handleSacrilegiousSlamClient(payload.playerId(), payload.animationName()));
     }
-
     private static void handleSacrilegiousSlamRequest(SacrilegiousSlamRequestPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) {
@@ -106,7 +97,6 @@ public final class ModNetwork {
             player.getCooldowns().addCooldown(item, com.fiv.fiverkas_weapons.item.Sacrilegious.SLAM_COOLDOWN_TICKS);
             // Launch player first (adds velocity, particles, sound)
             com.fiv.fiverkas_weapons.item.Sacrilegious.launchPlayer(player);
-
             // Attempt to register this action as a BetterCombat attack on the server so it counts as the
             // weapon's last attack in the pattern. Construct a C2S_AttackRequest and invoke ServerNetwork.handleAttackRequest.
             try {
@@ -125,9 +115,7 @@ public final class ModNetwork {
                     } catch (Throwable ignored2) {
                     }
                 }
-
                 Object attackReq = ctor.newInstance(lastIndex, false, selectedSlot, 0, new int[0]);
-
                 // Try to obtain player's ServerGamePacketListenerImpl instance (connection)
                 Object listener = null;
                 try {
@@ -147,7 +135,6 @@ public final class ModNetwork {
                         }
                     }
                 }
-
                 try {
                     if (listener != null) {
                         serverNetworkClass.getMethod("handleAttackRequest", attackReqClass, net.minecraft.server.MinecraftServer.class, net.minecraft.server.level.ServerPlayer.class, Class.forName("net.minecraft.server.network.ServerGamePacketListenerImpl")).invoke(null, attackReq, player.getServer(), player, listener);
@@ -161,7 +148,6 @@ public final class ModNetwork {
             } catch (ReflectiveOperationException ignored) {
                 // ignore; no BetterCombat integration available
             }
-
             // Always send a client-side SacrilegiousSlamPayload as a fallback so the client can run local visual playback
             try {
                 PacketDistributor.sendToPlayer(player, new com.fiv.fiverkas_weapons.network.SacrilegiousSlamPayload(player.getId(), "bettercombat:two_handed_slam"));
