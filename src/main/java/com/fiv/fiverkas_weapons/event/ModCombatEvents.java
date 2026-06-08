@@ -951,14 +951,6 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
             applySunsetHitEffects(target, attacker);
         }
         if (isSacrilegious) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] Damage hook applying sacrilegious effects: msgId={} attacker={} target={}",
-                        source.getMsgId(),
-                        attacker == null ? "<none>" : attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
             applySacrilegiousHitEffects(target, attacker);
         }
     }
