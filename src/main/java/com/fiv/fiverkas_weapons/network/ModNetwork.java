@@ -110,7 +110,6 @@ public final class ModNetwork {
             // Attempt to register this action as a BetterCombat attack on the server so it counts as the
             // weapon's last attack in the pattern. Construct a C2S_AttackRequest and invoke ServerNetwork.handleAttackRequest.
             try {
-                System.out.println("[fweapons] ModNetwork: attempting to invoke BetterCombat handleAttackRequest for sacrilegious slam");
                 Class<?> attackReqClass = Class.forName("net.bettercombat.network.Packets$C2S_AttackRequest");
                 Class<?> serverNetworkClass = Class.forName("net.bettercombat.network.ServerNetwork");
                 java.lang.reflect.Constructor<?> ctor = attackReqClass.getConstructor(int.class, boolean.class, int.class, int.class, int[].class);
@@ -156,7 +155,6 @@ public final class ModNetwork {
                         // fallback to overload without listener if present
                         serverNetworkClass.getMethod("handleAttackRequest", attackReqClass, net.minecraft.server.MinecraftServer.class, net.minecraft.server.level.ServerPlayer.class).invoke(null, attackReq, player.getServer(), player);
                     }
-                    System.out.println("[fweapons] ModNetwork: Finished invoking handleAttackRequest");
                 } catch (NoSuchMethodException ignored) {
                     // ignore
                 }
@@ -167,10 +165,7 @@ public final class ModNetwork {
             // Always send a client-side SacrilegiousSlamPayload as a fallback so the client can run local visual playback
             try {
                 PacketDistributor.sendToPlayer(player, new com.fiv.fiverkas_weapons.network.SacrilegiousSlamPayload(player.getId(), "bettercombat:two_handed_slam"));
-                System.out.println("[fweapons] ModNetwork: Sent SacrilegiousSlamPayload to player " + player.getName().getString());
             } catch (Throwable t) {
-                System.out.println("[fweapons] ModNetwork: Failed to send SacrilegiousSlamPayload: " + t);
-                t.printStackTrace(System.out);
             }
         });
     }
