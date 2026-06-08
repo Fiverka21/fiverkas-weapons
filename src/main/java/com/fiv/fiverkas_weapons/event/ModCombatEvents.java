@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.item.Sacrilegious;
 import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.item.Mkopi;
@@ -70,6 +71,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -132,6 +134,7 @@ public class ModCombatEvents {
             EquipmentSlot.FEET
     };
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
+private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
     private static final String DUSK_THIRD_ANIMATION = "bettercombat:one_handed_stab";
@@ -139,6 +142,11 @@ public class ModCombatEvents {
     private static final String AIRMACE_FALL_DISTANCE_TAG = "fweapons_airmace_fall_distance";
     private static final String AIRMACE_FALL_TICK_TAG = "fweapons_airmace_fall_tick";
     private static final int AIRMACE_FALL_TICK_WINDOW = 2;
+    private static final float ARTORIAS_SLAM_DAMAGE = 12.0F;
+    private static final float ARTORIAS_SLAM_RADIUS = 4.5F;
+    private static final double ARTORIAS_SLAM_KNOCKBACK = 1.35D;
+    private static final double ARTORIAS_SLAM_UPWARD_KNOCKBACK = 0.25D;
+    private static final int ARTORIAS_SLAM_RING_PARTICLES = 48;
     private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = ResourceKey.create(
             Registries.DAMAGE_TYPE,
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
@@ -151,6 +159,10 @@ public class ModCombatEvents {
             new DustParticleOptions(new Vector3f(241 / 255F, 206 / 255F, 106 / 255F), 1.25F);
     private static final DustParticleOptions AIRMACE_BLAND_CYAN =
             new DustParticleOptions(new Vector3f(146 / 255F, 191 / 255F, 186 / 255F), 1.1F);
+    private static final DustParticleOptions ARTORIAS_ABYSS_DUST =
+            new DustParticleOptions(new Vector3f(24 / 255F, 42 / 255F, 68 / 255F), 1.45F);
+    private static final DustParticleOptions ARTORIAS_ASH_DUST =
+            new DustParticleOptions(new Vector3f(138 / 255F, 143 / 255F, 147 / 255F), 1.2F);
     private static final DustParticleOptions DUSK_SUNSET_DUST =
             new DustParticleOptions(new Vector3f(91 / 255F, 60 / 255F, 136 / 255F), 1.35F);
     private static final DustParticleOptions DUSK_SUNSET_LIGHT_DUST =
@@ -662,6 +674,7 @@ public class ModCombatEvents {
         if (player.level() instanceof ServerLevel serverLevel) {
             LScythe.tickDashTrail(serverLevel, player);
             Mkopi.tickDestinationParticles(serverLevel, player);
+            tickArtoriasSlam(serverLevel, player);
         }
         if (player instanceof ServerPlayer serverPlayer) {
             pruneExpiredAttackFlags(serverPlayer);
@@ -703,6 +716,98 @@ public class ModCombatEvents {
             data.remove(CeruleanShroudEffect.LAST_Z_TAG);
             data.remove(CeruleanShroudEffect.STEP_PROGRESS_TAG);
         }
+    }
+
+    public static void onLivingFall(LivingFallEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (player.getPersistentData().contains(Sacrilegious.SLAM_AIRBORNE_TAG)) {
+            event.setDamageMultiplier(0.0F);
+        }
+    }
+
+    private static void tickArtoriasSlam(ServerLevel level, Player player) {
+        var data = player.getPersistentData();
+        if (!data.contains(Sacrilegious.SLAM_AIRBORNE_TAG)) {
+            return;
+        }
+
+        long launchTick = data.getLong(Sacrilegious.SLAM_AIRBORNE_TAG);
+        long elapsed = level.getGameTime() - launchTick;
+        if (elapsed > Sacrilegious.SLAM_TIMEOUT_TICKS) {
+            data.remove(Sacrilegious.SLAM_AIRBORNE_TAG);
+            return;
+        }
+
+        spawnArtoriasAirTrail(level, player);
+        if (elapsed < Sacrilegious.SLAM_MIN_AIRBORNE_TICKS || !player.onGround() || player.isInWater()) {
+            return;
+        }
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            triggerArtoriasSlamImpact(serverPlayer);
+        }
+        data.remove(Sacrilegious.SLAM_AIRBORNE_TAG);
+    }
+
+    private static void triggerArtoriasSlamImpact(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        Vec3 pos = player.position();
+        AABB area = new AABB(pos, pos).inflate(ARTORIAS_SLAM_RADIUS);
+        DamageSource source = player.damageSources().playerAttack(player);
+        double radiusSqr = ARTORIAS_SLAM_RADIUS * ARTORIAS_SLAM_RADIUS;
+
+        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
+            if (entity == player || !entity.isAlive()) {
+                continue;
+            }
+            double distanceSqr = entity.distanceToSqr(player);
+            if (distanceSqr > radiusSqr) {
+                continue;
+            }
+
+            entity.hurt(source, ARTORIAS_SLAM_DAMAGE);
+            double dx = entity.getX() - pos.x;
+            double dz = entity.getZ() - pos.z;
+            if (dx * dx + dz * dz > 1.0E-6D) {
+                entity.knockback(ARTORIAS_SLAM_KNOCKBACK, -dx, -dz);
+            }
+            double distanceFactor = 1.0D - Math.min(1.0D, Math.sqrt(distanceSqr) / ARTORIAS_SLAM_RADIUS);
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0.0D, ARTORIAS_SLAM_UPWARD_KNOCKBACK * distanceFactor, 0.0D));
+            entity.hasImpulse = true;
+        }
+
+        spawnArtoriasSlamRingParticles(level, pos);
+        level.playSound(
+                null,
+                pos.x,
+                pos.y,
+                pos.z,
+                SoundEvents.GENERIC_EXPLODE,
+                SoundSource.PLAYERS,
+                1.2F,
+                0.85F
+        );
+        player.resetFallDistance();
+    }
+
+    private static void spawnArtoriasAirTrail(ServerLevel level, Player player) {
+        Vec3 pos = player.position().add(0.0D, player.getBbHeight() * 0.45D, 0.0D);
+        level.sendParticles(ARTORIAS_ABYSS_DUST, pos.x, pos.y, pos.z, 2, 0.18D, 0.18D, 0.18D, 0.015D);
+        level.sendParticles(ARTORIAS_ASH_DUST, pos.x, pos.y, pos.z, 1, 0.12D, 0.12D, 0.12D, 0.01D);
+    }
+
+    private static void spawnArtoriasSlamRingParticles(ServerLevel level, Vec3 center) {
+        for (int i = 0; i < ARTORIAS_SLAM_RING_PARTICLES; i++) {
+            double angle = (2.0D * Math.PI * i) / ARTORIAS_SLAM_RING_PARTICLES;
+            double x = center.x + Math.cos(angle) * ARTORIAS_SLAM_RADIUS;
+            double z = center.z + Math.sin(angle) * ARTORIAS_SLAM_RADIUS;
+            level.sendParticles(ParticleTypes.EXPLOSION, x, center.y + 0.1D, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            level.sendParticles(ARTORIAS_ABYSS_DUST, x, center.y + 0.1D, z, 3, 0.1D, 0.25D, 0.1D, 0.035D);
+            level.sendParticles(ARTORIAS_ASH_DUST, x, center.y + 0.1D, z, 2, 0.08D, 0.18D, 0.08D, 0.02D);
+        }
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.x, center.y + 0.15D, center.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
     private static void updateLScytheDashPenalty(Player player) {
@@ -946,7 +1051,7 @@ public class ModCombatEvents {
         playBetterCombatAttackAnimation(player);
     }
 
-    private static void playBetterCombatAttackAnimation(ServerPlayer player) {
+    static void playBetterCombatAttackAnimation(ServerPlayer player) {
         try {
             Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
             Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
@@ -991,6 +1096,68 @@ public class ModCombatEvents {
         } catch (ReflectiveOperationException ignored) {
             if (DEBUG_LOGS) {
                 LOGGER.info("[fweapons] BetterCombat not present or attack animation send failed.");
+            }
+        }
+    }
+
+    public static void playBetterCombatTwoHandedSlamAnimation(ServerPlayer player) {
+        // Keep compatibility for callers that expect the mkopi two-handed slam behavior
+        playBetterCombatSlamAnimation(player, MKOPI_SLAM_ANIMATION);
+    }
+
+    public static void playSacrilegiousSlamAnimation(ServerPlayer player) {
+        playBetterCombatSlamAnimation(player, SACRILEGIOUS_SLAM_ANIMATION);
+    }
+
+    public static void playBetterCombatSlamAnimation(ServerPlayer player, String animationName) {
+        try {
+            System.out.println("[fweapons] ModCombatEvents: Starting playBetterCombatSlamAnimation for " + animationName);
+            Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
+            Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
+            Class<?> swingParticlesClass = Class.forName("net.bettercombat.network.Packets$SwingParticles");
+            Class<?> serverNetworkClass = Class.forName("net.bettercombat.network.ServerNetwork");
+
+            Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
+            Object particles = swingParticlesClass.getField("EMPTY").get(null);
+            float length = 1.625f;
+            float upswing = 1.2f;
+            int upswingTicks = Math.round(upswing * 20.0f);
+            Object payload = attackAnimClass
+                    .getConstructor(
+                            int.class,
+                            animatedHandClass,
+                            String.class,
+                            float.class,
+                            float.class,
+                            float.class,
+                            int.class,
+                            swingParticlesClass
+                    )
+                    .newInstance(
+                            player.getId(),
+                            hand,
+                            animationName,
+                            length,
+                            upswing,
+                            0.0f,
+                            upswingTicks,
+                            particles
+                    );
+
+            System.out.println("[fweapons] ModCombatEvents: About to invoke handleAttackAnimation");
+            serverNetworkClass
+                    .getMethod(
+                            "handleAttackAnimation",
+                            attackAnimClass,
+                            net.minecraft.server.MinecraftServer.class,
+                            net.minecraft.server.level.ServerPlayer.class
+                    )
+                    .invoke(null, payload, player.getServer(), player);
+            System.out.println("[fweapons] ModCombatEvents: Finished invoking handleAttackAnimation");
+        } catch (ReflectiveOperationException ignored) {
+            System.out.println("[fweapons] ModCombatEvents: Exception in playBetterCombatSlamAnimation: " + ignored);
+            if (DEBUG_LOGS) {
+                LOGGER.info("[fweapons] BetterCombat not present or slam animation send failed.");
             }
         }
     }

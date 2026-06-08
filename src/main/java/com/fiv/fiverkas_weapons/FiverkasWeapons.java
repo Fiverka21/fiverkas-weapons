@@ -36,6 +36,7 @@ public class FiverkasWeapons {
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onSweepAttack);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onServerStarting);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(ModCombatEvents::onLivingFall);
         NeoForge.EVENT_BUS.addListener(ModCombatEvents::onAnvilUpdate);
         NeoForge.EVENT_BUS.addListener(ModCommandEvents::onRegisterCommands);
 
