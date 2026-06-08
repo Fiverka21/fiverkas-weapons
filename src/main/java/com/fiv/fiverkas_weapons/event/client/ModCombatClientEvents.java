@@ -222,8 +222,6 @@ public final class ModCombatClientEvents {
         try {
             // Find the player entity in the client world
             if (Minecraft.getInstance().level == null) {
-                System.out.println("[fweapons] client level is null; cannot show animation");
-                if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] client level is null; cannot show animation");
                 return;
             }
             var entity = Minecraft.getInstance().level.getEntity(playerId);
@@ -231,8 +229,6 @@ public final class ModCombatClientEvents {
                 if (DEBUG_LOGS_CLIENT) LOGGER.warn("[fweapons] player entity with id {} is not a Player (found {})", playerId, entity == null ? "null" : entity.getClass().getName());
                 return;
             }
-            System.out.println("[fweapons] found player " + player.getName().getString() + " on client; attempting animation");
-            if (DEBUG_LOGS_CLIENT) LOGGER.info("[fweapons] found player {} on client; attempting animation", player.getName().getString());
             // First attempt: if the player supports BetterCombat's Client-side animatable interface, invoke it directly
             try {
                 Class<?> playerAnimatableClass = Class.forName("net.bettercombat.client.animation.PlayerAttackAnimatable");
