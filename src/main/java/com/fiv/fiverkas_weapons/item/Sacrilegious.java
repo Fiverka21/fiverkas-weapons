@@ -23,7 +23,7 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
 
     // Artorias slam constants
     public static final String SLAM_AIRBORNE_TAG = "fweapons_artorias_airborne";
-    public static final int SLAM_COOLDOWN_TICKS = 80;
+    public static final int SLAM_COOLDOWN_TICKS = 160;
     public static final int SLAM_TIMEOUT_TICKS = 80;
     public static final int SLAM_MIN_AIRBORNE_TICKS = 4;
     private static final double LAUNCH_HORIZONTAL_SPEED = 1.2D;
