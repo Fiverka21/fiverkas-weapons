@@ -6,6 +6,7 @@ import java.util.Optional;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -235,7 +236,7 @@ public class Mkopi extends AnimatedGradientSwordItem {
     }
 
     private static void teleportToSpawn(ServerPlayer target) {
-        target.sendSystemMessage(Component.literal("...it feels as if waking up from a strange dream..."));
+        target.sendSystemMessage(Component.literal("...it feels as if waking up from a strange dream...").withStyle(style -> style.withColor(TextColor.fromRgb(RED))));
 
         ServerLevel oldLevel = target.serverLevel();
         oldLevel.playSound(
