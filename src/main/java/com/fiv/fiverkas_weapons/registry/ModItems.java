@@ -49,7 +49,7 @@ public class ModItems {
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 10, -2.6f))
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.6f))
                     ));
 
     public static final DeferredHolder<Item, Antem> ANTEM =

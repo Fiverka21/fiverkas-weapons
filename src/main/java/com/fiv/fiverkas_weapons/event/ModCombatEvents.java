@@ -1110,6 +1110,7 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
     }
 
     public static void playBetterCombatSlamAnimation(ServerPlayer player, String animationName) {
+        boolean invoked = false;
         try {
             System.out.println("[fweapons] ModCombatEvents: Starting playBetterCombatSlamAnimation for " + animationName);
             Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
@@ -1154,10 +1155,39 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
                     )
                     .invoke(null, payload, player.getServer(), player);
             System.out.println("[fweapons] ModCombatEvents: Finished invoking handleAttackAnimation");
+            invoked = true;
         } catch (ReflectiveOperationException ignored) {
             System.out.println("[fweapons] ModCombatEvents: Exception in playBetterCombatSlamAnimation: " + ignored);
             if (DEBUG_LOGS) {
                 LOGGER.info("[fweapons] BetterCombat not present or slam animation send failed.");
+            }
+        }
+
+        // Fallback: attempt to send a client-side payload to the specific player so the client can show visuals
+        try {
+            Class<?> pdClass = Class.forName("net.neoforged.neoforge.network.PacketDistributor");
+            try {
+                java.lang.reflect.Method m = pdClass.getMethod("sendToPlayer", ServerPlayer.class, net.minecraft.network.protocol.common.custom.CustomPacketPayload.class);
+                m.invoke(null, player, new com.fiv.fiverkas_weapons.network.SacrilegiousSlamPayload(player.getId(), animationName));
+                if (DEBUG_LOGS) LOGGER.info("[fweapons] Sent SacrilegiousSlamPayload to player {}", player.getName().getString());
+            } catch (NoSuchMethodException e) {
+                // try alternative method name 'sendTo' (some versions expose different API)
+                java.lang.reflect.Method m2 = pdClass.getMethod("sendTo", ServerPlayer.class, net.minecraft.network.protocol.common.custom.CustomPacketPayload.class);
+                m2.invoke(null, player, new com.fiv.fiverkas_weapons.network.SacrilegiousSlamPayload(player.getId(), animationName));
+                if (DEBUG_LOGS) LOGGER.info("[fweapons] Sent SacrilegiousSlamPayload via sendTo to player {}", player.getName().getString());
+            }
+        } catch (ReflectiveOperationException | RuntimeException ignored) {
+            // If we couldn't send the payload, fallback to spawning visible server-side particles for nearby viewers
+            if (DEBUG_LOGS) LOGGER.info("[fweapons] Could not send SacrilegiousSlamPayload as fallback: {}", ignored.toString());
+            if (player.level() instanceof ServerLevel serverLevel) {
+                // Spawn loud particles and a sound to make the slam noticeable
+                Vec3 pos = player.position();
+                sendParticlesToOthers(serverLevel, player, pos.x, pos.y + 0.5, pos.z, new ParticleSpec[]{
+                        new ParticleSpec(ParticleTypes.EXPLOSION_EMITTER, 1, 0.0, 0.0, 0.0, 0.0),
+                        new ParticleSpec(ParticleTypes.CLOUD, 12, 0.4, 0.4, 0.4, 0.05),
+                        new ParticleSpec(ParticleTypes.FLASH, 1, 0.0, 0.0, 0.0, 0.0)
+                });
+                serverLevel.playSound(null, pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0f, 1.0f);
             }
         }
     }
@@ -1335,7 +1365,7 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
     }
 
     private static void applySacrilegiousHitEffects(LivingEntity target, LivingEntity attacker) {
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SACRILEGIOUS_SLOWNESS_DURATION_TICKS, 0), attacker);
+
 
         if (target.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(

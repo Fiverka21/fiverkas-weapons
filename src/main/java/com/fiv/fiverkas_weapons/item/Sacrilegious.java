@@ -41,17 +41,28 @@ public class Sacrilegious extends AnimatedGradientSwordItem {
     ) {
         ItemStack stack = player.getItemInHand(hand);
         Item item = stack.getItem();
+        if (level.isClientSide) {
+            // Send request to server to perform the slam and try to suppress client-side use animation
+            try {
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.fiv.fiverkas_weapons.network.SacrilegiousSlamRequestPayload());
+            } catch (Throwable ignored) {
+            }
+            try {
+                player.stopUsingItem();
+            } catch (Throwable ignored) {
+            }
+            return InteractionResultHolder.fail(stack);
+        }
+
         if (player.getCooldowns().isOnCooldown(item)) {
             return InteractionResultHolder.fail(stack);
         }
         player.getCooldowns().addCooldown(item, SLAM_COOLDOWN_TICKS);
-        if (!level.isClientSide) {
-            launchPlayer(player);
-        }
+        launchPlayer(player);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
-    private static void launchPlayer(Player player) {
+    public static void launchPlayer(Player player) {
         Vec3 look = player.getLookAngle();
         double horizontalLength = Math.sqrt(look.x * look.x + look.z * look.z);
         double x;
