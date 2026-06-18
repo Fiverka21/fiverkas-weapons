@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "id": "fweapons:icon"
+    },
+    "title": {
+      "translate": "adv.fweapons.tab.title"
+    },
+    "description": {
+      "translate": "adv.fweapons.tab.desc"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "trigger": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    ["trigger"]
+  ]
+}
