@@ -22,4 +22,8 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> RAMIEL =
             SOUND_EVENTS.register("ramiel",
                     () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "ramiel")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TP =
+            SOUND_EVENTS.register("tp",
+                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "tp")));
 }

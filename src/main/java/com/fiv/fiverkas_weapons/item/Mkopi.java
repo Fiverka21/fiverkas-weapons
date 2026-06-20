@@ -3,6 +3,7 @@ package com.fiv.fiverkas_weapons.item;
 import java.util.List;
 import java.util.Optional;
 
+import com.fiv.fiverkas_weapons.registry.ModSounds;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -244,7 +245,7 @@ public class Mkopi extends AnimatedGradientSwordItem {
                 target.getX(),
                 target.getY(),
                 target.getZ(),
-                SoundEvents.ENDERMAN_TELEPORT,
+                ModSounds.TP.get(),
                 SoundSource.PLAYERS,
                 1.0F,
                 0.72F
@@ -278,7 +279,7 @@ public class Mkopi extends AnimatedGradientSwordItem {
                 player.getX(),
                 player.getY(),
                 player.getZ(),
-                SoundEvents.ENDERMAN_TELEPORT,
+                ModSounds.TP.get(),
                 SoundSource.PLAYERS,
                 1.0F,
                 0.85F
