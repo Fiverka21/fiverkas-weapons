@@ -1,14 +1,14 @@
 {
-  "parent": "fweapons:obtain_gblueprint",
+  "parent": "fweapons:root",
   "display": {
     "icon": {
-      "id": "fweapons:airmace"
+      "id": "fweapons:gblueprint"
     },
     "title": {
-      "translate": "adv.fweapons.obtain.airmace"
+      "translate": "adv.fweapons.obtain.gblueprint"
     },
     "description": {
-      "translate": "adv.fweapons.obtain.airmace.desc"
+      "translate": "adv.fweapons.obtain.gblueprint.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "items": "fweapons:airmace"
+            "items": "fweapons:gblueprint"
           }
         ]
       }

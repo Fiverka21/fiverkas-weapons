@@ -1,6 +1,7 @@
 package com.fiv.fiverkas_weapons.network;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.event.client.ModCombatClientEvents;
+import com.fiv.fiverkas_weapons.item.DShieldItem;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +34,11 @@ public final class ModNetwork {
                 SacrilegiousSlamRequestPayload.TYPE,
                 SacrilegiousSlamRequestPayload.STREAM_CODEC,
                 ModNetwork::handleSacrilegiousSlamRequest
+        );
+        registrar.playToServer(
+                DShieldResiliencePayload.TYPE,
+                DShieldResiliencePayload.STREAM_CODEC,
+                ModNetwork::handleDShieldResilience
         );
         registrar.playToClient(
                 BayonetImpactFramePayload.TYPE,
@@ -152,6 +158,13 @@ public final class ModNetwork {
             try {
                 PacketDistributor.sendToPlayer(player, new com.fiv.fiverkas_weapons.network.SacrilegiousSlamPayload(player.getId(), "bettercombat:two_handed_slam"));
             } catch (Throwable t) {
+            }
+        });
+    }
+    private static void handleDShieldResilience(DShieldResiliencePayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                DShieldItem.activateResilience(player);
             }
         });
     }
