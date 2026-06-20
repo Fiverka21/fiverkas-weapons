@@ -1,14 +1,14 @@
 {
-  "parent": "fweapons:obtain_dream_essence",
+  "parent": "fweapons:root",
   "display": {
     "icon": {
-      "id": "fweapons:mkopi"
+      "id": "fweapons:dream_essence"
     },
     "title": {
-      "translate": "adv.fweapons.obtain.mkopi"
+      "translate": "adv.fweapons.obtain.dream_essence"
     },
     "description": {
-      "translate": "adv.fweapons.obtain.mkopi.desc"
+      "translate": "adv.fweapons.obtain.dream_essence.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -20,15 +20,11 @@
       "conditions": {
         "items": [
           {
-            "items": "fweapons:mkopi"
+            "items": "fweapons:dream_essence"
           }
         ]
       }
     }
   },
-  "requirements": [
-    [
-      "obtained"
-    ]
-  ]
+  "requirements": [["obtained"]]
 }
