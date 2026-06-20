@@ -3,6 +3,7 @@ package com.fiv.fiverkas_weapons.registry;
 import com.fiv.fiverkas_weapons.effect.BleedEffect;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.effect.ResilienceEffect;
 import com.fiv.fiverkas_weapons.effect.SunsetEffect;
 import com.fiv.fiverkas_weapons.effect.VaporifiedEffect;
 
@@ -27,4 +28,7 @@ public class ModEffects {
 
     public static final DeferredHolder<MobEffect, SunsetEffect> SUNSET =
             EFFECTS.register("sunset", SunsetEffect::new);
+
+    public static final DeferredHolder<MobEffect, ResilienceEffect> RESILIENCE =
+            EFFECTS.register("resilience", ResilienceEffect::new);
 }

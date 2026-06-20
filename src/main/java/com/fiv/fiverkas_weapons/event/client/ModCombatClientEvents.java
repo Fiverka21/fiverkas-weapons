@@ -1,16 +1,20 @@
 package com.fiv.fiverkas_weapons.event.client;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
+import com.fiv.fiverkas_weapons.config.ModClientConfig;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.network.BayonetComboAttackPayload;
 import com.fiv.fiverkas_weapons.network.BayonetMuzzleFlashPayload;
 import com.fiv.fiverkas_weapons.network.ClientAttackFlagPayload;
+import com.fiv.fiverkas_weapons.network.DShieldResiliencePayload;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
@@ -35,6 +39,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import com.mojang.logging.LogUtils;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import org.slf4j.Logger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -67,6 +73,7 @@ public final class ModCombatClientEvents {
     private static final String DUSK_THIRD_ANIMATION = "bettercombat:dual_handed_stab";
     private static final String DUSK_THIRD_HITBOX = "FORWARD_BOX";
     private static final String TRAIL_PARTICLE_TYPE_NONE = "none";
+    private static KeyMapping dshieldResilienceKey;
     private static final int BURST_COUNT = 18;
     private static final int ANTEM_FIRE_PARTICLE_COUNT = 48;
     private static final int ANTEM_WIND_PARTICLE_COUNT = 24;
@@ -111,8 +118,13 @@ public final class ModCombatClientEvents {
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ModCombatClientEvents::init);
     }
+    public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+        dshieldResilienceKey = createDShieldResilienceKeyMapping();
+        event.register(dshieldResilienceKey);
+    }
     private static void init() {
         registerClientRenderHooks();
+        registerClientInputHooks();
         registerItemProperties();
         registerBetterCombatAttackStartListener();
         registerBetterCombatAttackHitListener();
@@ -121,6 +133,44 @@ public final class ModCombatClientEvents {
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPre);
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderPlayerPost);
         NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onRenderGuiPost);
+    }
+    private static void registerClientInputHooks() {
+        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onKeyInput);
+        NeoForge.EVENT_BUS.addListener(ModCombatClientEvents::onMouseInputPost);
+    }
+    private static void onKeyInput(InputEvent.Key event) {
+        if (event.getAction() == InputConstants.PRESS) {
+            sendDShieldResilienceRequests();
+        }
+    }
+    private static void onMouseInputPost(InputEvent.MouseButton.Post event) {
+        if (event.getAction() == InputConstants.PRESS) {
+            sendDShieldResilienceRequests();
+        }
+    }
+    private static void sendDShieldResilienceRequests() {
+        if (dshieldResilienceKey == null) {
+            return;
+        }
+        while (dshieldResilienceKey.consumeClick()) {
+            PacketDistributor.sendToServer(new DShieldResiliencePayload());
+        }
+    }
+    private static KeyMapping createDShieldResilienceKeyMapping() {
+        InputConstants.Key key = parseConfiguredDShieldResilienceKey();
+        return new KeyMapping(
+                "key.fweapons.dshield_resilience",
+                key.getType(),
+                key.getValue(),
+                "key.categories.fweapons"
+        );
+    }
+    private static InputConstants.Key parseConfiguredDShieldResilienceKey() {
+        try {
+            return InputConstants.getKey(ModClientConfig.DSHIELD_RESILIENCE_KEY.get());
+        } catch (IllegalArgumentException ignored) {
+            return InputConstants.Type.MOUSE.getOrCreate(InputConstants.MOUSE_BUTTON_MIDDLE);
+        }
     }
     private static void registerItemProperties() {
         ItemProperties.register(

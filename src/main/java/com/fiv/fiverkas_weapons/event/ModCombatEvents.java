@@ -1,6 +1,7 @@
 package com.fiv.fiverkas_weapons.event;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.item.DShieldItem;
 import com.fiv.fiverkas_weapons.item.Sacrilegious;
 import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.item.LScythe;
@@ -68,6 +69,7 @@ import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
@@ -106,6 +108,8 @@ public class ModCombatEvents {
     private static final int MKOPI_BLACK_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_MUZZLE_COUNT = 18;
+    private static final float RESILIENCE_DAMAGE_REDUCTION = 0.2F;
+    private static final float RESILIENCE_II_DAMAGE_REDUCTION = 0.4F;
     private static final long CLIENT_ATTACK_FLAG_WINDOW_TICKS = 8L;
     private static final int THE_FOOL_SPECTRAL_DURATION_TICKS = 200;
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
@@ -454,11 +458,26 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         applyHonorStrike(event);
         applyAirmaceFallBonus(event);
     }
+    public static void onLivingShieldBlock(LivingShieldBlockEvent event) {
+        if (!event.getBlocked() || event.getBlockedDamage() <= 0.0F) {
+            return;
+        }
+        LivingEntity blocker = event.getEntity();
+        if (blocker.level().isClientSide) {
+            return;
+        }
+        ItemStack stack = blocker.getUseItem();
+        if (stack.isEmpty() || !stack.is(ModItems.DSHIELD.get())) {
+            return;
+        }
+        DShieldItem.addBlockCharge(stack);
+    }
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         if (event.getNewDamage() <= 0.0F) {
             return;
         }
         applyHcbowProjectileDamageBonus(event);
+        applyResilienceDamageReduction(event);
         if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
             return;
         }
@@ -507,6 +526,16 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
             return;
         }
         event.setNewDamage(event.getNewDamage() * HCBowItem.DAMAGE_MULTIPLIER);
+    }
+    private static void applyResilienceDamageReduction(LivingDamageEvent.Pre event) {
+        MobEffectInstance resilience = event.getEntity().getEffect(ModEffects.RESILIENCE);
+        if (resilience == null) {
+            return;
+        }
+        float reduction = resilience.getAmplifier() > 0
+                ? RESILIENCE_II_DAMAGE_REDUCTION
+                : RESILIENCE_DAMAGE_REDUCTION;
+        event.setNewDamage(event.getNewDamage() * (1.0F - reduction));
     }
     private static boolean isHcbowProjectileDamageSource(DamageSource source) {
         Entity direct = source.getDirectEntity();
