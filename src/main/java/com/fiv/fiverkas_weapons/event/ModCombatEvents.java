@@ -60,6 +60,9 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LightBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -113,6 +116,8 @@ public class ModCombatEvents {
     private static final long CLIENT_ATTACK_FLAG_WINDOW_TICKS = 8L;
     private static final int THE_FOOL_SPECTRAL_DURATION_TICKS = 200;
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
+    // Tracks temporary light blocks placed for charged dshield per-player so they can be removed later.
+    private static final Map<UUID, BlockPos> DSHIELD_LIGHT_POS = new ConcurrentHashMap<>();
     // Zero-based indices into data/fweapons/weapon_attributes/antem.json attacks.
     private static final int ANTEM_FIRE_PATTERN_INDEX = 2;
     private static final int ANTEM_KNOCKBACK_PATTERN_INDEX = 6;
@@ -698,6 +703,71 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
             data.remove(CeruleanShroudEffect.LAST_Y_TAG);
             data.remove(CeruleanShroudEffect.LAST_Z_TAG);
             data.remove(CeruleanShroudEffect.STEP_PROGRESS_TAG);
+        }
+
+        /* DShield: emit temporary light level 8 centered on player while held charged */
+        if (player.level() instanceof ServerLevel serverLevel) {
+            ItemStack off = player.getOffhandItem();
+            ItemStack main = player.getMainHandItem();
+            boolean charged = false;
+            if (off.is(ModItems.DSHIELD.get()) && DShieldItem.getChargeCount(off) >= DShieldItem.CHARGES_REQUIRED) {
+                charged = true;
+            } else if (main.is(ModItems.DSHIELD.get()) && DShieldItem.getChargeCount(main) >= DShieldItem.CHARGES_REQUIRED) {
+                charged = true;
+            }
+
+            UUID uuid = player.getUUID();
+            BlockPos prevPos = DSHIELD_LIGHT_POS.get(uuid);
+            BlockPos centerPos = player.blockPosition();
+
+            if (charged) {
+                BlockState state = serverLevel.getBlockState(centerPos);
+                if (state.is(Blocks.LIGHT)) {
+                    try {
+                        int existing = state.getValue(LightBlock.LEVEL);
+                        if (existing != 8) {
+                            BlockState lightState = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 8);
+                            serverLevel.setBlock(centerPos, lightState, 3);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    DSHIELD_LIGHT_POS.put(uuid, centerPos);
+                } else if (state.isAir()) {
+                    try {
+                        BlockState lightState = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 8);
+                        serverLevel.setBlock(centerPos, lightState, 3);
+                        DSHIELD_LIGHT_POS.put(uuid, centerPos);
+                    } catch (Exception ignored) {
+                    }
+                } else {
+                    // cannot place here; remove any previous
+                    if (prevPos != null) {
+                        BlockState prevState = serverLevel.getBlockState(prevPos);
+                        if (prevState.is(Blocks.LIGHT)) {
+                            serverLevel.setBlock(prevPos, Blocks.AIR.defaultBlockState(), 3);
+                        }
+                        DSHIELD_LIGHT_POS.remove(uuid);
+                    }
+                }
+
+                // If moved, clear the old light block
+                if (prevPos != null && !prevPos.equals(centerPos)) {
+                    BlockState prevState = serverLevel.getBlockState(prevPos);
+                    if (prevState.is(Blocks.LIGHT)) {
+                        serverLevel.setBlock(prevPos, Blocks.AIR.defaultBlockState(), 3);
+                    }
+                    // DSHIELD_LIGHT_POS updated above
+                }
+            } else {
+                // Not charged: remove previous temporary light
+                if (prevPos != null) {
+                    BlockState prevState = serverLevel.getBlockState(prevPos);
+                    if (prevState.is(Blocks.LIGHT)) {
+                        serverLevel.setBlock(prevPos, Blocks.AIR.defaultBlockState(), 3);
+                    }
+                    DSHIELD_LIGHT_POS.remove(uuid);
+                }
+            }
         }
     }
     public static void onLivingFall(LivingFallEvent event) {
