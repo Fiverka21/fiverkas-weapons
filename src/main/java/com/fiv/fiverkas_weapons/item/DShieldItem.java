@@ -88,12 +88,7 @@ public class DShieldItem extends ShieldItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        InteractionResultHolder<ItemStack> result = super.use(level, player, hand);
-        if (!level.isClientSide && level instanceof ServerLevel serverLevel && !player.hasInfiniteMaterials()) {
-            ItemStack stack = result.getObject();
-            stack.hurtAndBreak(1, serverLevel, player, item -> player.onEquippedItemBroken(item, Player.getSlotForHand(hand)));
-        }
-        return result;
+        return super.use(level, player, hand);
     }
 
     @Override

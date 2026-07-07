@@ -11,6 +11,7 @@ import com.fiv.fiverkas_weapons.item.Dawn;
 import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
 import com.fiv.fiverkas_weapons.item.HCBowItem;
+import com.fiv.fiverkas_weapons.item.Harvester;
 import com.fiv.fiverkas_weapons.item.LScythe;
 import com.fiv.fiverkas_weapons.item.Mkopi;
 import com.fiv.fiverkas_weapons.item.NatureAxe;
@@ -132,6 +133,15 @@ public class ModItems {
                             new Item.Properties()
                                     .stacksTo(1)
                                     .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 8, -2.8f))
+                    ));
+
+    public static final DeferredHolder<Item, Harvester> HARVESTER =
+            ITEMS.register("harvester",
+                    () -> new Harvester(
+                            Tiers.DIAMOND,
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3, -2.2f))
                     ));
 
     public static final DeferredHolder<Item, Item> THE_FOOL =

@@ -29,6 +29,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.DAWN.get());
                         output.accept(ModItems.DUSK.get());
                         output.accept(ModItems.LSCYTHE.get());
+                        output.accept(ModItems.HARVESTER.get());
                         output.accept(ModItems.THE_FOOL.get());
                         output.accept(ModItems.HCBOW.get());
                         output.accept(ModItems.GBLUEPRINT.get());

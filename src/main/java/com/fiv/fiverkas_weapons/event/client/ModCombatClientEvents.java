@@ -1,5 +1,8 @@
 package com.fiv.fiverkas_weapons.event.client;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,12 +18,21 @@ import com.fiv.fiverkas_weapons.network.DShieldResiliencePayload;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
@@ -87,6 +99,10 @@ public final class ModCombatClientEvents {
     private static final Map<Integer, Long> ANTEM_HEAT_STARTED_AT_MS = new ConcurrentHashMap<>();
     private static final Set<Integer> MKOPI_SHAKE_RENDER_PUSHED = ConcurrentHashMap.newKeySet();
     private static final Set<Integer> SACRILEGIOUS_SLAM_ACTIVE = ConcurrentHashMap.newKeySet();
+    private static final Map<ResourceLocation, RenderType> RESILIENCE_OUTLINE_RENDER_TYPES = new ConcurrentHashMap<>();
+    private static final int RESILIENCE_OUTLINE_RED = 160;
+    private static final int RESILIENCE_OUTLINE_GREEN = 32;
+    private static final int RESILIENCE_OUTLINE_BLUE = 240;
     private static final ResourceLocation[] IMPACT_FRAMES = {
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame0.png"),
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "textures/gui/impact/frame1.png"),
@@ -266,6 +282,155 @@ public final class ModCombatClientEvents {
         if (MKOPI_SHAKE_RENDER_PUSHED.remove(event.getEntity().getId())) {
             event.getPoseStack().popPose();
         }
+        renderResilienceOutline(event);
+    }
+    private static void renderResilienceOutline(RenderPlayerEvent.Post event) {
+        Player player = event.getEntity();
+        if (!player.hasEffect(ModEffects.RESILIENCE) || !(player instanceof AbstractClientPlayer clientPlayer)) {
+            return;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null || minecraft.level != player.level() || !minecraft.player.hasLineOfSight(player)) {
+            return;
+        }
+        OutlineBufferSource outlineBuffer = minecraft.renderBuffers().outlineBufferSource();
+        outlineBuffer.setColor(
+                RESILIENCE_OUTLINE_RED,
+                RESILIENCE_OUTLINE_GREEN,
+                RESILIENCE_OUTLINE_BLUE,
+                255
+        );
+        ResourceLocation texture = event.getRenderer().getTextureLocation(clientPlayer);
+        VertexConsumer vertexConsumer = outlineBuffer.getBuffer(resilienceOutlineRenderType(texture));
+        renderPlayerModelForResilienceOutline(event, clientPlayer, vertexConsumer);
+        minecraft.levelRenderer.requestOutlineEffect();
+    }
+    private static RenderType resilienceOutlineRenderType(ResourceLocation texture) {
+        return RESILIENCE_OUTLINE_RENDER_TYPES.computeIfAbsent(
+                texture,
+                location -> RenderType.create(
+                        "fweapons_resilience_outline",
+                        DefaultVertexFormat.POSITION_TEX_COLOR,
+                        VertexFormat.Mode.QUADS,
+                        1536,
+                        false,
+                        false,
+                        RenderType.CompositeState.builder()
+                                .setShaderState(RenderStateShard.RENDERTYPE_OUTLINE_SHADER)
+                                .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+                                .setCullState(RenderStateShard.NO_CULL)
+                                .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                                .setOutputState(RenderStateShard.OUTLINE_TARGET)
+                                .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                                .createCompositeState(RenderType.OutlineProperty.IS_OUTLINE)
+                )
+        );
+    }
+    private static void renderPlayerModelForResilienceOutline(
+            RenderPlayerEvent.Post event,
+            AbstractClientPlayer player,
+            VertexConsumer vertexConsumer
+    ) {
+        float partialTick = event.getPartialTick();
+        float bodyYaw = Mth.rotLerp(partialTick, player.yBodyRotO, player.yBodyRot);
+        float headYaw = Mth.rotLerp(partialTick, player.yHeadRotO, player.yHeadRot);
+        float netHeadYaw = headYaw - bodyYaw;
+        boolean shouldSit = player.isPassenger() && player.getVehicle() != null && player.getVehicle().shouldRiderSit();
+
+        if (shouldSit && player.getVehicle() instanceof LivingEntity livingEntity) {
+            bodyYaw = Mth.rotLerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
+            netHeadYaw = headYaw - bodyYaw;
+            float wrappedHeadYaw = Mth.wrapDegrees(netHeadYaw);
+            if (wrappedHeadYaw < -85.0F) {
+                wrappedHeadYaw = -85.0F;
+            }
+            if (wrappedHeadYaw >= 85.0F) {
+                wrappedHeadYaw = 85.0F;
+            }
+            bodyYaw = headYaw - wrappedHeadYaw;
+            if (wrappedHeadYaw * wrappedHeadYaw > 2500.0F) {
+                bodyYaw += wrappedHeadYaw * 0.2F;
+            }
+            netHeadYaw = headYaw - bodyYaw;
+        }
+
+        float headPitch = Mth.lerp(partialTick, player.xRotO, player.getXRot());
+        if (LivingEntityRenderer.isEntityUpsideDown(player)) {
+            headPitch *= -1.0F;
+            netHeadYaw *= -1.0F;
+        }
+        netHeadYaw = Mth.wrapDegrees(netHeadYaw);
+
+        event.getPoseStack().pushPose();
+        if (player.hasPose(Pose.SLEEPING)) {
+            Direction bedDirection = player.getBedOrientation();
+            if (bedDirection != null) {
+                float eyeOffset = player.getEyeHeight(Pose.STANDING) - 0.1F;
+                event.getPoseStack().translate(
+                        (float) -bedDirection.getStepX() * eyeOffset,
+                        0.0F,
+                        (float) -bedDirection.getStepZ() * eyeOffset
+                );
+            }
+        }
+
+        float scale = player.getScale();
+        event.getPoseStack().scale(scale, scale, scale);
+        setupResilienceOutlineRotations(player, event, bodyYaw, partialTick, scale);
+        event.getPoseStack().scale(-1.0F, -1.0F, 1.0F);
+        event.getPoseStack().scale(0.9375F, 0.9375F, 0.9375F);
+        event.getPoseStack().translate(0.0F, -1.501F, 0.0F);
+        event.getRenderer().getModel().renderToBuffer(
+                event.getPoseStack(),
+                vertexConsumer,
+                event.getPackedLight(),
+                OverlayTexture.NO_OVERLAY,
+                -1
+        );
+        event.getPoseStack().popPose();
+    }
+    private static void setupResilienceOutlineRotations(
+            AbstractClientPlayer player,
+            RenderPlayerEvent.Post event,
+            float bodyYaw,
+            float partialTick,
+            float scale
+    ) {
+        if (player.isFullyFrozen()) {
+            bodyYaw += (float) (Math.cos((double) player.tickCount * 3.25D) * Math.PI * 0.4D);
+        }
+        if (!player.hasPose(Pose.SLEEPING)) {
+            event.getPoseStack().mulPose(Axis.YP.rotationDegrees(180.0F - bodyYaw));
+        }
+        if (player.deathTime > 0) {
+            float deathRotation = ((float) player.deathTime + partialTick - 1.0F) / 20.0F * 1.6F;
+            deathRotation = Mth.sqrt(deathRotation);
+            if (deathRotation > 1.0F) {
+                deathRotation = 1.0F;
+            }
+            event.getPoseStack().mulPose(Axis.ZP.rotationDegrees(deathRotation * 90.0F));
+        } else if (player.isAutoSpinAttack()) {
+            event.getPoseStack().mulPose(Axis.XP.rotationDegrees(-90.0F - player.getXRot()));
+            event.getPoseStack().mulPose(Axis.YP.rotationDegrees(((float) player.tickCount + partialTick) * -75.0F));
+        } else if (player.hasPose(Pose.SLEEPING)) {
+            Direction bedDirection = player.getBedOrientation();
+            float sleepRotation = bedDirection != null ? sleepDirectionToRotation(bedDirection) : bodyYaw;
+            event.getPoseStack().mulPose(Axis.YP.rotationDegrees(sleepRotation));
+            event.getPoseStack().mulPose(Axis.ZP.rotationDegrees(90.0F));
+            event.getPoseStack().mulPose(Axis.YP.rotationDegrees(270.0F));
+        } else if (LivingEntityRenderer.isEntityUpsideDown(player)) {
+            event.getPoseStack().translate(0.0F, (player.getBbHeight() + 0.1F) / scale, 0.0F);
+            event.getPoseStack().mulPose(Axis.ZP.rotationDegrees(180.0F));
+        }
+    }
+    private static float sleepDirectionToRotation(Direction facing) {
+        return switch (facing) {
+            case SOUTH -> 90.0F;
+            case WEST -> 0.0F;
+            case NORTH -> 270.0F;
+            case EAST -> 180.0F;
+            default -> 0.0F;
+        };
     }
     // Called from network when server wants the client to show a sacrilegious slam visual fallback
     public static void handleSacrilegiousSlamClient(int playerId, String animationName) {

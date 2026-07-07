@@ -25,6 +25,7 @@ public final class WeaponNameFonts {
             item("dawn", "hollowegenesis"),
             item("dusk", "hollowegenesis"),
             item("lscythe", "bledek"),
+            item("harvester", "cinzel"),
             item("sacrilegious", "oldenglishfive"),
             item("antem", "oldenglishfive"),
             item("natureaxe", "simbiot"),

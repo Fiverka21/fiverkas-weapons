@@ -63,6 +63,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -104,6 +108,7 @@ public class ModCombatEvents {
     private static final int VAPORIFIED_DURATION_TICKS = 120;
     private static final int SUNSET_DURATION_TICKS = 80;
     private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
+    private static final int HARVESTER_BLEED_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_PARTICLE_COUNT = 12;
     private static final int MKOPI_DARKNESS_DURATION_TICKS = 80;
@@ -317,6 +322,7 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         if (entity.level().isClientSide) {
             return;
         }
+        applyHarvesterBonusLoot(event);
         if (!(entity instanceof Warden)) {
             return;
         }
@@ -328,6 +334,51 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         ItemStack essence = new ItemStack(ModItems.DREAM_ESSENCE.get());
         ItemEntity drop = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), essence);
         event.getDrops().add(drop);
+    }
+    private static void applyHarvesterBonusLoot(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!(entity instanceof Mob)) {
+            return;
+        }
+        if (!(entity.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        DamageSource source = event.getSource();
+        if (!isHarvesterDamageSource(source)) {
+            return;
+        }
+
+        LootTable lootTable = serverLevel.getServer()
+                .reloadableRegistries()
+                .getLootTable(entity.getLootTable());
+        LootParams.Builder params = new LootParams.Builder(serverLevel)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ORIGIN, entity.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, source)
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity());
+        if (event.isRecentlyHit() && source.getEntity() instanceof Player player) {
+            params.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player)
+                    .withLuck(player.getLuck());
+        }
+
+        lootTable.getRandomItems(params.create(LootContextParamSets.ENTITY), stack -> {
+            ItemEntity drop = new ItemEntity(serverLevel, entity.getX(), entity.getY(), entity.getZ(), stack);
+            drop.setDefaultPickUpDelay();
+            event.getDrops().add(drop);
+        });
+    }
+    private static boolean isHarvesterDamageSource(DamageSource source) {
+        ItemStack weapon = source.getWeaponItem();
+        if (weapon != null && !weapon.isEmpty() && weapon.is(ModItems.HARVESTER.get())) {
+            return true;
+        }
+        Entity causing = source.getEntity();
+        if (causing instanceof LivingEntity attacker) {
+            return attacker.getMainHandItem().is(ModItems.HARVESTER.get())
+                    || attacker.getOffhandItem().is(ModItems.HARVESTER.get());
+        }
+        return false;
     }
     private static void swapPositions(LivingEntity first, LivingEntity second) {
         Vec3 firstPos = first.position();
@@ -995,6 +1046,7 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         boolean isVaporwaveSword = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.VAPORWAVE_SWORD.get());
         boolean isDawn = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.DAWN.get());
         boolean isSacrilegious = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.SACRILEGIOUS.get());
+        boolean isHarvester = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.HARVESTER.get());
         Entity causing = source.getEntity();
         Entity direct = source.getDirectEntity();
         LivingEntity attacker = null;
@@ -1015,7 +1067,11 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
             isSacrilegious = attacker.getMainHandItem().is(ModItems.SACRILEGIOUS.get())
                     || attacker.getOffhandItem().is(ModItems.SACRILEGIOUS.get());
         }
-        if (!isVaporwaveSword && !isDawn && !isSacrilegious) {
+        if (!isHarvester && attacker != null) {
+            isHarvester = attacker.getMainHandItem().is(ModItems.HARVESTER.get())
+                    || attacker.getOffhandItem().is(ModItems.HARVESTER.get());
+        }
+        if (!isVaporwaveSword && !isDawn && !isSacrilegious && !isHarvester) {
             if (DEBUG_LOGS && attacker != null && attacker.getType().toString().contains("player")) {
                 LOGGER.info(
                         "[fweapons] skipped source match: msgId={} weapon={} main={} off={}",
@@ -1051,6 +1107,9 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         }
         if (isSacrilegious) {
             applySacrilegiousHitEffects(target, attacker);
+        }
+        if (isHarvester) {
+            applyHarvesterHitEffects(target, attacker);
         }
     }
     public static void onBayonetComboAttack(ServerPlayer player) {
@@ -1351,6 +1410,9 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
             );
         }
         target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
+    }
+    private static void applyHarvesterHitEffects(LivingEntity target, LivingEntity attacker) {
+        target.addEffect(new MobEffectInstance(ModEffects.BLEED, HARVESTER_BLEED_DURATION_TICKS, 0), attacker);
     }
     private static void applySunsetHitEffects(LivingEntity target, LivingEntity attacker) {
         MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
