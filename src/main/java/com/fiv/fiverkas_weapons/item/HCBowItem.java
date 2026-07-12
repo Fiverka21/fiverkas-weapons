@@ -2,6 +2,7 @@ package com.fiv.fiverkas_weapons.item;
 
 import java.util.List;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -15,16 +16,28 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class HCBowItem extends CrossbowItem {
     public static final float DAMAGE_MULTIPLIER = 1.4F;
     public static final float CHARGE_DURATION_MULTIPLIER = 1.2F;
+    public static final int GRADIENT_START = 0xFED83D;
+    public static final int GRADIENT_END = 0xE8E8E8;
+    public static final long COLOR_SHIFT_SPEED_MS = 144L;
     private static final double FIREWORK_RECOIL_BASE_STRENGTH = 0.1D;
     private static final double FIREWORK_RECOIL_MULTIPLIER = 20.0D;
+    private static final double MULTISHOT_FIREWORK_RECOIL_MULTIPLIER = 2.0D;
     public static final String PROJECTILE_DAMAGE_TAG = "fweapons_hcbow_damage_bonus";
+    private final AnimatedGradientNameCache nameCache;
 
     public HCBowItem(Properties properties) {
         super(properties);
+        this.nameCache = new AnimatedGradientNameCache(GRADIENT_START, GRADIENT_END, COLOR_SHIFT_SPEED_MS);
+    }
+
+    @Override
+    public @NotNull Component getName(@NotNull ItemStack stack) {
+        return nameCache.getName(getDescriptionId(stack), super.getName(stack));
     }
 
     public static int getChargeDuration(ItemStack stack, LivingEntity shooter) {
@@ -41,9 +54,10 @@ public class HCBowItem extends CrossbowItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         boolean fireworkLoaded = isLoadedWithFirework(stack);
+        double recoilMultiplier = getFireworkRecoilMultiplier(stack);
         InteractionResultHolder<ItemStack> result = super.use(level, player, hand);
         if (!level.isClientSide && fireworkLoaded && result.getObject() == stack) {
-            applyFireworkRecoil(player);
+            applyFireworkRecoil(player, recoilMultiplier);
         }
         return result;
     }
@@ -78,10 +92,21 @@ public class HCBowItem extends CrossbowItem {
         return chargedProjectiles != null && chargedProjectiles.contains(Items.FIREWORK_ROCKET);
     }
 
-    private static void applyFireworkRecoil(Player player) {
+    private static double getFireworkRecoilMultiplier(ItemStack stack) {
+        ChargedProjectiles chargedProjectiles = stack.get(DataComponents.CHARGED_PROJECTILES);
+        if (chargedProjectiles == null || !chargedProjectiles.contains(Items.FIREWORK_ROCKET)) {
+            return 1.0D;
+        }
+        long fireworkCount = chargedProjectiles.getItems().stream()
+                .filter(projectile -> projectile.is(Items.FIREWORK_ROCKET))
+                .count();
+        return fireworkCount > 1 ? MULTISHOT_FIREWORK_RECOIL_MULTIPLIER : 1.0D;
+    }
+
+    private static void applyFireworkRecoil(Player player, double multiplier) {
         Vec3 recoil = player.getLookAngle()
                 .normalize()
-                .scale(-FIREWORK_RECOIL_BASE_STRENGTH * FIREWORK_RECOIL_MULTIPLIER);
+                .scale(-FIREWORK_RECOIL_BASE_STRENGTH * FIREWORK_RECOIL_MULTIPLIER * multiplier);
         player.push(recoil.x, recoil.y, recoil.z);
         player.hasImpulse = true;
         player.hurtMarked = true;

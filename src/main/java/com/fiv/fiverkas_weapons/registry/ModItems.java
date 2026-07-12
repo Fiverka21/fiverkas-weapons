@@ -170,6 +170,15 @@ public class ModItems {
                             144L
                     ));
 
+    public static final DeferredHolder<Item, Item> HCBOWPRINT =
+            ITEMS.register("hcbowprint",
+                    () -> new AnimatedGradientItem(
+                            new Item.Properties(),
+                            HCBowItem.GRADIENT_START,
+                            HCBowItem.GRADIENT_END,
+                            HCBowItem.COLOR_SHIFT_SPEED_MS
+                    ));
+
     public static final DeferredHolder<Item, Item> DREAM_ESSENCE =
             ITEMS.register("dream_essence",
                     () -> new AnimatedGradientItem(

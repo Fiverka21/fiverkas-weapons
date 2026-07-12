@@ -33,6 +33,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.THE_FOOL.get());
                         output.accept(ModItems.HCBOW.get());
                         output.accept(ModItems.GBLUEPRINT.get());
+                        output.accept(ModItems.HCBOWPRINT.get());
                         output.accept(ModItems.DREAM_ESSENCE.get());
                         output.accept(ModItems.DSHIELD.get());
                     })

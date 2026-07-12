@@ -20,6 +20,8 @@ public final class WeaponNameFonts {
     private static final Map<String, String> ITEM_FONTS = Map.ofEntries(
             item("airmace", "supereagle"),
             item("gblueprint", "supereagle"),
+            item("hcbow", "valent"),
+            item("hcbowprint", "valent"),
             item("bayonet", "deathshallows"),
             item("blue_katana", "miyukatsu"),
             item("dawn", "hollowegenesis"),
