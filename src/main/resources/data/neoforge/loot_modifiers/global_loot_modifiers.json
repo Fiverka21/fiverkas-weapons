@@ -2,6 +2,6 @@
   "comment": "Add mod loot modifiers in order.",
   "replace": false,
   "entries": [
-    "fweapons:dream_essence_from_warden"
+    "fweapons:dream_essence"
   ]
 }

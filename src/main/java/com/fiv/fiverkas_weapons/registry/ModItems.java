@@ -6,7 +6,7 @@ import com.fiv.fiverkas_weapons.item.AnimatedGradientItem;
 import com.fiv.fiverkas_weapons.item.Antem;
 import com.fiv.fiverkas_weapons.item.Bayonet;
 import com.fiv.fiverkas_weapons.item.BlueKatana;
-import com.fiv.fiverkas_weapons.item.DShieldItem;
+import com.fiv.fiverkas_weapons.item.AnimatedGradientShieldItem;
 import com.fiv.fiverkas_weapons.item.Dawn;
 import com.fiv.fiverkas_weapons.item.Dusk;
 import com.fiv.fiverkas_weapons.item.GBlueprintItem;
@@ -141,7 +141,7 @@ public class ModItems {
                             Tiers.DIAMOND,
                             new Item.Properties()
                                     .stacksTo(1)
-                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3, -2.2f))
+                                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 2, -2.2f))
                     ));
 
     public static final DeferredHolder<Item, Item> THE_FOOL =
@@ -183,11 +183,14 @@ public class ModItems {
             ITEMS.register("icon",
                     () -> new Item(new Item.Properties()));
 
-    public static final DeferredHolder<Item, DShieldItem> DSHIELD =
+    public static final DeferredHolder<Item, AnimatedGradientShieldItem> DSHIELD =
             ITEMS.register("dshield",
-                    () -> new DShieldItem(
+                    () -> new AnimatedGradientShieldItem(
                             new Item.Properties()
                                     .durability(672)
-                                    .component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)
+                                    .component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY),
+                            0x90EE90,
+                            0xA020F0,
+                            144L
                     ));
 }

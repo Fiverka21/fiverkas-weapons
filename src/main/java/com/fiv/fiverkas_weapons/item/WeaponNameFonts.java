@@ -31,7 +31,8 @@ public final class WeaponNameFonts {
             item("natureaxe", "simbiot"),
             item("mkopi", "tfsadistic"),
             item("thefool", "runefate"),
-            item("dream_essence", "tfsadistic")
+            item("dream_essence", "tfsadistic"),
+            item("dshield", "epijour")
     );
 
     private WeaponNameFonts() {

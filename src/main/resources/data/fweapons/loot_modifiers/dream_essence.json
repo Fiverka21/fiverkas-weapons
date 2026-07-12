@@ -6,5 +6,5 @@
       "loot_table_id": "minecraft:entities/warden"
     }
   ],
-  "table": "fweapons:entities/dream_essence_from_warden"
+  "table": "fweapons:entities/dream_essence"
 }

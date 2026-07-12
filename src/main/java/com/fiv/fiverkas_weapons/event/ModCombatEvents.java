@@ -107,7 +107,6 @@ public class ModCombatEvents {
     private static final boolean DEBUG_LOGS = Boolean.getBoolean("fweapons.debug");
     private static final int VAPORIFIED_DURATION_TICKS = 120;
     private static final int SUNSET_DURATION_TICKS = 80;
-    private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
     private static final int HARVESTER_BLEED_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_PARTICLE_COUNT = 12;
@@ -322,7 +321,11 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         if (entity.level().isClientSide) {
             return;
         }
+        addWardenDreamEssenceDrop(event);
         applyHarvesterBonusLoot(event);
+    }
+    private static void addWardenDreamEssenceDrop(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntity();
         if (!(entity instanceof Warden)) {
             return;
         }
@@ -331,9 +334,7 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         if (alreadyDropped) {
             return;
         }
-        ItemStack essence = new ItemStack(ModItems.DREAM_ESSENCE.get());
-        ItemEntity drop = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), essence);
-        event.getDrops().add(drop);
+        addDreamEssenceDrop(event, entity);
     }
     private static void applyHarvesterBonusLoot(LivingDropsEvent event) {
         LivingEntity entity = event.getEntity();
@@ -367,6 +368,15 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
             drop.setDefaultPickUpDelay();
             event.getDrops().add(drop);
         });
+        if (entity instanceof Warden) {
+            addDreamEssenceDrop(event, entity);
+        }
+    }
+    private static void addDreamEssenceDrop(LivingDropsEvent event, LivingEntity entity) {
+        ItemStack essence = new ItemStack(ModItems.DREAM_ESSENCE.get());
+        ItemEntity drop = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), essence);
+        drop.setDefaultPickUpDelay();
+        event.getDrops().add(drop);
     }
     private static boolean isHarvesterDamageSource(DamageSource source) {
         ItemStack weapon = source.getWeaponItem();
@@ -1409,7 +1419,6 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
                     0.0
             );
         }
-        target.addEffect(new MobEffectInstance(ModEffects.BLEED, SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
     private static void applyHarvesterHitEffects(LivingEntity target, LivingEntity attacker) {
         target.addEffect(new MobEffectInstance(ModEffects.BLEED, HARVESTER_BLEED_DURATION_TICKS, 0), attacker);
