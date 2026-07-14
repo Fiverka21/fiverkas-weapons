@@ -13,6 +13,7 @@
 
 # Gradle
 /.gradle/
+/.gradle-user/
 /.gradle-home/
 /build/
 
