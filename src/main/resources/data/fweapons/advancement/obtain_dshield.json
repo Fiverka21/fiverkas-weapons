@@ -1,14 +1,14 @@
 {
-  "parent": "fweapons:obtain_hcbowprint",
+  "parent": "fweapons:root",
   "display": {
     "icon": {
-      "id": "fweapons:hcbow"
+      "id": "fweapons:dshield"
     },
     "title": {
-      "translate": "adv.fweapons.obtain.hcbow"
+      "translate": "adv.fweapons.obtain.dshield"
     },
     "description": {
-      "translate": "adv.fweapons.obtain.hcbow.desc"
+      "translate": "adv.fweapons.obtain.dshield.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "items": "fweapons:hcbow"
+            "items": "fweapons:dshield"
           }
         ]
       }
