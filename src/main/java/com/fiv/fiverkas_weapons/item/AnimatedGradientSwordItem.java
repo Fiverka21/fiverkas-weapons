@@ -1,6 +1,7 @@
 package com.fiv.fiverkas_weapons.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -17,8 +18,19 @@ public class AnimatedGradientSwordItem extends SwordItem {
             int endColor,
             long colorShiftSpeedMs
     ) {
+        this(tier, properties, startColor, endColor, colorShiftSpeedMs, WeaponNameFonts.DEFAULT);
+    }
+
+    protected AnimatedGradientSwordItem(
+            Tier tier,
+            Item.Properties properties,
+            int startColor,
+            int endColor,
+            long colorShiftSpeedMs,
+            ResourceLocation nameFont
+    ) {
         super(tier, properties);
-        this.nameCache = new AnimatedGradientNameCache(startColor, endColor, colorShiftSpeedMs);
+        this.nameCache = new AnimatedGradientNameCache(startColor, endColor, colorShiftSpeedMs, nameFont);
     }
 
     @Override

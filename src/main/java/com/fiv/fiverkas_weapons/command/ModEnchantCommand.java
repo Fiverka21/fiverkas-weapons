@@ -88,7 +88,7 @@ public class ModEnchantCommand {
             if (entity instanceof LivingEntity livingentity) {
                 ItemStack itemstack = livingentity.getMainHandItem();
                 if (!itemstack.isEmpty()) {
-                    boolean supports = enchantment.canEnchant(itemstack);
+                    boolean supports = itemstack.getItem().isEnchantable(itemstack);
                     boolean compatible = EnchantmentHelper.isEnchantmentCompatible(
                             EnchantmentHelper.getEnchantmentsForCrafting(itemstack).keySet(),
                             enchantmentHolder

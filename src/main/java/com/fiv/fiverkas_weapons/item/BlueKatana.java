@@ -52,11 +52,12 @@ public class BlueKatana extends AnimatedGradientSwordItem {
             );
             player.hurt(honorDamage, 2.0F);
             if (player.isAlive()) {
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
-                PersistentData.get(player).putDouble(CeruleanShroudEffect.LAST_Z_TAG, player.getZ());
-                player.addEffect(new MobEffectInstance(ModEffects.ceruleanShroudHolder(), CERULEAN_SHROUD_DURATION_TICKS, 0, false, false, true));
+                var data = PersistentData.get(player);
+                data.putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+                data.putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
+                data.putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
+                data.putDouble(CeruleanShroudEffect.LAST_Z_TAG, player.getZ());
+                player.addEffect(new MobEffectInstance(ModEffects.CERULEAN_SHROUD, CERULEAN_SHROUD_DURATION_TICKS, 0, false, false, true));
             }
             if (level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(

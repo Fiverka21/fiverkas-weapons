@@ -1,13 +1,20 @@
 package com.fiv.fiverkas_weapons.event;
 
 import com.fiv.fiverkas_weapons.command.ModEnchantCommand;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public final class ModCommandEvents {
     private ModCommandEvents() {
     }
 
-    public static void onRegisterCommands(RegisterCommandsEvent event) {
-        ModEnchantCommand.register(event.getDispatcher(), event.getBuildContext());
+    public static void onRegisterCommands(
+            CommandDispatcher<CommandSourceStack> dispatcher,
+            CommandBuildContext buildContext,
+            Commands.CommandSelection selection
+    ) {
+        ModEnchantCommand.register(dispatcher, buildContext);
     }
 }

@@ -1,12 +1,20 @@
 package com.fiv.fiverkas_weapons.event;
-
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
-import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
+import com.fiv.fiverkas_weapons.item.DShieldItem;
+import com.fiv.fiverkas_weapons.item.Sacrilegious;
+import com.fiv.fiverkas_weapons.item.HCBowItem;
 import com.fiv.fiverkas_weapons.item.LScythe;
+import com.fiv.fiverkas_weapons.item.Mkopi;
+import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
+import com.fiv.fiverkas_weapons.network.ModNetwork;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
@@ -19,6 +27,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -35,6 +44,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.SpectralArrow;
@@ -52,24 +63,21 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LightBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.damagesource.DamageContainer;
-import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
-
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.lang.reflect.Field;
@@ -78,16 +86,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 public class ModCombatEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final boolean DEBUG_LOGS = Boolean.getBoolean("fweapons.debug");
     private static final int VAPORIFIED_DURATION_TICKS = 120;
     private static final int SUNSET_DURATION_TICKS = 80;
-    private static final int SACRILEGIOUS_BLEED_DURATION_TICKS = 100;
+    private static final int HARVESTER_BLEED_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_SLOWNESS_DURATION_TICKS = 100;
     private static final int SACRILEGIOUS_PARTICLE_COUNT = 12;
     private static final int MKOPI_DARKNESS_DURATION_TICKS = 80;
@@ -95,9 +103,22 @@ public class ModCombatEvents {
     private static final int MKOPI_BLACK_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_PARTICLE_COUNT = 32;
     private static final int BAYONET_GUNSHOT_MUZZLE_COUNT = 18;
+    private static final float RESILIENCE_DAMAGE_REDUCTION = 0.2F;
+    private static final float RESILIENCE_II_DAMAGE_REDUCTION = 0.4F;
     private static final long CLIENT_ATTACK_FLAG_WINDOW_TICKS = 8L;
     private static final int THE_FOOL_SPECTRAL_DURATION_TICKS = 200;
     private static final String THE_FOOL_SPECTRAL_BONUS_TAG = "fweapons_thefool_spectral_bonus";
+    // Tracks temporary light blocks placed for charged dshield per-player so they can be removed later.
+    private static final Map<UUID, BlockPos> DSHIELD_LIGHT_POS = new ConcurrentHashMap<>();
+    // Zero-based indices into data/fweapons/weapon_attributes/antem.json attacks.
+    private static final int ANTEM_FIRE_PATTERN_INDEX = 2;
+    private static final int ANTEM_KNOCKBACK_PATTERN_INDEX = 6;
+    private static final float ANTEM_FIRE_SECONDS = 4.0F;
+    private static final double ANTEM_BASE_KNOCKBACK = 0.4D;
+    private static final double ANTEM_KNOCKBACK_MULTIPLIER = 8.0D;
+    private static final String ANTEM_PATTERN_RESOURCE_PATH =
+            "data/" + FiverkasWeapons.MODID + "/weapon_attributes/antem.json";
+    private static final List<AttackSignature> ANTEM_ATTACK_PATTERN = loadAntemAttackPattern();
     private static final Map<UUID, EnumMap<ClientAttackFlag, Long>> CLIENT_ATTACK_FLAGS = new HashMap<>();
     private static final Map<MethodKey, Method> METHOD_CACHE = new ConcurrentHashMap<>();
     private static final Field ARROW_IN_GROUND_FIELD = resolveArrowField("inGround");
@@ -111,6 +132,7 @@ public class ModCombatEvents {
             EquipmentSlot.FEET
     };
     private static final String MKOPI_SLAM_ANIMATION = "bettercombat:two_handed_slam";
+private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_handed_slam";
     private static final String BAYONET_GUNSHOT_ANIMATION = "fweapons:bayonet_no_swing";
     private static final String BAYONET_GUNSHOT_HITBOX = "FORWARD_BOX";
     private static final String DUSK_THIRD_ANIMATION = "bettercombat:one_handed_stab";
@@ -118,6 +140,11 @@ public class ModCombatEvents {
     private static final String AIRMACE_FALL_DISTANCE_TAG = "fweapons_airmace_fall_distance";
     private static final String AIRMACE_FALL_TICK_TAG = "fweapons_airmace_fall_tick";
     private static final int AIRMACE_FALL_TICK_WINDOW = 2;
+    private static final float ARTORIAS_SLAM_DAMAGE = 12.0F;
+    private static final float ARTORIAS_SLAM_RADIUS = 4.5F;
+    private static final double ARTORIAS_SLAM_KNOCKBACK = 1.35D;
+    private static final double ARTORIAS_SLAM_UPWARD_KNOCKBACK = 0.25D;
+    private static final int ARTORIAS_SLAM_RING_PARTICLES = 48;
     private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = ResourceKey.create(
             Registries.DAMAGE_TYPE,
             ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
@@ -130,6 +157,10 @@ public class ModCombatEvents {
             new DustParticleOptions(new Vector3f(241 / 255F, 206 / 255F, 106 / 255F), 1.25F);
     private static final DustParticleOptions AIRMACE_BLAND_CYAN =
             new DustParticleOptions(new Vector3f(146 / 255F, 191 / 255F, 186 / 255F), 1.1F);
+    private static final DustParticleOptions ARTORIAS_ABYSS_DUST =
+            new DustParticleOptions(new Vector3f(24 / 255F, 42 / 255F, 68 / 255F), 1.45F);
+    private static final DustParticleOptions ARTORIAS_ASH_DUST =
+            new DustParticleOptions(new Vector3f(138 / 255F, 143 / 255F, 147 / 255F), 1.2F);
     private static final DustParticleOptions DUSK_SUNSET_DUST =
             new DustParticleOptions(new Vector3f(91 / 255F, 60 / 255F, 136 / 255F), 1.35F);
     private static final DustParticleOptions DUSK_SUNSET_LIGHT_DUST =
@@ -144,7 +175,6 @@ public class ModCombatEvents {
             new ParticleSpec(ParticleTypes.CLOUD, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1),
             new ParticleSpec(ParticleTypes.SMOKE, BAYONET_GUNSHOT_MUZZLE_COUNT, 0.02, 0.02, 0.02, 0.1)
     };
-
     private static final class ParticleSpec {
         private final ParticleOptions particle;
         private final int count;
@@ -152,7 +182,6 @@ public class ModCombatEvents {
         private final double yOffset;
         private final double zOffset;
         private final double speed;
-
         private ParticleSpec(
                 ParticleOptions particle,
                 int count,
@@ -169,28 +198,23 @@ public class ModCombatEvents {
             this.speed = speed;
         }
     }
-
     private record MethodKey(Class<?> type, String name) {
     }
-
-    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation) {
+    private record BetterCombatAttackInfo(ItemStack stack, Object hitbox, Object animation, int attackPatternIndex) {
     }
-
+    private record AttackSignature(String hitbox, String animation) {
+    }
     public enum ClientAttackFlag {
         BAYONET_GUNSHOT((byte) 0),
         MKOPI_SLAM((byte) 1),
         DUSK_THIRD((byte) 2);
-
         private final byte id;
-
         ClientAttackFlag(byte id) {
             this.id = id;
         }
-
         public byte id() {
             return id;
         }
-
         public static ClientAttackFlag fromId(byte id) {
             for (ClientAttackFlag flag : values()) {
                 if (flag.id == id) {
@@ -200,21 +224,328 @@ public class ModCombatEvents {
             return BAYONET_GUNSHOT;
         }
     }
+    public static final class DamageContainer {
+        public enum Reduction {
+            ARMOR,
+            ENCHANTMENTS
+        }
 
-    public static void onAttackEntity(AttackEntityEvent event) {
-        if (!(event.getTarget() instanceof LivingEntity target)) {
+        public float getReduction(Reduction reduction) {
+            return 0.0F;
+        }
+    }
+    public static final class ProjectileImpactEvent {
+        private final Entity projectile;
+        private final net.minecraft.world.phys.HitResult rayTraceResult;
+
+        public ProjectileImpactEvent(Entity projectile, net.minecraft.world.phys.HitResult rayTraceResult) {
+            this.projectile = projectile;
+            this.rayTraceResult = rayTraceResult;
+        }
+
+        public Entity getProjectile() {
+            return projectile;
+        }
+
+        public net.minecraft.world.phys.HitResult getRayTraceResult() {
+            return rayTraceResult;
+        }
+    }
+    public static final class LivingDropsEvent {
+        private final LivingEntity entity;
+        private final DamageSource source;
+        private final List<ItemEntity> drops;
+        private final boolean recentlyHit;
+
+        public LivingDropsEvent(LivingEntity entity, DamageSource source, List<ItemEntity> drops, boolean recentlyHit) {
+            this.entity = entity;
+            this.source = source;
+            this.drops = drops;
+            this.recentlyHit = recentlyHit;
+        }
+
+        public LivingEntity getEntity() {
+            return entity;
+        }
+
+        public DamageSource getSource() {
+            return source;
+        }
+
+        public List<ItemEntity> getDrops() {
+            return drops;
+        }
+
+        public boolean isRecentlyHit() {
+            return recentlyHit;
+        }
+    }
+    public static final class LivingIncomingDamageEvent {
+        private final LivingEntity entity;
+        private final DamageSource source;
+        private final DamageContainer container = new DamageContainer();
+        private float amount;
+
+        public LivingIncomingDamageEvent(LivingEntity entity, DamageSource source, float amount) {
+            this.entity = entity;
+            this.source = source;
+            this.amount = amount;
+        }
+
+        public LivingEntity getEntity() {
+            return entity;
+        }
+
+        public DamageSource getSource() {
+            return source;
+        }
+
+        public float getAmount() {
+            return amount;
+        }
+
+        public void setAmount(float amount) {
+            this.amount = amount;
+        }
+
+        public DamageContainer getContainer() {
+            return container;
+        }
+
+        public void addReductionModifier(
+                DamageContainer.Reduction reduction,
+                java.util.function.BiFunction<DamageContainer, Float, Float> modifier
+        ) {
+        }
+    }
+    public static final class LivingShieldBlockEvent {
+        private final LivingEntity entity;
+        private final boolean blocked;
+        private float blockedDamage;
+
+        public LivingShieldBlockEvent(LivingEntity entity, boolean blocked, float blockedDamage) {
+            this.entity = entity;
+            this.blocked = blocked;
+            this.blockedDamage = blockedDamage;
+        }
+
+        public LivingEntity getEntity() {
+            return entity;
+        }
+
+        public boolean getBlocked() {
+            return blocked;
+        }
+
+        public float getBlockedDamage() {
+            return blockedDamage;
+        }
+
+        public void setBlockedDamage(float blockedDamage) {
+            this.blockedDamage = blockedDamage;
+        }
+    }
+    public static final class LivingDamageEvent {
+        public static class Pre {
+            private final LivingEntity entity;
+            private final DamageSource source;
+            private final DamageContainer container = new DamageContainer();
+            private float newDamage;
+
+            public Pre(LivingEntity entity, DamageSource source, float newDamage) {
+                this.entity = entity;
+                this.source = source;
+                this.newDamage = newDamage;
+            }
+
+            public LivingEntity getEntity() {
+                return entity;
+            }
+
+            public DamageSource getSource() {
+                return source;
+            }
+
+            public float getNewDamage() {
+                return newDamage;
+            }
+
+            public void setNewDamage(float newDamage) {
+                this.newDamage = newDamage;
+            }
+
+            public DamageContainer getContainer() {
+                return container;
+            }
+        }
+
+        public static final class Post extends Pre {
+            public Post(LivingEntity entity, DamageSource source, float newDamage) {
+                super(entity, source, newDamage);
+            }
+        }
+    }
+    public static final class SweepAttackEvent {
+        private final Player entity;
+        private boolean sweeping;
+        private boolean canceled;
+
+        public SweepAttackEvent(Player entity, boolean sweeping) {
+            this.entity = entity;
+            this.sweeping = sweeping;
+        }
+
+        public Player getEntity() {
+            return entity;
+        }
+
+        public boolean isSweeping() {
+            return sweeping;
+        }
+
+        public void setSweeping(boolean sweeping) {
+            this.sweeping = sweeping;
+        }
+
+        public void setCanceled(boolean canceled) {
+            this.canceled = canceled;
+        }
+    }
+    public static final class LivingDeathEvent {
+        private final LivingEntity entity;
+        private final DamageSource source;
+
+        public LivingDeathEvent(LivingEntity entity, DamageSource source) {
+            this.entity = entity;
+            this.source = source;
+        }
+
+        public LivingEntity getEntity() {
+            return entity;
+        }
+
+        public DamageSource getSource() {
+            return source;
+        }
+    }
+    public static final class EntityTickEvent {
+        public static final class Post {
+            private final Entity entity;
+
+            public Post(Entity entity) {
+                this.entity = entity;
+            }
+
+            public Entity getEntity() {
+                return entity;
+            }
+        }
+    }
+    public static final class PlayerTickEvent {
+        public static final class Post {
+            private final Player entity;
+
+            public Post(Player entity) {
+                this.entity = entity;
+            }
+
+            public Player getEntity() {
+                return entity;
+            }
+        }
+    }
+    public static final class LivingFallEvent {
+        private final LivingEntity entity;
+        private float damageMultiplier = 1.0F;
+
+        public LivingFallEvent(LivingEntity entity) {
+            this.entity = entity;
+        }
+
+        public LivingEntity getEntity() {
+            return entity;
+        }
+
+        public void setDamageMultiplier(float damageMultiplier) {
+            this.damageMultiplier = damageMultiplier;
+        }
+    }
+    public static final class LivingChangeTargetEvent {
+        private LivingEntity newAboutToBeSetTarget;
+
+        public LivingChangeTargetEvent(LivingEntity newAboutToBeSetTarget) {
+            this.newAboutToBeSetTarget = newAboutToBeSetTarget;
+        }
+
+        public LivingEntity getNewAboutToBeSetTarget() {
+            return newAboutToBeSetTarget;
+        }
+
+        public void setNewAboutToBeSetTarget(LivingEntity newAboutToBeSetTarget) {
+            this.newAboutToBeSetTarget = newAboutToBeSetTarget;
+        }
+    }
+    public static final class AnvilUpdateEvent {
+        private final ItemStack left;
+        private final ItemStack right;
+        private final String name;
+        private final Player player;
+        private ItemStack output = ItemStack.EMPTY;
+        private int cost;
+        private int materialCost;
+
+        public AnvilUpdateEvent(ItemStack left, ItemStack right, String name, Player player) {
+            this.left = left;
+            this.right = right;
+            this.name = name;
+            this.player = player;
+        }
+
+        public ItemStack getLeft() {
+            return left;
+        }
+
+        public ItemStack getRight() {
+            return right;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public void setOutput(ItemStack output) {
+            this.output = output;
+        }
+
+        public void setCost(int cost) {
+            this.cost = cost;
+        }
+
+        public void setMaterialCost(int materialCost) {
+            this.materialCost = materialCost;
+        }
+    }
+    public static void onAttackEntity(Player attacker, Entity targetEntity) {
+        if (!(targetEntity instanceof LivingEntity target)) {
             return;
         }
         if (target.level().isClientSide) {
             return;
         }
-        LivingEntity attacker = event.getEntity();
+        if (!isRelevantSpecialAttackWeapon(attacker)) {
+            return;
+        }
+        boolean holdingAirmace = isHoldingAirmace(attacker);
         BetterCombatAttackInfo attackInfo = getBetterCombatAttackInfo(attacker);
+        applyAntemPatternEffects(target, attacker, attackInfo);
         boolean isAirmaceAttack = isAirmaceAttack(attackInfo);
-        if (isAirmaceAttack || isHoldingAirmace(attacker)) {
+        if (isAirmaceAttack || holdingAirmace) {
             recordAirmaceSmash(attacker);
         }
-
         boolean isMkopiSlamAttack = isMkopiSlamAttack(attacker, attackInfo);
         boolean isBayonetGunshotAttack = isBayonetGunshotAttack(attacker, attackInfo);
         boolean isDuskThirdAttack = isDuskThirdAttack(attacker, attackInfo);
@@ -252,7 +583,6 @@ public class ModCombatEvents {
             applyDuskSunsetFinisher(target, attacker);
         }
     }
-
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (!(event.getProjectile() instanceof AbstractArrow arrow)) {
             return;
@@ -278,25 +608,97 @@ public class ModCombatEvents {
         }
         swapPositions(attacker, target);
     }
+    public static void onLivingDrops(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.level().isClientSide) {
+            return;
+        }
+        addWardenDreamEssenceDrop(event);
+        applyHarvesterBonusLoot(event);
+    }
+    private static void addWardenDreamEssenceDrop(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!(entity instanceof Warden)) {
+            return;
+        }
+        boolean alreadyDropped = event.getDrops().stream()
+                .anyMatch(drop -> drop.getItem().is(ModItems.DREAM_ESSENCE.get()));
+        if (alreadyDropped) {
+            return;
+        }
+        addDreamEssenceDrop(event, entity);
+    }
+    private static void applyHarvesterBonusLoot(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!(entity instanceof Mob)) {
+            return;
+        }
+        if (!(entity.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        DamageSource source = event.getSource();
+        if (!isHarvesterDamageSource(source)) {
+            return;
+        }
 
+        LootTable lootTable = serverLevel.getServer()
+                .reloadableRegistries()
+                .getLootTable(entity.getLootTable());
+        LootParams.Builder params = new LootParams.Builder(serverLevel)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ORIGIN, entity.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, source)
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity());
+        if (event.isRecentlyHit() && source.getEntity() instanceof Player player) {
+            params.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player)
+                    .withLuck(player.getLuck());
+        }
+
+        lootTable.getRandomItems(params.create(LootContextParamSets.ENTITY), stack -> {
+            ItemEntity drop = new ItemEntity(serverLevel, entity.getX(), entity.getY(), entity.getZ(), stack);
+            drop.setDefaultPickUpDelay();
+            event.getDrops().add(drop);
+        });
+        if (entity instanceof Warden) {
+            addDreamEssenceDrop(event, entity);
+        }
+    }
+    private static void addDreamEssenceDrop(LivingDropsEvent event, LivingEntity entity) {
+        ItemStack essence = new ItemStack(ModItems.DREAM_ESSENCE.get());
+        ItemEntity drop = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), essence);
+        drop.setDefaultPickUpDelay();
+        event.getDrops().add(drop);
+    }
+    private static boolean isHarvesterDamageSource(DamageSource source) {
+        ItemStack weapon = source.getWeaponItem();
+        if (weapon != null && !weapon.isEmpty() && weapon.is(ModItems.HARVESTER.get())) {
+            return true;
+        }
+        Entity causing = source.getEntity();
+        if (causing instanceof LivingEntity attacker) {
+            return attacker.getMainHandItem().is(ModItems.HARVESTER.get())
+                    || attacker.getOffhandItem().is(ModItems.HARVESTER.get());
+        }
+        return false;
+    }
     private static void swapPositions(LivingEntity first, LivingEntity second) {
         Vec3 firstPos = first.position();
         Vec3 secondPos = second.position();
         teleportEntity(first, secondPos);
         teleportEntity(second, firstPos);
     }
-
     private static void applyTheFoolSpectralBonus(AbstractArrow arrow) {
-        if (PersistentData.get(arrow).getBoolean(THE_FOOL_SPECTRAL_BONUS_TAG)) {
+        var data = PersistentData.get(arrow);
+        if (data.getBoolean(THE_FOOL_SPECTRAL_BONUS_TAG)) {
             return;
         }
         ItemStack pickup = arrow.getPickupItemStackOrigin();
         if (!pickup.isEmpty() && pickup.is(Items.SPECTRAL_ARROW)) {
             arrow.setBaseDamage(arrow.getBaseDamage() + 1.0D);
         }
-        PersistentData.get(arrow).putBoolean(THE_FOOL_SPECTRAL_BONUS_TAG, true);
+        data.putBoolean(THE_FOOL_SPECTRAL_BONUS_TAG, true);
     }
-
     private static void applyTheFoolSpectralEffect(LivingEntity target, DamageSource source) {
         if (target.level().isClientSide) {
             return;
@@ -327,7 +729,6 @@ public class ModCombatEvents {
             );
         }
     }
-
     private static void applyTheFoolPotionEffects(LivingEntity target, DamageSource source) {
         if (target.level().isClientSide) {
             return;
@@ -364,7 +765,6 @@ public class ModCombatEvents {
             target.addEffect(effectInstance, effectSource);
         }
     }
-
     private static Field resolveArrowField(String name) {
         try {
             Field field = AbstractArrow.class.getDeclaredField(name);
@@ -374,7 +774,6 @@ public class ModCombatEvents {
             return null;
         }
     }
-
     private static boolean isArrowInGround(AbstractArrow arrow) {
         if (ARROW_IN_GROUND_FIELD == null) {
             return false;
@@ -385,7 +784,6 @@ public class ModCombatEvents {
             return false;
         }
     }
-
     private static int getArrowInGroundTime(AbstractArrow arrow) {
         if (ARROW_IN_GROUND_TIME_FIELD == null) {
             return 0;
@@ -396,7 +794,6 @@ public class ModCombatEvents {
             return 0;
         }
     }
-
     private static void teleportEntity(LivingEntity entity, Vec3 position) {
         if (entity instanceof ServerPlayer serverPlayer) {
             serverPlayer.teleportTo(
@@ -411,36 +808,46 @@ public class ModCombatEvents {
             entity.teleportTo(position.x, position.y, position.z);
         }
     }
-
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getAmount() <= 0.0F) {
             return;
         }
-
         applyVaporifiedArmorBypass(event);
         applySunsetArmorBypass(event);
         applyHonorStrike(event);
         applyAirmaceFallBonus(event);
     }
-
+    public static void onLivingShieldBlock(LivingShieldBlockEvent event) {
+        if (!event.getBlocked() || event.getBlockedDamage() <= 0.0F) {
+            return;
+        }
+        LivingEntity blocker = event.getEntity();
+        if (blocker.level().isClientSide) {
+            return;
+        }
+        ItemStack stack = blocker.getUseItem();
+        if (stack.isEmpty() || !stack.is(ModItems.DSHIELD.get())) {
+            return;
+        }
+        DShieldItem.addBlockCharge(stack);
+    }
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         if (event.getNewDamage() <= 0.0F) {
             return;
         }
+        applyHcbowProjectileDamageBonus(event);
+        applyResilienceDamageReduction(event);
         if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
             return;
         }
         if (event.getEntity().level().isClientSide) {
             return;
         }
-
         DamageContainer container = event.getContainer();
         float adjusted = event.getNewDamage();
         DamageSource source = event.getSource();
-
         boolean bypassArmor = source.is(DamageTypeTags.BYPASSES_ARMOR);
         boolean bypassEnchants = source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS);
-
         if (bypassArmor && container.getReduction(DamageContainer.Reduction.ARMOR) <= 0.0F) {
             int armorValue = event.getEntity().getArmorValue();
             if (armorValue > 0) {
@@ -457,7 +864,6 @@ public class ModCombatEvents {
                 }
             }
         }
-
         if (bypassEnchants && container.getReduction(DamageContainer.Reduction.ENCHANTMENTS) <= 0.0F) {
             if (event.getEntity().level() instanceof ServerLevel serverLevel) {
                 float enchantProtection = EnchantmentHelper.getDamageProtection(serverLevel, event.getEntity(), source);
@@ -470,12 +876,30 @@ public class ModCombatEvents {
                 }
             }
         }
-
         if (adjusted != event.getNewDamage()) {
             event.setNewDamage(adjusted);
         }
     }
-
+    private static void applyHcbowProjectileDamageBonus(LivingDamageEvent.Pre event) {
+        if (!isHcbowProjectileDamageSource(event.getSource())) {
+            return;
+        }
+        event.setNewDamage(event.getNewDamage() * HCBowItem.DAMAGE_MULTIPLIER);
+    }
+    private static void applyResilienceDamageReduction(LivingDamageEvent.Pre event) {
+        MobEffectInstance resilience = event.getEntity().getEffect(ModEffects.RESILIENCE);
+        if (resilience == null) {
+            return;
+        }
+        float reduction = resilience.getAmplifier() > 0
+                ? RESILIENCE_II_DAMAGE_REDUCTION
+                : RESILIENCE_DAMAGE_REDUCTION;
+        event.setNewDamage(event.getNewDamage() * (1.0F - reduction));
+    }
+    private static boolean isHcbowProjectileDamageSource(DamageSource source) {
+        Entity direct = source.getDirectEntity();
+        return direct != null && PersistentData.get(direct).getBoolean(HCBowItem.PROJECTILE_DAMAGE_TAG);
+    }
     public static void onSweepAttack(SweepAttackEvent event) {
         if (!event.isSweeping()) {
             return;
@@ -485,11 +909,11 @@ public class ModCombatEvents {
             event.setCanceled(true);
         }
     }
-
-    public static void onServerStarting(ServerStartingEvent event) {
-        disableBetterCombatReworkedSweepParticles();
+    public static void onServerTick(MinecraftServer server) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            tickPlayer(player);
+        }
     }
-
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         if (event.getNewDamage() <= 0.0F) {
             return;
@@ -499,7 +923,6 @@ public class ModCombatEvents {
         applyTheFoolSpectralEffect(event.getEntity(), event.getSource());
         applyTheFoolPotionEffects(event.getEntity(), event.getSource());
     }
-
     public static void onLivingDeath(LivingDeathEvent event) {
         if (event.getEntity().level().isClientSide) {
             return;
@@ -522,7 +945,6 @@ public class ModCombatEvents {
         if (!isNatureAxe) {
             return;
         }
-
         if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -543,7 +965,6 @@ public class ModCombatEvents {
             serverLevel.levelEvent(1505, below, 15);
         }
     }
-
     public static void onEntityTickPost(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof SpectralArrow arrow)) {
             return;
@@ -588,9 +1009,11 @@ public class ModCombatEvents {
             );
         }
     }
-
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
+        tickPlayer(player);
+    }
+    private static void tickPlayer(Player player) {
         if (player.level().isClientSide) {
             return;
         }
@@ -600,15 +1023,15 @@ public class ModCombatEvents {
         }
         if (player.level() instanceof ServerLevel serverLevel) {
             LScythe.tickDashTrail(serverLevel, player);
+            Mkopi.tickDestinationParticles(serverLevel, player);
+            tickArtoriasSlam(serverLevel, player);
         }
         if (player instanceof ServerPlayer serverPlayer) {
             pruneExpiredAttackFlags(serverPlayer);
         }
-
         var data = PersistentData.get(player);
-        boolean hasShroud = player.hasEffect(ModEffects.ceruleanShroudHolder());
+        boolean hasShroud = player.hasEffect(ModEffects.CERULEAN_SHROUD);
         boolean markedInvisible = data.getBoolean(CeruleanShroudEffect.INVISIBLE_TAG);
-
         if (hasShroud) {
             if (!player.isInvisible()) {
                 player.setInvisible(true);
@@ -627,7 +1050,6 @@ public class ModCombatEvents {
             }
             return;
         }
-
         if (markedInvisible) {
             if (!player.hasEffect(MobEffects.INVISIBILITY)) {
                 player.setInvisible(false);
@@ -641,8 +1063,153 @@ public class ModCombatEvents {
             data.remove(CeruleanShroudEffect.LAST_Z_TAG);
             data.remove(CeruleanShroudEffect.STEP_PROGRESS_TAG);
         }
-    }
 
+        /* DShield: emit temporary light level 8 centered on player while held charged */
+        if (player.level() instanceof ServerLevel serverLevel) {
+            ItemStack off = player.getOffhandItem();
+            ItemStack main = player.getMainHandItem();
+            boolean charged = false;
+            if (off.is(ModItems.DSHIELD.get()) && DShieldItem.getChargeCount(off) >= DShieldItem.CHARGES_REQUIRED) {
+                charged = true;
+            } else if (main.is(ModItems.DSHIELD.get()) && DShieldItem.getChargeCount(main) >= DShieldItem.CHARGES_REQUIRED) {
+                charged = true;
+            }
+
+            UUID uuid = player.getUUID();
+            BlockPos prevPos = DSHIELD_LIGHT_POS.get(uuid);
+            BlockPos centerPos = player.blockPosition();
+
+            if (charged) {
+                BlockState state = serverLevel.getBlockState(centerPos);
+                if (state.is(Blocks.LIGHT)) {
+                    try {
+                        int existing = state.getValue(LightBlock.LEVEL);
+                        if (existing != 8) {
+                            BlockState lightState = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 8);
+                            serverLevel.setBlock(centerPos, lightState, 3);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    DSHIELD_LIGHT_POS.put(uuid, centerPos);
+                } else if (state.isAir()) {
+                    try {
+                        BlockState lightState = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 8);
+                        serverLevel.setBlock(centerPos, lightState, 3);
+                        DSHIELD_LIGHT_POS.put(uuid, centerPos);
+                    } catch (Exception ignored) {
+                    }
+                } else {
+                    // cannot place here; remove any previous
+                    if (prevPos != null) {
+                        BlockState prevState = serverLevel.getBlockState(prevPos);
+                        if (prevState.is(Blocks.LIGHT)) {
+                            serverLevel.setBlock(prevPos, Blocks.AIR.defaultBlockState(), 3);
+                        }
+                        DSHIELD_LIGHT_POS.remove(uuid);
+                    }
+                }
+
+                // If moved, clear the old light block
+                if (prevPos != null && !prevPos.equals(centerPos)) {
+                    BlockState prevState = serverLevel.getBlockState(prevPos);
+                    if (prevState.is(Blocks.LIGHT)) {
+                        serverLevel.setBlock(prevPos, Blocks.AIR.defaultBlockState(), 3);
+                    }
+                    // DSHIELD_LIGHT_POS updated above
+                }
+            } else {
+                // Not charged: remove previous temporary light
+                if (prevPos != null) {
+                    BlockState prevState = serverLevel.getBlockState(prevPos);
+                    if (prevState.is(Blocks.LIGHT)) {
+                        serverLevel.setBlock(prevPos, Blocks.AIR.defaultBlockState(), 3);
+                    }
+                    DSHIELD_LIGHT_POS.remove(uuid);
+                }
+            }
+        }
+    }
+    public static void onLivingFall(LivingFallEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (PersistentData.get(player).contains(Sacrilegious.SLAM_AIRBORNE_TAG)) {
+            event.setDamageMultiplier(0.0F);
+        }
+    }
+    private static void tickArtoriasSlam(ServerLevel level, Player player) {
+        var data = PersistentData.get(player);
+        if (!data.contains(Sacrilegious.SLAM_AIRBORNE_TAG)) {
+            return;
+        }
+        long launchTick = data.getLong(Sacrilegious.SLAM_AIRBORNE_TAG);
+        long elapsed = level.getGameTime() - launchTick;
+        if (elapsed > Sacrilegious.SLAM_TIMEOUT_TICKS) {
+            data.remove(Sacrilegious.SLAM_AIRBORNE_TAG);
+            return;
+        }
+        spawnArtoriasAirTrail(level, player);
+        if (elapsed < Sacrilegious.SLAM_MIN_AIRBORNE_TICKS || !player.onGround() || player.isInWater()) {
+            return;
+        }
+        if (player instanceof ServerPlayer serverPlayer) {
+            triggerArtoriasSlamImpact(serverPlayer);
+        }
+        data.remove(Sacrilegious.SLAM_AIRBORNE_TAG);
+    }
+    private static void triggerArtoriasSlamImpact(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        Vec3 pos = player.position();
+        AABB area = new AABB(pos, pos).inflate(ARTORIAS_SLAM_RADIUS);
+        DamageSource source = player.damageSources().playerAttack(player);
+        double radiusSqr = ARTORIAS_SLAM_RADIUS * ARTORIAS_SLAM_RADIUS;
+        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
+            if (entity == player || !entity.isAlive()) {
+                continue;
+            }
+            double distanceSqr = entity.distanceToSqr(player);
+            if (distanceSqr > radiusSqr) {
+                continue;
+            }
+            entity.hurt(source, ARTORIAS_SLAM_DAMAGE);
+            double dx = entity.getX() - pos.x;
+            double dz = entity.getZ() - pos.z;
+            if (dx * dx + dz * dz > 1.0E-6D) {
+                entity.knockback(ARTORIAS_SLAM_KNOCKBACK, -dx, -dz);
+            }
+            double distanceFactor = 1.0D - Math.min(1.0D, Math.sqrt(distanceSqr) / ARTORIAS_SLAM_RADIUS);
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0.0D, ARTORIAS_SLAM_UPWARD_KNOCKBACK * distanceFactor, 0.0D));
+            entity.hasImpulse = true;
+        }
+        spawnArtoriasSlamRingParticles(level, pos);
+        level.playSound(
+                null,
+                pos.x,
+                pos.y,
+                pos.z,
+                SoundEvents.GENERIC_EXPLODE,
+                SoundSource.PLAYERS,
+                1.2F,
+                0.85F
+        );
+        player.resetFallDistance();
+    }
+    private static void spawnArtoriasAirTrail(ServerLevel level, Player player) {
+        Vec3 pos = player.position().add(0.0D, player.getBbHeight() * 0.45D, 0.0D);
+        level.sendParticles(ARTORIAS_ABYSS_DUST, pos.x, pos.y, pos.z, 2, 0.18D, 0.18D, 0.18D, 0.015D);
+        level.sendParticles(ARTORIAS_ASH_DUST, pos.x, pos.y, pos.z, 1, 0.12D, 0.12D, 0.12D, 0.01D);
+    }
+    private static void spawnArtoriasSlamRingParticles(ServerLevel level, Vec3 center) {
+        for (int i = 0; i < ARTORIAS_SLAM_RING_PARTICLES; i++) {
+            double angle = (2.0D * Math.PI * i) / ARTORIAS_SLAM_RING_PARTICLES;
+            double x = center.x + Math.cos(angle) * ARTORIAS_SLAM_RADIUS;
+            double z = center.z + Math.sin(angle) * ARTORIAS_SLAM_RADIUS;
+            level.sendParticles(ParticleTypes.EXPLOSION, x, center.y + 0.1D, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            level.sendParticles(ARTORIAS_ABYSS_DUST, x, center.y + 0.1D, z, 3, 0.1D, 0.25D, 0.1D, 0.035D);
+            level.sendParticles(ARTORIAS_ASH_DUST, x, center.y + 0.1D, z, 2, 0.08D, 0.18D, 0.08D, 0.02D);
+        }
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.x, center.y + 0.15D, center.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+    }
     private static void updateLScytheDashPenalty(Player player) {
         var data = PersistentData.get(player);
         if (!data.contains(LScythe.DASH_ARMOR_EXPIRES_TAG)) {
@@ -670,14 +1237,12 @@ public class ModCombatEvents {
         }
         LScythe.ensureDashArmorPenalty(player, stacks);
     }
-
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
         LivingEntity target = event.getNewAboutToBeSetTarget();
-        if (target instanceof Player player && player.hasEffect(ModEffects.ceruleanShroudHolder())) {
+        if (target instanceof Player player && player.hasEffect(ModEffects.CERULEAN_SHROUD)) {
             event.setNewAboutToBeSetTarget(null);
         }
     }
-
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
         ItemStack left = event.getLeft();
         if (!left.is(ModItems.AIRMACE.get())) {
@@ -687,13 +1252,11 @@ public class ModCombatEvents {
         if (right.isEmpty()) {
             return;
         }
-
         ItemEnchantments leftEnchantments = EnchantmentHelper.getEnchantmentsForCrafting(left);
         ItemEnchantments rightEnchantments = EnchantmentHelper.getEnchantmentsForCrafting(right);
         if (rightEnchantments.isEmpty()) {
             return;
         }
-
         // Allow the Airmace to ignore the Breach/Density incompatibility entirely.
         boolean hasBreachDensity = hasBreachDensity(leftEnchantments) || hasBreachDensity(rightEnchantments);
         if (!hasBreachDensity) {
@@ -702,7 +1265,7 @@ public class ModCombatEvents {
         Set<net.minecraft.core.Holder<Enchantment>> seen = new HashSet<>(leftEnchantments.keySet());
         for (var entry : rightEnchantments.entrySet()) {
             var enchantment = entry.getKey();
-            if (!enchantment.value().canEnchant(left) && !isBreachDensityEnchantment(enchantment)) {
+            if (!left.getItem().isEnchantable(left) && !isBreachDensityEnchantment(enchantment)) {
                 return;
             }
             for (var existing : seen) {
@@ -716,11 +1279,9 @@ public class ModCombatEvents {
             }
             seen.add(enchantment);
         }
-
         ItemStack output = left.copy();
         boolean rightIsBook = right.has(DataComponents.STORED_ENCHANTMENTS);
         int cost = 0;
-
         if (!rightIsBook && output.isDamageableItem() && output.is(right.getItem())) {
             int remaining = output.getMaxDamage() - output.getDamageValue();
             int rightRemaining = right.getMaxDamage() - right.getDamageValue();
@@ -735,7 +1296,6 @@ public class ModCombatEvents {
                 cost += 2;
             }
         }
-
         ItemEnchantments.Mutable merged = new ItemEnchantments.Mutable(leftEnchantments);
         for (var entry : rightEnchantments.entrySet()) {
             var holder = entry.getKey();
@@ -753,13 +1313,10 @@ public class ModCombatEvents {
             }
             cost += addCost * newLevel;
         }
-
         if (cost <= 0) {
             return;
         }
-
         EnchantmentHelper.setEnchantments(output, merged.toImmutable());
-
         int renameCost = 0;
         String name = event.getName();
         if (name != null) {
@@ -773,36 +1330,31 @@ public class ModCombatEvents {
                 output.remove(DataComponents.CUSTOM_NAME);
             }
         }
-
         long baseCost = (long) left.getOrDefault(DataComponents.REPAIR_COST, 0)
                 + (long) right.getOrDefault(DataComponents.REPAIR_COST, 0);
         long totalCost = Mth.clamp(baseCost + cost + renameCost, 0L, Integer.MAX_VALUE);
         if (totalCost >= 40 && !event.getPlayer().getAbilities().instabuild) {
             return;
         }
-
         int repairCost = output.getOrDefault(DataComponents.REPAIR_COST, 0);
         int rightRepairCost = right.getOrDefault(DataComponents.REPAIR_COST, 0);
         if (repairCost < rightRepairCost) {
             repairCost = rightRepairCost;
         }
         output.set(DataComponents.REPAIR_COST, AnvilMenu.calculateIncreasedRepairCost(repairCost));
-
         event.setOutput(output);
-        event.setCost(totalCost);
+        event.setCost((int) totalCost);
         event.setMaterialCost(1);
     }
-
     private static void applyFromSource(LivingEntity target, DamageSource source) {
         if (target.level().isClientSide) {
             return;
         }
-
         ItemStack weaponFromSource = source.getWeaponItem();
         boolean isVaporwaveSword = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.VAPORWAVE_SWORD.get());
         boolean isDawn = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.DAWN.get());
         boolean isSacrilegious = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.SACRILEGIOUS.get());
-
+        boolean isHarvester = weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.HARVESTER.get());
         Entity causing = source.getEntity();
         Entity direct = source.getDirectEntity();
         LivingEntity attacker = null;
@@ -811,7 +1363,6 @@ public class ModCombatEvents {
         } else if (direct instanceof LivingEntity directLiving) {
             attacker = directLiving;
         }
-
         if (!isVaporwaveSword && attacker != null) {
             isVaporwaveSword = attacker.getMainHandItem().is(ModItems.VAPORWAVE_SWORD.get())
                     || attacker.getOffhandItem().is(ModItems.VAPORWAVE_SWORD.get());
@@ -824,8 +1375,11 @@ public class ModCombatEvents {
             isSacrilegious = attacker.getMainHandItem().is(ModItems.SACRILEGIOUS.get())
                     || attacker.getOffhandItem().is(ModItems.SACRILEGIOUS.get());
         }
-
-        if (!isVaporwaveSword && !isDawn && !isSacrilegious) {
+        if (!isHarvester && attacker != null) {
+            isHarvester = attacker.getMainHandItem().is(ModItems.HARVESTER.get())
+                    || attacker.getOffhandItem().is(ModItems.HARVESTER.get());
+        }
+        if (!isVaporwaveSword && !isDawn && !isSacrilegious && !isHarvester) {
             if (DEBUG_LOGS && attacker != null && attacker.getType().toString().contains("player")) {
                 LOGGER.info(
                         "[fweapons] skipped source match: msgId={} weapon={} main={} off={}",
@@ -837,7 +1391,6 @@ public class ModCombatEvents {
             }
             return;
         }
-
         if (isVaporwaveSword) {
             if (DEBUG_LOGS) {
                 LOGGER.info(
@@ -847,7 +1400,7 @@ public class ModCombatEvents {
                         target.getName().getString()
                 );
             }
-            target.addEffect(new MobEffectInstance(ModEffects.vaporifiedHolder(), VAPORIFIED_DURATION_TICKS, 0), attacker);
+            target.addEffect(new MobEffectInstance(ModEffects.VAPORIFIED, VAPORIFIED_DURATION_TICKS, 0), attacker);
         }
         if (isDawn) {
             if (DEBUG_LOGS) {
@@ -861,18 +1414,12 @@ public class ModCombatEvents {
             applySunsetHitEffects(target, attacker);
         }
         if (isSacrilegious) {
-            if (DEBUG_LOGS) {
-                LOGGER.info(
-                        "[fweapons] Damage hook applying sacrilegious effects: msgId={} attacker={} target={}",
-                        source.getMsgId(),
-                        attacker == null ? "<none>" : attacker.getName().getString(),
-                        target.getName().getString()
-                );
-            }
             applySacrilegiousHitEffects(target, attacker);
         }
+        if (isHarvester) {
+            applyHarvesterHitEffects(target, attacker);
+        }
     }
-
     public static void onBayonetComboAttack(ServerPlayer player) {
         if (player.level().isClientSide) {
             return;
@@ -883,14 +1430,12 @@ public class ModCombatEvents {
         spawnPerfectDapEffect(player);
         playBetterCombatAttackAnimation(player);
     }
-
-    private static void playBetterCombatAttackAnimation(ServerPlayer player) {
+    static void playBetterCombatAttackAnimation(ServerPlayer player) {
         try {
             Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
             Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
             Class<?> swingParticlesClass = Class.forName("net.bettercombat.network.Packets$SwingParticles");
             Class<?> serverNetworkClass = Class.forName("net.bettercombat.network.ServerNetwork");
-
             Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
             Object particles = swingParticlesClass.getField("EMPTY").get(null);
             float length = 1.625f;
@@ -917,7 +1462,6 @@ public class ModCombatEvents {
                             upswingTicks,
                             particles
                     );
-
             serverNetworkClass
                     .getMethod(
                             "handleAttackAnimation",
@@ -932,7 +1476,76 @@ public class ModCombatEvents {
             }
         }
     }
-
+    public static void playBetterCombatTwoHandedSlamAnimation(ServerPlayer player) {
+        // Keep compatibility for callers that expect the mkopi two-handed slam behavior
+        playBetterCombatSlamAnimation(player, MKOPI_SLAM_ANIMATION);
+    }
+    public static void playSacrilegiousSlamAnimation(ServerPlayer player) {
+        playBetterCombatSlamAnimation(player, SACRILEGIOUS_SLAM_ANIMATION);
+    }
+    public static void playBetterCombatSlamAnimation(ServerPlayer player, String animationName) {
+        boolean invoked = false;
+        try {
+            Class<?> attackAnimClass = Class.forName("net.bettercombat.network.Packets$AttackAnimation");
+            Class<?> animatedHandClass = Class.forName("net.bettercombat.logic.AnimatedHand");
+            Class<?> swingParticlesClass = Class.forName("net.bettercombat.network.Packets$SwingParticles");
+            Class<?> serverNetworkClass = Class.forName("net.bettercombat.network.ServerNetwork");
+            Object hand = Enum.valueOf((Class<Enum>) animatedHandClass, "MAIN_HAND");
+            Object particles = swingParticlesClass.getField("EMPTY").get(null);
+            float length = 1.625f;
+            float upswing = 1.2f;
+            int upswingTicks = Math.round(upswing * 20.0f);
+            Object payload = attackAnimClass
+                    .getConstructor(
+                            int.class,
+                            animatedHandClass,
+                            String.class,
+                            float.class,
+                            float.class,
+                            float.class,
+                            int.class,
+                            swingParticlesClass
+                    )
+                    .newInstance(
+                            player.getId(),
+                            hand,
+                            animationName,
+                            length,
+                            upswing,
+                            0.0f,
+                            upswingTicks,
+                            particles
+                    );
+            serverNetworkClass
+                    .getMethod(
+                            "handleAttackAnimation",
+                            attackAnimClass,
+                            net.minecraft.server.MinecraftServer.class,
+                            net.minecraft.server.level.ServerPlayer.class
+                    )
+                    .invoke(null, payload, player.getServer(), player);
+            invoked = true;
+        } catch (ReflectiveOperationException ignored) {
+            if (DEBUG_LOGS) {
+                LOGGER.info("[fweapons] BetterCombat not present or slam animation send failed.");
+            }
+        }
+        // Fallback: send a Fabric client payload to the specific player so the client can show visuals.
+        ModNetwork.sendSacrilegiousSlamToClient(player, player.getId(), animationName);
+        if (!invoked) {
+            // If we couldn't send the payload, fallback to spawning visible server-side particles for nearby viewers
+            if (player.level() instanceof ServerLevel serverLevel) {
+                // Spawn loud particles and a sound to make the slam noticeable
+                Vec3 pos = player.position();
+                sendParticlesToOthers(serverLevel, player, pos.x, pos.y + 0.5, pos.z, new ParticleSpec[]{
+                        new ParticleSpec(ParticleTypes.EXPLOSION_EMITTER, 1, 0.0, 0.0, 0.0, 0.0),
+                        new ParticleSpec(ParticleTypes.CLOUD, 12, 0.4, 0.4, 0.4, 0.05),
+                        new ParticleSpec(ParticleTypes.FLASH, 1, 0.0, 0.0, 0.0, 0.0)
+                });
+                serverLevel.playSound(null, pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0f, 1.0f);
+            }
+        }
+    }
     private static void spawnPerfectDapEffect(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel serverLevel)) {
             return;
@@ -941,60 +1554,51 @@ public class ModCombatEvents {
         double x = player.getX() + look.x * 0.7D;
         double y = player.getEyeY() - 0.2D + look.y * 0.1D;
         double z = player.getZ() + look.z * 0.7D;
-
         serverLevel.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 5, 0.2, 0.2, 0.2, 0.0);
         serverLevel.sendParticles(ParticleTypes.CRIT, x, y, z, 40, 0.4, 0.4, 0.4, 0.12);
         serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 50, 0.5, 0.5, 0.5, 0.15);
-
         serverLevel.playSound(null, x, y, z, SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.5f, 1.0f);
         serverLevel.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0f, 1.0f);
         serverLevel.playSound(null, x, y, z, SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 1.2f, 1.0f);
     }
-
     private static void applyHonorStrike(LivingIncomingDamageEvent event) {
         if (event.getEntity().level().isClientSide) {
             return;
         }
-
         Entity sourceEntity = event.getSource().getEntity();
         if (!(sourceEntity instanceof LivingEntity attacker)) {
             return;
         }
-        if (!attacker.hasEffect(ModEffects.ceruleanShroudHolder())) {
+        if (!attacker.hasEffect(ModEffects.CERULEAN_SHROUD)) {
             return;
         }
-
         event.setAmount(event.getAmount() * 2.0F);
-        attacker.removeEffect(ModEffects.ceruleanShroudHolder());
-        PersistentData.get(attacker).putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
-        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_X_TAG);
-        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_Y_TAG);
-        PersistentData.get(attacker).remove(CeruleanShroudEffect.LAST_Z_TAG);
+        attacker.removeEffect(ModEffects.CERULEAN_SHROUD);
+        var data = PersistentData.get(attacker);
+        data.putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
+        data.remove(CeruleanShroudEffect.LAST_X_TAG);
+        data.remove(CeruleanShroudEffect.LAST_Y_TAG);
+        data.remove(CeruleanShroudEffect.LAST_Z_TAG);
     }
-
     private static void applyVaporifiedArmorBypass(LivingIncomingDamageEvent event) {
         if (!event.getSource().is(VAPORIFIED_DAMAGE)) {
             return;
         }
-
-        // Fabric fallback: emulate reduced protection by scaling incoming damage upward.
-        event.setAmount(event.getAmount() * 1.35F);
+        // Reduce armor and enchantment reductions by 50% (effective half protection).
+        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.5F);
+        event.addReductionModifier(DamageContainer.Reduction.ENCHANTMENTS, (container, reduction) -> reduction * 0.5F);
     }
-
     private static void applySunsetArmorBypass(LivingIncomingDamageEvent event) {
         if (!event.getSource().is(SUNSET_DAMAGE)) {
             return;
         }
-
-        // Fabric fallback: emulate partial armor bypass with a direct damage increase.
-        event.setAmount(event.getAmount() * 1.2F);
+        // Ignore 60% of armor reduction.
+        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * 0.4F);
     }
-
     private static void applyAirmaceFallBonus(LivingIncomingDamageEvent event) {
         if (event.getEntity().level().isClientSide) {
             return;
         }
-
         DamageSource source = event.getSource();
         LivingEntity attacker = null;
         Entity causing = source.getEntity();
@@ -1007,7 +1611,6 @@ public class ModCombatEvents {
         if (attacker == null) {
             return;
         }
-
         ItemStack weaponFromSource = source.getWeaponItem();
         ItemStack airmaceStack = null;
         if (weaponFromSource != null && !weaponFromSource.isEmpty() && weaponFromSource.is(ModItems.AIRMACE.get())) {
@@ -1017,12 +1620,10 @@ public class ModCombatEvents {
         } else if (attacker.getOffhandItem().is(ModItems.AIRMACE.get())) {
             airmaceStack = attacker.getOffhandItem();
         }
-
         boolean isAirmaceAttack = airmaceStack != null || isAirmaceAttack(attacker) || hasRecentAirmaceSmash(attacker);
         if (!isAirmaceAttack) {
             return;
         }
-
         float fallDistance = attacker.fallDistance;
         if (hasRecentAirmaceSmash(attacker)) {
             fallDistance = Math.max(fallDistance, getStoredAirmaceFallDistance(attacker));
@@ -1031,7 +1632,6 @@ public class ModCombatEvents {
             clearAirmaceSmash(attacker);
             return;
         }
-
         float bonus = calculateMaceFallBonus(attacker, event.getEntity(), source, fallDistance, airmaceStack);
         if (bonus > 0.0F) {
             event.setAmount(event.getAmount() + bonus);
@@ -1041,7 +1641,6 @@ public class ModCombatEvents {
         }
         clearAirmaceSmash(attacker);
     }
-
     private static float calculateMaceFallBonus(
             LivingEntity attacker,
             LivingEntity target,
@@ -1052,7 +1651,6 @@ public class ModCombatEvents {
         if (!canAirmaceSmash(attacker, fallDistance)) {
             return 0.0F;
         }
-
         float baseBonus;
         if (fallDistance <= 3.0F) {
             baseBonus = 4.0F * fallDistance;
@@ -1061,7 +1659,6 @@ public class ModCombatEvents {
         } else {
             baseBonus = 22.0F + fallDistance - 8.0F;
         }
-
         if (attacker.level() instanceof ServerLevel serverLevel) {
             ItemStack weaponStack = airmaceStack == null || airmaceStack.isEmpty()
                     ? attacker.getWeaponItem()
@@ -1071,10 +1668,8 @@ public class ModCombatEvents {
                     * fallDistance;
             return baseBonus + enchantBonus;
         }
-
         return baseBonus;
     }
-
     private static void clearNearbyMobTargets(ServerLevel serverLevel, Player player) {
         AABB area = player.getBoundingBox().inflate(32.0D);
         for (Mob mob : serverLevel.getEntitiesOfClass(Mob.class, area, mob -> mob.getTarget() == player)) {
@@ -1083,18 +1678,15 @@ public class ModCombatEvents {
             mob.setLastHurtByMob(null);
         }
     }
-
     private static void syncCeruleanEquipment(ServerLevel serverLevel, ServerPlayer shrouded, boolean hidden) {
         if (serverLevel.players().size() <= 1) {
             return;
         }
-
         List<Pair<EquipmentSlot, ItemStack>> equipment = new ArrayList<>(CERULEAN_EQUIPMENT_SLOTS.length);
         for (EquipmentSlot slot : CERULEAN_EQUIPMENT_SLOTS) {
             ItemStack stack = hidden ? ItemStack.EMPTY : shrouded.getItemBySlot(slot).copy();
             equipment.add(Pair.of(slot, stack));
         }
-
         ClientboundSetEquipmentPacket packet = new ClientboundSetEquipmentPacket(shrouded.getId(), equipment);
         for (ServerPlayer viewer : serverLevel.players()) {
             if (viewer == shrouded) {
@@ -1103,10 +1695,7 @@ public class ModCombatEvents {
             viewer.connection.send(packet);
         }
     }
-
     private static void applySacrilegiousHitEffects(LivingEntity target, LivingEntity attacker) {
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SACRILEGIOUS_SLOWNESS_DURATION_TICKS, 0), attacker);
-
         if (target.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
                     DustParticleOptions.REDSTONE,
@@ -1120,24 +1709,22 @@ public class ModCombatEvents {
                     0.0
             );
         }
-        target.addEffect(new MobEffectInstance(ModEffects.bleedHolder(), SACRILEGIOUS_BLEED_DURATION_TICKS, 0), attacker);
     }
-
+    private static void applyHarvesterHitEffects(LivingEntity target, LivingEntity attacker) {
+        target.addEffect(new MobEffectInstance(ModEffects.BLEED, HARVESTER_BLEED_DURATION_TICKS, 0), attacker);
+    }
     private static void applySunsetHitEffects(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.sunsetHolder());
+        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
         int amplifier = existing == null ? 0 : existing.getAmplifier() + 1;
-        target.addEffect(new MobEffectInstance(ModEffects.sunsetHolder(), SUNSET_DURATION_TICKS, amplifier), attacker);
+        target.addEffect(new MobEffectInstance(ModEffects.SUNSET, SUNSET_DURATION_TICKS, amplifier), attacker);
     }
-
     private static void applyDuskSunsetFinisher(LivingEntity target, LivingEntity attacker) {
-        MobEffectInstance existing = target.getEffect(ModEffects.sunsetHolder());
+        MobEffectInstance existing = target.getEffect(ModEffects.SUNSET);
         if (existing == null) {
             return;
         }
-
         int stacks = existing.getAmplifier() + 1;
-        target.removeEffect(ModEffects.sunsetHolder());
-
+        target.removeEffect(ModEffects.SUNSET);
         float bonusDamage = 2.0F * stacks;
         DamageSource source;
         if (attacker instanceof Player player) {
@@ -1148,7 +1735,6 @@ public class ModCombatEvents {
             source = target.damageSources().generic();
         }
         target.hurt(source, bonusDamage);
-
         if (target.level() instanceof ServerLevel serverLevel) {
             spawnDuskSunsetBurst(serverLevel, target, stacks);
             serverLevel.playSound(
@@ -1163,7 +1749,6 @@ public class ModCombatEvents {
             );
         }
     }
-
     private static void spawnDuskSunsetBurst(ServerLevel serverLevel, LivingEntity target, int stacks) {
         int count = Math.min(480, 22 * stacks);
         double x = target.getX();
@@ -1194,7 +1779,6 @@ public class ModCombatEvents {
                 0.16D
         );
     }
-
     public static void recordClientAttackFlag(ServerPlayer player, ClientAttackFlag flag) {
         if (player.level().isClientSide) {
             return;
@@ -1202,28 +1786,23 @@ public class ModCombatEvents {
         if (!isClientAttackFlagValid(player, flag)) {
             return;
         }
-
         long expiresAt = player.level().getGameTime() + CLIENT_ATTACK_FLAG_WINDOW_TICKS;
         CLIENT_ATTACK_FLAGS
                 .computeIfAbsent(player.getUUID(), id -> new EnumMap<>(ClientAttackFlag.class))
                 .put(flag, expiresAt);
     }
-
     private static boolean consumeClientAttackFlag(LivingEntity attacker, ClientAttackFlag flag) {
         if (!(attacker instanceof ServerPlayer player)) {
             return false;
         }
-
         EnumMap<ClientAttackFlag, Long> flags = CLIENT_ATTACK_FLAGS.get(player.getUUID());
         if (flags == null) {
             return false;
         }
-
         Long expiresAt = flags.get(flag);
         if (expiresAt == null) {
             return false;
         }
-
         long now = player.level().getGameTime();
         flags.remove(flag);
         if (flags.isEmpty()) {
@@ -1232,10 +1811,8 @@ public class ModCombatEvents {
         if (expiresAt < now) {
             return false;
         }
-
         return isClientAttackFlagValid(player, flag);
     }
-
     private static void pruneExpiredAttackFlags(ServerPlayer player) {
         EnumMap<ClientAttackFlag, Long> flags = CLIENT_ATTACK_FLAGS.get(player.getUUID());
         if (flags == null) {
@@ -1252,7 +1829,6 @@ public class ModCombatEvents {
             CLIENT_ATTACK_FLAGS.remove(player.getUUID());
         }
     }
-
     private static boolean isClientAttackFlagValid(LivingEntity attacker, ClientAttackFlag flag) {
         return switch (flag) {
             case BAYONET_GUNSHOT -> isHoldingBayonet(attacker);
@@ -1260,7 +1836,6 @@ public class ModCombatEvents {
             case DUSK_THIRD -> isHoldingDusk(attacker);
         };
     }
-
     private static Object invokeCached(Object target, String methodName) throws ReflectiveOperationException {
         MethodKey key = new MethodKey(target.getClass(), methodName);
         Method method = METHOD_CACHE.get(key);
@@ -1271,7 +1846,6 @@ public class ModCombatEvents {
         }
         return method.invoke(target);
     }
-
     private static BetterCombatAttackInfo getBetterCombatAttackInfo(LivingEntity attacker) {
         try {
             Object currentAttack = invokeCached(attacker, "getCurrentAttack");
@@ -1283,17 +1857,90 @@ public class ModCombatEvents {
                 return null;
             }
             Object attack = invokeCached(currentAttack, "attack");
+            int attackPatternIndex = readAttackPatternIndex(currentAttack);
             if (attack == null) {
-                return new BetterCombatAttackInfo(attackStack, null, null);
+                return new BetterCombatAttackInfo(attackStack, null, null, attackPatternIndex);
             }
             Object hitbox = invokeCached(attack, "hitbox");
             Object animation = invokeCached(attack, "animation");
-            return new BetterCombatAttackInfo(attackStack, hitbox, animation);
+            return new BetterCombatAttackInfo(attackStack, hitbox, animation, attackPatternIndex);
         } catch (ReflectiveOperationException ignored) {
             return null;
         }
     }
-
+    private static int readAttackPatternIndex(Object currentAttack) throws ReflectiveOperationException {
+        Object combo = invokeCached(currentAttack, "combo");
+        if (combo == null) {
+            return -1;
+        }
+        Object comboCurrentValue = invokeCached(combo, "current");
+        if (!(comboCurrentValue instanceof Number number)) {
+            return -1;
+        }
+        int currentAttackNumber = number.intValue();
+        return currentAttackNumber > 0 ? currentAttackNumber - 1 : -1;
+    }
+    private static void applyAntemPatternEffects(LivingEntity target, LivingEntity attacker, BetterCombatAttackInfo info) {
+        if (info == null || !info.stack().is(ModItems.ANTEM.get())) {
+            return;
+        }
+        if (isAntemPatternAttack(info, ANTEM_FIRE_PATTERN_INDEX)) {
+            target.igniteForSeconds(ANTEM_FIRE_SECONDS);
+        }
+        if (isAntemPatternAttack(info, ANTEM_KNOCKBACK_PATTERN_INDEX)) {
+            double strength = ANTEM_BASE_KNOCKBACK * ANTEM_KNOCKBACK_MULTIPLIER;
+            target.knockback(strength, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+        }
+    }
+    private static boolean isAntemPatternAttack(BetterCombatAttackInfo info, int patternIndex) {
+        if (info.attackPatternIndex() != patternIndex || ANTEM_ATTACK_PATTERN.size() <= patternIndex) {
+            return false;
+        }
+        AttackSignature attack = ANTEM_ATTACK_PATTERN.get(patternIndex);
+        return matchesBetterCombatAttack(info, ModItems.ANTEM.get(), attack.hitbox(), attack.animation());
+    }
+    private static List<AttackSignature> loadAntemAttackPattern() {
+        try (InputStream stream = ModCombatEvents.class.getClassLoader()
+                .getResourceAsStream(ANTEM_PATTERN_RESOURCE_PATH)) {
+            if (stream == null) {
+                return List.of();
+            }
+            JsonElement rootElement = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+            if (!rootElement.isJsonObject()) {
+                return List.of();
+            }
+            JsonObject root = rootElement.getAsJsonObject();
+            JsonObject attributes = root.getAsJsonObject("attributes");
+            if (attributes == null) {
+                return List.of();
+            }
+            JsonArray attacks = attributes.getAsJsonArray("attacks");
+            if (attacks == null) {
+                return List.of();
+            }
+            List<AttackSignature> pattern = new ArrayList<>(attacks.size());
+            for (JsonElement attackElement : attacks) {
+                if (!attackElement.isJsonObject()) {
+                    continue;
+                }
+                JsonObject attack = attackElement.getAsJsonObject();
+                pattern.add(new AttackSignature(
+                        readJsonString(attack, "hitbox"),
+                        readJsonString(attack, "animation")
+                ));
+            }
+            return pattern;
+        } catch (RuntimeException | java.io.IOException ignored) {
+            return List.of();
+        }
+    }
+    private static String readJsonString(JsonObject json, String key) {
+        JsonElement element = json.get(key);
+        return element != null && element.isJsonPrimitive() ? element.getAsString() : null;
+    }
+    private static String stringValue(Object value) {
+        return value == null ? null : value.toString();
+    }
     private static boolean matchesBetterCombatAttack(
             BetterCombatAttackInfo info,
             Item item,
@@ -1304,87 +1951,95 @@ public class ModCombatEvents {
             return false;
         }
         if (hitbox != null) {
-            Object hitboxValue = info.hitbox();
-            if (hitboxValue == null || !hitbox.equals(hitboxValue.toString())) {
+            if (!Objects.equals(hitbox, stringValue(info.hitbox()))) {
                 return false;
             }
         }
-        if (animation != null && !animation.equals(info.animation())) {
+        if (animation != null && !Objects.equals(animation, stringValue(info.animation()))) {
             return false;
         }
         return true;
     }
-
     private static boolean isMkopiSlamAttack(LivingEntity attacker) {
         return isMkopiSlamAttack(attacker, getBetterCombatAttackInfo(attacker));
     }
-
     private static boolean isMkopiSlamAttack(LivingEntity attacker, BetterCombatAttackInfo info) {
         if (matchesBetterCombatAttack(info, ModItems.MKOPI.get(), "VERTICAL_PLANE", MKOPI_SLAM_ANIMATION)) {
             return true;
         }
         return consumeClientAttackFlag(attacker, ClientAttackFlag.MKOPI_SLAM);
     }
-
     private static boolean isBayonetGunshotAttack(LivingEntity attacker) {
         return isBayonetGunshotAttack(attacker, getBetterCombatAttackInfo(attacker));
     }
-
     private static boolean isBayonetGunshotAttack(LivingEntity attacker, BetterCombatAttackInfo info) {
         if (matchesBetterCombatAttack(info, ModItems.BAYONET.get(), BAYONET_GUNSHOT_HITBOX, BAYONET_GUNSHOT_ANIMATION)) {
             return true;
         }
         return consumeClientAttackFlag(attacker, ClientAttackFlag.BAYONET_GUNSHOT);
     }
-
     private static boolean isDuskThirdAttack(LivingEntity attacker) {
         return isDuskThirdAttack(attacker, getBetterCombatAttackInfo(attacker));
     }
-
     private static boolean isDuskThirdAttack(LivingEntity attacker, BetterCombatAttackInfo info) {
         if (matchesBetterCombatAttack(info, ModItems.DUSK.get(), DUSK_THIRD_HITBOX, DUSK_THIRD_ANIMATION)) {
             return true;
         }
         return consumeClientAttackFlag(attacker, ClientAttackFlag.DUSK_THIRD);
     }
-
     private static boolean isAirmaceAttack(LivingEntity attacker) {
         return isAirmaceAttack(getBetterCombatAttackInfo(attacker));
     }
-
     private static boolean isAirmaceAttack(BetterCombatAttackInfo info) {
         return matchesBetterCombatAttack(info, ModItems.AIRMACE.get(), null, null);
     }
-
+    private static boolean isRelevantSpecialAttackWeapon(LivingEntity attacker) {
+        if (isRelevantSpecialAttackWeapon(attacker.getMainHandItem())
+                || isRelevantSpecialAttackWeapon(attacker.getOffhandItem())) {
+            return true;
+        }
+        if (attacker instanceof ServerPlayer player) {
+            EnumMap<ClientAttackFlag, Long> flags = CLIENT_ATTACK_FLAGS.get(player.getUUID());
+            if (flags != null && !flags.isEmpty()) {
+                return true;
+            }
+        }
+        ItemStack weaponItem = attacker.getWeaponItem();
+        return weaponItem != null && isRelevantSpecialAttackWeapon(weaponItem);
+    }
+    private static boolean isRelevantSpecialAttackWeapon(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        return stack.is(ModItems.AIRMACE.get())
+                || stack.is(ModItems.MKOPI.get())
+                || stack.is(ModItems.BAYONET.get())
+                || stack.is(ModItems.DUSK.get())
+                || stack.is(ModItems.ANTEM.get());
+    }
     private static boolean isHoldingBayonet(LivingEntity attacker) {
         return attacker.getMainHandItem().is(ModItems.BAYONET.get())
                 || attacker.getOffhandItem().is(ModItems.BAYONET.get());
     }
-
     private static boolean isHoldingAirmace(LivingEntity attacker) {
         return attacker.getMainHandItem().is(ModItems.AIRMACE.get())
                 || attacker.getOffhandItem().is(ModItems.AIRMACE.get());
     }
-
     private static boolean isHoldingMkopi(LivingEntity attacker) {
         return attacker.getMainHandItem().is(ModItems.MKOPI.get())
                 || attacker.getOffhandItem().is(ModItems.MKOPI.get());
     }
-
     private static boolean isHoldingDusk(LivingEntity attacker) {
         return attacker.getMainHandItem().is(ModItems.DUSK.get())
                 || attacker.getOffhandItem().is(ModItems.DUSK.get());
     }
-
     private static boolean isBreachDensityPair(net.minecraft.core.Holder<Enchantment> first, net.minecraft.core.Holder<Enchantment> second) {
         return (first.is(Enchantments.BREACH) && second.is(Enchantments.DENSITY))
                 || (first.is(Enchantments.DENSITY) && second.is(Enchantments.BREACH));
     }
-
     private static boolean isBreachDensityEnchantment(net.minecraft.core.Holder<Enchantment> enchantment) {
         return enchantment.is(Enchantments.BREACH) || enchantment.is(Enchantments.DENSITY);
     }
-
     private static boolean hasBreachDensity(ItemEnchantments enchantments) {
         for (var holder : enchantments.keySet()) {
             if (isBreachDensityEnchantment(holder)) {
@@ -1393,29 +2048,8 @@ public class ModCombatEvents {
         }
         return false;
     }
-
-    private static void disableBetterCombatReworkedSweepParticles() {
-        try {
-            Class<?> betterCombatModClass = Class.forName("net.bettercombat.BetterCombatMod");
-            Field configField = betterCombatModClass.getField("config");
-            Object config = configField.get(null);
-            if (config == null) {
-                return;
-            }
-
-            setBooleanField(config, "reworked_sweeping_emits_particles", false);
-        } catch (ReflectiveOperationException ignored) {
-        }
-    }
-
-    private static void setBooleanField(Object target, String fieldName, boolean value) throws ReflectiveOperationException {
-        Field field = target.getClass().getField(fieldName);
-        field.setBoolean(target, value);
-    }
-
     private static void applyMkopiSlamEffects(LivingEntity target, LivingEntity attacker) {
         target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, MKOPI_DARKNESS_DURATION_TICKS, 0), attacker);
-
         if (target.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
                     ParticleTypes.SQUID_INK,
@@ -1461,7 +2095,6 @@ public class ModCombatEvents {
                     0.42,
                     0.0
             );
-
             serverLevel.playSound(
                     null,
                     target.getX(),
@@ -1474,12 +2107,10 @@ public class ModCombatEvents {
             );
         }
     }
-
     private static void applyBayonetGunshotParticles(LivingEntity target) {
         if (!(target.level() instanceof ServerLevel serverLevel)) {
             return;
         }
-
         serverLevel.sendParticles(
                 ParticleTypes.SQUID_INK,
                 target.getX(),
@@ -1525,23 +2156,19 @@ public class ModCombatEvents {
                 0.0
         );
     }
-
     public static void spawnBayonetGunshotMuzzleParticles(ServerPlayer attacker) {
         if (!(attacker.level() instanceof ServerLevel serverLevel)) {
             return;
         }
         spawnBayonetGunshotMuzzleParticles(serverLevel, attacker);
     }
-
     private static void spawnBayonetGunshotMuzzleParticles(ServerLevel serverLevel, LivingEntity attacker) {
         Vec3 look = attacker.getLookAngle().normalize();
         double x = attacker.getX() + look.x * 1.2D;
         double y = attacker.getEyeY() - 0.2D + look.y * 0.2D;
         double z = attacker.getZ() + look.z * 1.2D;
-
         sendParticlesToOthers(serverLevel, attacker, x, y, z, BAYONET_MUZZLE_SPECS);
     }
-
     private static void sendParticlesToOthers(
             ServerLevel serverLevel,
             LivingEntity attacker,
@@ -1550,12 +2177,20 @@ public class ModCombatEvents {
             double z,
             ParticleSpec[] specs
     ) {
+        if (specs.length == 0) {
+            return;
+        }
         ServerPlayer attackerPlayer = attacker instanceof ServerPlayer player ? player : null;
-        for (ServerPlayer player : serverLevel.players()) {
-            if (attackerPlayer != null && player == attackerPlayer) {
-                continue;
-            }
-            for (ParticleSpec spec : specs) {
+        List<ServerPlayer> viewers = serverLevel.players();
+        int eligibleViewers = viewers.size() - (attackerPlayer == null ? 0 : 1);
+        if (eligibleViewers <= 0) {
+            return;
+        }
+        for (ParticleSpec spec : specs) {
+            for (ServerPlayer player : viewers) {
+                if (attackerPlayer != null && player == attackerPlayer) {
+                    continue;
+                }
                 serverLevel.sendParticles(
                         player,
                         spec.particle,
@@ -1572,7 +2207,6 @@ public class ModCombatEvents {
             }
         }
     }
-
     private static void spawnAirmaceSmashParticles(ServerLevel serverLevel, LivingEntity target, float fallDistance) {
         int totalCount = Math.min(140, 14 + Math.round(fallDistance * 9.0F));
         int primaryCount = totalCount / 2;
@@ -1582,10 +2216,8 @@ public class ModCombatEvents {
         double x = target.getX();
         double y = target.getY(0.6D);
         double z = target.getZ();
-
         serverLevel.sendParticles(AIRMACE_LIGHT_YELLOW, x, y, z, primaryCount, spread, spread * 0.6D, spread, speed);
         serverLevel.sendParticles(AIRMACE_BLAND_CYAN, x, y, z, secondaryCount, spread, spread * 0.6D, spread, speed);
-
         int burstCount = totalCount;
         double burstSpeed = Math.min(0.55D, 0.2D + fallDistance * 0.04D);
         RandomSource random = serverLevel.getRandom();
@@ -1593,16 +2225,18 @@ public class ModCombatEvents {
             double dx = random.nextGaussian();
             double dy = random.nextGaussian() * 0.6D;
             double dz = random.nextGaussian();
-            Vec3 direction = new Vec3(dx, dy, dz);
-            if (direction.lengthSqr() < 1.0E-6) {
+            double lengthSq = dx * dx + dy * dy + dz * dz;
+            if (lengthSq < 1.0E-6D) {
                 continue;
             }
-            direction = direction.normalize();
+            double invLength = 1.0D / Math.sqrt(lengthSq);
+            dx *= invLength;
+            dy *= invLength;
+            dz *= invLength;
             DustParticleOptions particle = (i & 1) == 0 ? AIRMACE_LIGHT_YELLOW : AIRMACE_BLAND_CYAN;
-            serverLevel.sendParticles(particle, x, y, z, 0, direction.x, direction.y, direction.z, burstSpeed);
+            serverLevel.sendParticles(particle, x, y, z, 0, dx, dy, dz, burstSpeed);
         }
     }
-
     private static void recordAirmaceSmash(LivingEntity attacker) {
         if (!canAirmaceSmash(attacker, attacker.fallDistance)) {
             return;
@@ -1611,24 +2245,19 @@ public class ModCombatEvents {
         data.putFloat(AIRMACE_FALL_DISTANCE_TAG, attacker.fallDistance);
         data.putInt(AIRMACE_FALL_TICK_TAG, attacker.tickCount);
     }
-
     private static boolean hasRecentAirmaceSmash(LivingEntity attacker) {
         int recordedTick = PersistentData.get(attacker).getInt(AIRMACE_FALL_TICK_TAG);
         return recordedTick != 0 && attacker.tickCount - recordedTick <= AIRMACE_FALL_TICK_WINDOW;
     }
-
     private static float getStoredAirmaceFallDistance(LivingEntity attacker) {
         return PersistentData.get(attacker).getFloat(AIRMACE_FALL_DISTANCE_TAG);
     }
-
     private static void clearAirmaceSmash(LivingEntity attacker) {
         var data = PersistentData.get(attacker);
         data.remove(AIRMACE_FALL_DISTANCE_TAG);
         data.remove(AIRMACE_FALL_TICK_TAG);
     }
-
     private static boolean canAirmaceSmash(LivingEntity attacker, float fallDistance) {
         return fallDistance > 1.5F && !attacker.isFallFlying();
     }
-
 }

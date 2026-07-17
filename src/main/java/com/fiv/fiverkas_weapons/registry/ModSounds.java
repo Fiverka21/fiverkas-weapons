@@ -1,25 +1,27 @@
 package com.fiv.fiverkas_weapons.registry;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 public class ModSounds {
-    public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
-            DeferredRegister.create(Registries.SOUND_EVENT, FiverkasWeapons.MODID);
+    private static Supplier<SoundEvent> register(String name) {
+        SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(FiverkasWeapons.id(name));
+        SoundEvent registered = Registry.register(BuiltInRegistries.SOUND_EVENT, FiverkasWeapons.id(name), soundEvent);
+        return () -> registered;
+    }
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> MKOPI =
-            SOUND_EVENTS.register("mkopi",
-                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "mkopi")));
+    public static final Supplier<SoundEvent> MKOPI = register("mkopi");
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> DUSK =
-            SOUND_EVENTS.register("dusk",
-                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "dusk")));
+    public static final Supplier<SoundEvent> DUSK = register("dusk");
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> RAMIEL =
-            SOUND_EVENTS.register("ramiel",
-                    () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "ramiel")));
+    public static final Supplier<SoundEvent> RAMIEL = register("ramiel");
+
+    public static final Supplier<SoundEvent> TP = register("tp");
+
+    public static void init() {
+    }
 }

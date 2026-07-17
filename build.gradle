@@ -17,9 +17,17 @@ repositories {
         url = "https://maven.fabricmc.net/"
     }
     maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
-        content {
+        name = "KosmX"
+        url = "https://maven.kosmx.dev/"
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
             includeGroup "maven.modrinth"
         }
     }
@@ -31,6 +39,15 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
+    // Better Combat 2.3.1+1.21.1-fabric (supports weapon trail_appearance data)
+    modImplementation "maven.modrinth:5sy6g3kz:zZCcohvX"
+
+    // Better Combat's own runtime requirements on Fabric
+    modImplementation "maven.modrinth:cloth-config:15.0.140+fabric"
+    modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:2.0.4+1.21.1"
+    // Better Combat 2.3.1 bundles Tiny Config, but Loom's development
+    // classpath does not expose the nested jar automatically.
+    modImplementation "maven.modrinth:tiny-config:3.1.0-fabric"
 }
 
 java {
@@ -46,7 +63,6 @@ tasks.withType(JavaCompile).configureEach {
 def java21Launcher = javaToolchains.launcherFor {
     languageVersion = JavaLanguageVersion.of(21)
 }
-
 tasks.withType(JavaExec).configureEach {
     javaLauncher.set(java21Launcher)
 }
@@ -54,16 +70,17 @@ tasks.withType(JavaExec).configureEach {
 processResources {
     inputs.property "version", project.version
     inputs.properties([
-            mod_id      : mod_id,
-            mod_name    : mod_name,
-            mod_version : mod_version
+            mod_id          : mod_id,
+            mod_name        : mod_name,
+            mod_version     : mod_version,
+            minecraft_version: minecraft_version
     ])
-
     filesMatching("fabric.mod.json") {
         expand([
-                mod_id      : mod_id,
-                mod_name    : mod_name,
-                mod_version : mod_version
+                mod_id          : mod_id,
+                mod_name        : mod_name,
+                mod_version     : mod_version,
+                minecraft_version: minecraft_version
         ])
     }
 }
@@ -74,5 +91,16 @@ publishing {
             artifactId = mod_id
             from components.java
         }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
+            }
+        }
+        mavenCentral()
     }
 }

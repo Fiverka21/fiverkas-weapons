@@ -11,5 +11,4 @@ public class Bayonet extends AnimatedGradientSwordItem {
     public Bayonet(Tier tier, Item.Properties properties) {
         super(tier, properties, WHITE, BLACK, COLOR_SHIFT_SPEED_MS);
     }
-
 }

@@ -1,59 +1,54 @@
 package com.fiv.fiverkas_weapons;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.SweepAttackEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import com.fiv.fiverkas_weapons.event.client.ModCombatClientEvents;
 import com.fiv.fiverkas_weapons.event.ModCombatEvents;
 import com.fiv.fiverkas_weapons.event.ModCommandEvents;
 import com.fiv.fiverkas_weapons.network.ModNetwork;
-import com.fiv.fiverkas_weapons.registry.ModItems;
-import com.fiv.fiverkas_weapons.registry.ModEffects;
 import com.fiv.fiverkas_weapons.registry.ModCreativeTabs;
+import com.fiv.fiverkas_weapons.registry.ModDataComponents;
+import com.fiv.fiverkas_weapons.registry.ModEffects;
+import com.fiv.fiverkas_weapons.registry.ModItems;
 import com.fiv.fiverkas_weapons.registry.ModSounds;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 
-@Mod(FiverkasWeapons.MODID)
-public class FiverkasWeapons {
+public class FiverkasWeapons implements ModInitializer {
+
     public static final String MODID = "fweapons";
 
-    // Constructor called with NeoForge mod event bus
-    public FiverkasWeapons(IEventBus modEventBus) {
-        ModItems.ITEMS.register(modEventBus);   // Register items
-        ModEffects.EFFECTS.register(modEventBus); // Register effects
-        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus); // Register creative tabs
-        ModSounds.SOUND_EVENTS.register(modEventBus); // Register sounds
-        modEventBus.addListener(RegisterPayloadHandlersEvent.class, ModNetwork::onRegisterPayloadHandlers);
-        NeoForge.EVENT_BUS.addListener(AttackEntityEvent.class, ModCombatEvents::onAttackEntity);
-        NeoForge.EVENT_BUS.addListener(ProjectileImpactEvent.class, ModCombatEvents::onProjectileImpact);
-        NeoForge.EVENT_BUS.addListener(LivingIncomingDamageEvent.class, ModCombatEvents::onLivingIncomingDamage);
-        NeoForge.EVENT_BUS.addListener(LivingDamageEvent.Pre.class, ModCombatEvents::onLivingDamagePre);
-        NeoForge.EVENT_BUS.addListener(LivingDamageEvent.Post.class, ModCombatEvents::onLivingDamagePost);
-        NeoForge.EVENT_BUS.addListener(LivingDeathEvent.class, ModCombatEvents::onLivingDeath);
-        NeoForge.EVENT_BUS.addListener(EntityTickEvent.Post.class, ModCombatEvents::onEntityTickPost);
-        NeoForge.EVENT_BUS.addListener(LivingChangeTargetEvent.class, ModCombatEvents::onLivingChangeTarget);
-        NeoForge.EVENT_BUS.addListener(SweepAttackEvent.class, ModCombatEvents::onSweepAttack);
-        NeoForge.EVENT_BUS.addListener(ServerStartingEvent.class, ModCombatEvents::onServerStarting);
-        NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Post.class, ModCombatEvents::onPlayerTick);
-        NeoForge.EVENT_BUS.addListener(AnvilUpdateEvent.class, ModCombatEvents::onAnvilUpdate);
-        NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, ModCommandEvents::onRegisterCommands);
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    }
 
-        if (FMLEnvironment.dist.isClient()) {
-            modEventBus.addListener(FMLClientSetupEvent.class, ModCombatClientEvents::onClientSetup);
-        }
+    @Override
+    public void onInitialize() {
+        // On Fabric, registries write straight to the vanilla Registry — there's
+        // no mod event bus to register against. Referencing/calling these
+        // classes forces their contents to actually register. We'll define
+        // init() in each once we port the registry classes themselves.
+        ModDataComponents.init();
+        ModItems.init();
+        ModEffects.init();
+        ModCreativeTabs.init();
+        ModSounds.init();
+
+        // Config: NeoForge's ModConfig.Type.CLIENT + ModContainer#registerConfig
+        // has no Fabric equivalent — we'll rebuild ModClientConfig on top of
+        // Cloth Config (already a dependency for Better Combat) when we get
+        // to that file.
+        // ModClientConfig.load();
+
+        ModNetwork.registerPayloads();
+
+        CommandRegistrationCallback.EVENT.register(ModCommandEvents::onRegisterCommands);
+        ServerTickEvents.END_SERVER_TICK.register(ModCombatEvents::onServerTick);
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            ModCombatEvents.onAttackEntity(player, entity);
+            return InteractionResult.PASS;
+        });
     }
 }

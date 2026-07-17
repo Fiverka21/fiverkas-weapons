@@ -1,0 +1,7 @@
+{
+  "parent": "fweapons:item/blue_katana",
+  "textures": {
+    "layer0": "fweapons:item/blue_katana1",
+    "particle": "fweapons:item/blue_katana1"
+  }
+}

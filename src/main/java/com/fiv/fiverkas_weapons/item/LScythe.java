@@ -410,14 +410,14 @@ public class LScythe extends AnimatedGradientSwordItem {
         if (armor == null) {
             return;
         }
-        double baseArmor = armor.getBaseValue();
-        double penalty = Math.max(DASH_ARMOR_PENALTY * Math.max(1, stacks), -baseArmor);
         var existing = armor.getModifier(DASH_ARMOR_MODIFIER_ID);
         if (existing != null) {
-            if (existing.amount() == penalty) {
-                return;
-            }
             armor.removeModifier(DASH_ARMOR_MODIFIER_ID);
+        }
+        double currentArmor = armor.getValue();
+        double penalty = Math.max(DASH_ARMOR_PENALTY * Math.max(1, stacks), -currentArmor);
+        if (penalty == 0.0D) {
+            return;
         }
         armor.addTransientModifier(new AttributeModifier(
                 DASH_ARMOR_MODIFIER_ID,
