@@ -46,6 +46,7 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
@@ -535,6 +536,10 @@ private static final String SACRILEGIOUS_SLAM_ANIMATION = "bettercombat:two_hand
         ItemStack stack = blocker.getUseItem();
         if (stack.isEmpty() || !stack.is(ModItems.DSHIELD.get())) {
             return;
+        }
+        int durabilityDamage = Mth.ceil(event.shieldDamage());
+        if (durabilityDamage > 0) {
+            stack.hurtAndBreak(durabilityDamage, blocker, LivingEntity.getSlotForHand(blocker.getUsedItemHand()));
         }
         DShieldItem.addBlockCharge(stack);
     }
