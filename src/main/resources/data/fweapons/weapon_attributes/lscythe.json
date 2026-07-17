@@ -7,22 +7,22 @@
     "trail_appearance": {
       "default_appearance": {
         "primary": {
-          "color_rgba": 186468966,
+          "color_rgba": 4280109823,
           "glows": false
         },
         "secondary": {
-          "color_rgba": 4294967193,
+          "color_rgba": 4294967295,
           "glows": false
         }
       },
       "conditional": {
         "is_enchanted": {
           "primary": {
-            "color_rgba": 186468966,
+            "color_rgba": 4280109823,
             "glows": false
           },
           "secondary": {
-            "color_rgba": 4294967193,
+            "color_rgba": 4294967295,
             "glows": false
           }
         }
@@ -37,7 +37,18 @@
         "animation": "bettercombat:two_handed_slash_horizontal_right",
         "swing_sound": {
           "id": "bettercombat:scythe_slash"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash180",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": -5.0
+          }
+        ]
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
@@ -47,7 +58,18 @@
         "animation": "bettercombat:two_handed_slash_horizontal_left",
         "swing_sound": {
           "id": "bettercombat:scythe_slash"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash180",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 180.0
+          }
+        ]
       }
     ]
   }

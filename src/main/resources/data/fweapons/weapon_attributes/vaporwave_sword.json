@@ -5,22 +5,22 @@
     "trail_appearance": {
       "default_appearance": {
         "primary": {
-          "color_rgba": 16777113,
+          "color_rgba": 4294967295,
           "glows": false
         },
         "secondary": {
-          "color_rgba": 4285117542,
+          "color_rgba": 4285117695,
           "glows": false
         }
       },
       "conditional": {
         "is_enchanted": {
           "primary": {
-            "color_rgba": 16777113,
+            "color_rgba": 4294967295,
             "glows": false
           },
           "secondary": {
-            "color_rgba": 4285117542,
+            "color_rgba": 4285117695,
             "glows": false
           }
         }
@@ -35,7 +35,18 @@
         "animation": "bettercombat:one_handed_slash_horizontal_right",
         "swing_sound": {
           "id": "bettercombat:sword_slash"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
@@ -45,7 +56,18 @@
         "animation": "bettercombat:one_handed_slash_horizontal_left",
         "swing_sound": {
           "id": "bettercombat:sword_slash"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 180.0
+          }
+        ]
       },
       {
         "hitbox": "FORWARD_BOX",
@@ -55,7 +77,19 @@
         "animation": "bettercombat:one_handed_stab",
         "swing_sound": {
           "id": "bettercombat:sword_slash",
-          "pitch": 1.2 }
+          "pitch": 1.2
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.13,
+            "z_addition": 0.2,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
@@ -65,9 +99,19 @@
         "animation": "bettercombat:two_handed_spin",
         "swing_sound": {
           "id": "bettercombat:sword_slash"
-        }
-        }
-
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash360",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 180.0
+          }
+        ]
+      }
     ]
   }
 }

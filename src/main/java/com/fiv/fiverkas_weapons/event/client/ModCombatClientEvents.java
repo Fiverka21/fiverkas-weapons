@@ -156,20 +156,50 @@ public final class ModCombatClientEvents {
     }
     private static void onKeyInput(InputEvent.Key event) {
         if (event.getAction() == InputConstants.PRESS) {
-            sendDShieldResilienceRequests();
+            sendDShieldResilienceRequestsForKey(event.getKey(), event.getScanCode());
         }
     }
     private static void onMouseInputPost(InputEvent.MouseButton.Post event) {
         if (event.getAction() == InputConstants.PRESS) {
-            sendDShieldResilienceRequests();
+            sendDShieldResilienceRequestsForMouse(event.getButton());
         }
     }
-    private static void sendDShieldResilienceRequests() {
+    private static void sendDShieldResilienceRequestsForKey(int keyCode, int scanCode) {
+        if (dshieldResilienceKey == null) {
+            return;
+        }
+        if (dshieldResilienceKey.matches(keyCode, scanCode)) {
+            sendDShieldResilienceRequest();
+            clearQueuedDShieldResilienceClicks();
+            return;
+        }
+        sendQueuedDShieldResilienceRequests();
+    }
+    private static void sendDShieldResilienceRequestsForMouse(int button) {
+        if (dshieldResilienceKey == null) {
+            return;
+        }
+        if (dshieldResilienceKey.matchesMouse(button)) {
+            sendDShieldResilienceRequest();
+            clearQueuedDShieldResilienceClicks();
+            return;
+        }
+        sendQueuedDShieldResilienceRequests();
+    }
+    private static void sendDShieldResilienceRequest() {
+        PacketDistributor.sendToServer(new DShieldResiliencePayload());
+    }
+    private static void clearQueuedDShieldResilienceClicks() {
+        while (dshieldResilienceKey.consumeClick()) {
+            // Already sent directly from the input event; discard the queued key-mapping click.
+        }
+    }
+    private static void sendQueuedDShieldResilienceRequests() {
         if (dshieldResilienceKey == null) {
             return;
         }
         while (dshieldResilienceKey.consumeClick()) {
-            PacketDistributor.sendToServer(new DShieldResiliencePayload());
+            sendDShieldResilienceRequest();
         }
     }
     private static KeyMapping createDShieldResilienceKeyMapping() {

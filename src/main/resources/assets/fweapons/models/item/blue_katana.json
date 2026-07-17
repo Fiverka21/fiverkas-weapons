@@ -4,8 +4,8 @@
   "base": {
     "parent": "item/generated",
     "textures": {
-      "layer0": "fweapons:item/blue_katana1",
-      "particle": "fweapons:item/blue_katana1"
+      "layer0": "fweapons:item/blue_katana",
+      "particle": "fweapons:item/blue_katana"
     },
     "display": {
       "thirdperson_righthand": {
@@ -21,6 +21,34 @@
     }
   },
   "perspectives": {
+    "thirdperson_righthand": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "fweapons:item/blue_katana1",
+        "particle": "fweapons:item/blue_katana1"
+      },
+      "display": {
+        "thirdperson_righthand": {
+          "rotation": [90, -90, 55],
+          "translation": [0, 9, 1],
+          "scale": [1.4, 1.4, 0.75]
+        }
+      }
+    },
+    "firstperson_righthand": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "fweapons:item/blue_katana1",
+        "particle": "fweapons:item/blue_katana1"
+      },
+      "display": {
+        "firstperson_righthand": {
+          "rotation": [90, -90, 25],
+          "translation": [1.13, 4, 1.13],
+          "scale": [1, 1, 0.75]
+        }
+      }
+    },
     "gui": {
       "parent": "item/generated",
       "textures": {

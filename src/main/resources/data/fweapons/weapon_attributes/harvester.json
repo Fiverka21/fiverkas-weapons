@@ -10,7 +10,7 @@
           "glows": false
         },
         "secondary": {
-          "color_rgba": 973078783,
+          "color_rgba": 4278190335,
           "glows": false
         }
       },
@@ -21,7 +21,7 @@
             "glows": false
           },
           "secondary": {
-            "color_rgba": 973078783,
+            "color_rgba": 4278190335,
             "glows": false
           }
         }
@@ -36,7 +36,18 @@
         "animation": "bettercombat:one_handed_slash_horizontal_right",
         "swing_sound": {
           "id": "bettercombat:sickle_slash"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
@@ -46,7 +57,18 @@
         "animation": "bettercombat:one_handed_slash_horizontal_left",
         "swing_sound": {
           "id": "bettercombat:sickle_slash"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 180.0
+          }
+        ]
       }
     ]
   }

@@ -1,26 +1,27 @@
 {
   "attributes": {
     "range_bonus": 0,
-    "category": "mace",
+    "two_handed": true,
+    "category": "shield",
     "trail_appearance": {
       "default_appearance": {
         "primary": {
-          "color_rgba": 4291717887,
+          "color_rgba": 2431553791,
           "glows": false
         },
         "secondary": {
-          "color_rgba": 4290755327,
+          "color_rgba": 2686513407,
           "glows": false
         }
       },
       "conditional": {
         "is_enchanted": {
           "primary": {
-            "color_rgba": 4291717887,
+            "color_rgba": 2431553791,
             "glows": false
           },
           "secondary": {
-            "color_rgba": 4290755327,
+            "color_rgba": 2686513407,
             "glows": false
           }
         }
@@ -28,10 +29,10 @@
     },
     "attacks": [
       {
-        "hitbox": "VERTICAL_PLANE",
-        "damage_multiplier": 1.2,
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1,
         "angle": 90,
-        "upswing": 1.2,
+        "upswing": 0.4,
         "animation": "bettercombat:one_handed_slam",
         "swing_sound": {
           "id": "bettercombat:mace_slam"
