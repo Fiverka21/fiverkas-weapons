@@ -1,8 +1,14 @@
 {
   "type": "minecraft:smithing_transform",
-  "template": "fweapons:gblueprint",
-  "base": "minecraft:mace",
-  "addition": "minecraft:diamond_block",
+  "template": {
+    "item": "fweapons:gblueprint"
+  },
+  "base": {
+    "item": "minecraft:mace"
+  },
+  "addition": {
+    "item": "minecraft:diamond_block"
+  },
   "result": {
     "id": "fweapons:airmace"
   }

@@ -1,6 +1,1 @@
-{
-  "model": {
-    "type": "minecraft:model",
-    "model": "fweapons:item/dawn"
-  }
-}
+{"model":{"type":"minecraft:model","model":"fweapons:item/dawn"}}

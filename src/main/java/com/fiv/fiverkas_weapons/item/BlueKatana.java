@@ -2,22 +2,23 @@ package com.fiv.fiverkas_weapons.item;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.fabric.data.PersistentData;
 import com.fiv.fiverkas_weapons.registry.ModEffects;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import com.fiv.fiverkas_weapons.util.CompatIds;
-import com.fiv.fiverkas_weapons.util.EntityDataUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class BlueKatana extends AnimatedGradientSwordItem {
@@ -28,14 +29,13 @@ public class BlueKatana extends AnimatedGradientSwordItem {
     private static final DustParticleOptions RED_DUST = new DustParticleOptions(0xFF0000, 1.6F);
     private static final DustParticleOptions CYAN_DUST = new DustParticleOptions(0x00FFFF, 1.3F);
     private static final DustParticleOptions BLUE_DUST = new DustParticleOptions(0x0000FF, 1.2F);
-    private static final ResourceKey<DamageType> HONOR_DAMAGE = CompatIds.resourceKey(
+    private static final ResourceKey<DamageType> HONOR_DAMAGE = ResourceKey.create(
             Registries.DAMAGE_TYPE,
-            FiverkasWeapons.MODID,
-            "blue_katana_honor"
+            Identifier.fromNamespaceAndPath(FiverkasWeapons.MODID, "blue_katana_honor")
     );
 
-    public BlueKatana(Item.Properties properties) {
-        super(properties, BLUE_LIGHT, BLUE_DEEP, COLOR_SHIFT_SPEED_MS);
+    public BlueKatana(ToolMaterial tier, Item.Properties properties) {
+        super(tier, properties, BLUE_LIGHT, BLUE_DEEP, COLOR_SHIFT_SPEED_MS);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BlueKatana extends AnimatedGradientSwordItem {
             );
             player.hurt(honorDamage, 2.0F);
             if (player.isAlive()) {
-                var data = EntityDataUtil.getPersistentData(player);
+                var data = PersistentData.get(player);
                 data.putDouble(CeruleanShroudEffect.STEP_PROGRESS_TAG, 0.0D);
                 data.putDouble(CeruleanShroudEffect.LAST_X_TAG, player.getX());
                 data.putDouble(CeruleanShroudEffect.LAST_Y_TAG, player.getY());
@@ -90,6 +90,6 @@ public class BlueKatana extends AnimatedGradientSwordItem {
                 );
             }
         }
-        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

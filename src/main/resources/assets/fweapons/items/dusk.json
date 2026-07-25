@@ -1,6 +1,1 @@
-{
-  "model": {
-    "type": "minecraft:model",
-    "model": "fweapons:item/dusk"
-  }
-}
+{"model":{"type":"minecraft:model","model":"fweapons:item/dusk"}}

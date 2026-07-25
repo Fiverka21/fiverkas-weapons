@@ -1,8 +1,10 @@
 package com.fiv.fiverkas_weapons.item;
 
-import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 final class AnimatedGradientNameCache {
     private static final long NAME_CACHE_REFRESH_MS = 1000L;
@@ -11,6 +13,7 @@ final class AnimatedGradientNameCache {
     private final int startColor;
     private final int endColor;
     private final long colorShiftSpeedMs;
+    private final Identifier fallbackFont;
 
     private long nextNameRefreshMs;
     private String cachedBaseName = "";
@@ -20,17 +23,22 @@ final class AnimatedGradientNameCache {
     private Component cachedGradientName = Component.empty();
 
     AnimatedGradientNameCache(int startColor, int endColor, long colorShiftSpeedMs) {
+        this(startColor, endColor, colorShiftSpeedMs, null);
+    }
+
+    AnimatedGradientNameCache(int startColor, int endColor, long colorShiftSpeedMs, Identifier font) {
         this.startColor = startColor;
         this.endColor = endColor;
         this.colorShiftSpeedMs = Math.max(1L, colorShiftSpeedMs);
+        this.fallbackFont = font;
     }
 
-    Component getName(Component baseNameComponent, Component fallback) {
+    Component getName(String descriptionId, Component fallback) {
         long nowMs = Util.getMillis();
 
         if (nowMs >= nextNameRefreshMs || cachedGlyphs.length == 0) {
             nextNameRefreshMs = nowMs + NAME_CACHE_REFRESH_MS;
-            refreshNameCache(baseNameComponent);
+            refreshNameCache(descriptionId);
         }
 
         if (cachedGlyphs.length == 0) {
@@ -41,15 +49,18 @@ final class AnimatedGradientNameCache {
         if (frame != cachedGradientFrame) {
             cachedGradientFrame = frame;
             float timeOffset = (frame * GRADIENT_FRAME_MS) / (float) colorShiftSpeedMs;
+            Identifier font = WeaponNameFonts.forDescriptionId(descriptionId, fallbackFont);
             MutableComponent gradientName = Component.empty();
 
             for (int i = 0; i < cachedGlyphs.length; i++) {
                 float wave = (float) ((Math.sin((i + timeOffset) * 0.55f) + 1.0d) * 0.5d);
                 int color = blend(startColor, endColor, wave);
 
-                gradientName.append(
-                        Component.literal(cachedGlyphs[i]).withColor(color)
-                );
+                MutableComponent glyph = Component.literal(cachedGlyphs[i]).withColor(color);
+                if (font != null) {
+                    glyph.withStyle(style -> style.withFont(new FontDescription.Resource(font)));
+                }
+                gradientName.append(glyph);
             }
 
             cachedGradientName = gradientName;
@@ -58,8 +69,8 @@ final class AnimatedGradientNameCache {
         return cachedGradientName;
     }
 
-    private void refreshNameCache(Component baseNameComponent) {
-        String baseName = baseNameComponent.getString();
+    private void refreshNameCache(String descriptionId) {
+        String baseName = Component.translatable(descriptionId).getString();
 
         if (baseName.isEmpty()) {
             if (!cachedBaseName.isEmpty()) {

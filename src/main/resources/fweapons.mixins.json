@@ -3,14 +3,10 @@
   "package": "com.fiv.fiverkas_weapons.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AnvilMenuMixin",
     "EntityPersistentDataMixin",
-    "EntityTickMixin",
-    "ItemCombinerMenuAccessor",
-    "LivingEntityDamageMixin",
-    "LivingEntityDeathMixin",
-    "MobSetTargetMixin",
-    "PlayerTickMixin",
+    "LivingEntityHarvesterLootMixin",
+    "LivingEntityShieldBlockMixin",
+    "LivingEntityWeaponEffectsMixin",
     "ProjectileImpactMixin"
   ],
   "client": [],

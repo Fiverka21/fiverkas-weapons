@@ -1,0 +1,73 @@
+package com.fiv.fiverkas_weapons.item;
+
+import com.fiv.fiverkas_weapons.FiverkasWeapons;
+import net.minecraft.resources.Identifier;
+
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Font ids used by styled weapon names.
+ *
+ * To set a weapon font, add one entry to ITEM_FONTS:
+ * item("blue_katana", "miyukatsu")
+ * The font name should match assets/fweapons/font/weapon_name_fonts/<font_name>.json.
+ */
+public final class WeaponNameFonts {
+    public static final Identifier DEFAULT = font("weapon_names");
+    private static final String DESCRIPTION_ID_PREFIX = "item." + FiverkasWeapons.MODID + ".";
+
+    private static final Map<String, String> ITEM_FONTS = Map.ofEntries(
+            item("airmace", "supereagle"),
+            item("gblueprint", "supereagle"),
+            item("hcbow", "valent"),
+            item("hcbowprint", "valent"),
+            item("bayonet", "deathshallows"),
+            item("blue_katana", "miyukatsu"),
+            item("dawn", "hollowegenesis"),
+            item("dusk", "hollowegenesis"),
+            item("lscythe", "bledek"),
+            item("harvester", "cinzel"),
+            item("sacrilegious", "oldenglishfive"),
+            item("antem", "oldenglishfive"),
+            item("natureaxe", "simbiot"),
+            item("mkopi", "tfsadistic"),
+            item("thefool", "runefate"),
+            item("dream_essence", "tfsadistic"),
+            item("dshield", "epijour")
+    );
+
+    private WeaponNameFonts() {
+    }
+
+    public static Identifier forDescriptionId(String descriptionId, Identifier fallback) {
+        return itemNameFromDescriptionId(descriptionId)
+                .flatMap(itemName -> Optional.ofNullable(ITEM_FONTS.get(itemName)))
+                .map(WeaponNameFonts::fontForName)
+                .orElse(fallback);
+    }
+
+    public static Identifier font(String path) {
+        return Identifier.fromNamespaceAndPath(FiverkasWeapons.MODID, path);
+    }
+
+    public static Identifier weapon(String itemName) {
+        return font("weapon_names/" + itemName);
+    }
+
+    private static Map.Entry<String, String> item(String itemName, String fontName) {
+        return Map.entry(itemName, fontName);
+    }
+
+    private static Identifier fontForName(String fontName) {
+        return font("weapon_name_fonts/" + fontName);
+    }
+
+    private static Optional<String> itemNameFromDescriptionId(String descriptionId) {
+        if (!descriptionId.startsWith(DESCRIPTION_ID_PREFIX)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(descriptionId.substring(DESCRIPTION_ID_PREFIX.length()));
+    }
+}

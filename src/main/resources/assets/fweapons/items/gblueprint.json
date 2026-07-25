@@ -1,6 +1,1 @@
-{
-  "model": {
-    "type": "minecraft:model",
-    "model": "fweapons:item/gblueprint"
-  }
-}
+{"model":{"type":"minecraft:model","model":"fweapons:item/gblueprint"}}

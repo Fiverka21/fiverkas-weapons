@@ -3,28 +3,36 @@ package com.fiv.fiverkas_weapons.registry;
 import com.fiv.fiverkas_weapons.effect.BleedEffect;
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
 import com.fiv.fiverkas_weapons.effect.CeruleanShroudEffect;
+import com.fiv.fiverkas_weapons.effect.ResilienceEffect;
 import com.fiv.fiverkas_weapons.effect.SunsetEffect;
 import com.fiv.fiverkas_weapons.effect.VaporifiedEffect;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ModEffects {
 
-    public static final DeferredRegister<MobEffect> EFFECTS =
-            DeferredRegister.create(Registries.MOB_EFFECT, FiverkasWeapons.MODID);
+    private static Holder<MobEffect> register(String name, MobEffect effect) {
+        return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, FiverkasWeapons.id(name), effect);
+    }
 
-    public static final DeferredHolder<MobEffect, VaporifiedEffect> VAPORIFIED =
-            EFFECTS.register("vaporified", VaporifiedEffect::new);
+    public static final Holder<MobEffect> VAPORIFIED =
+            register("vaporified", new VaporifiedEffect());
 
-    public static final DeferredHolder<MobEffect, BleedEffect> BLEED =
-            EFFECTS.register("bleed", BleedEffect::new);
+    public static final Holder<MobEffect> BLEED =
+            register("bleed", new BleedEffect());
 
-    public static final DeferredHolder<MobEffect, CeruleanShroudEffect> CERULEAN_SHROUD =
-            EFFECTS.register("cerulean_shroud", CeruleanShroudEffect::new);
+    public static final Holder<MobEffect> CERULEAN_SHROUD =
+            register("cerulean_shroud", new CeruleanShroudEffect());
 
-    public static final DeferredHolder<MobEffect, SunsetEffect> SUNSET =
-            EFFECTS.register("sunset", SunsetEffect::new);
+    public static final Holder<MobEffect> SUNSET =
+            register("sunset", new SunsetEffect());
+
+    public static final Holder<MobEffect> RESILIENCE =
+            register("resilience", new ResilienceEffect());
+
+    public static void init() {
+    }
 }

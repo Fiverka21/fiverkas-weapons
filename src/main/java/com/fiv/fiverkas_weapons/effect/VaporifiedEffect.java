@@ -1,12 +1,12 @@
 package com.fiv.fiverkas_weapons.effect;
 
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
-import com.fiv.fiverkas_weapons.util.CompatIds;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -17,7 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Vaporified debuff for NeoForge 1.21.11
+ * Vaporified debuff for NeoForge 1.21.1
  */
 public class VaporifiedEffect extends MobEffect {
     private static final int PINK = 0xFFFF69B4;
@@ -25,10 +25,9 @@ public class VaporifiedEffect extends MobEffect {
     // Tuned 70% weaker than the original slow-fall reduction.
     private static final double VAPORIFIED_MAX_FALL_SPEED = -0.0584D;
     private static final double VAPORIFIED_FALL_DAMPING = 0.73D;
-    private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = CompatIds.resourceKey(
+    private static final ResourceKey<DamageType> VAPORIFIED_DAMAGE = ResourceKey.create(
             Registries.DAMAGE_TYPE,
-            FiverkasWeapons.MODID,
-            "vaporified"
+            Identifier.fromNamespaceAndPath(FiverkasWeapons.MODID, "vaporified")
     );
 
     public VaporifiedEffect() {
@@ -48,7 +47,6 @@ public class VaporifiedEffect extends MobEffect {
 
             level.sendParticles(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, PINK), x, y, z, 8, xzSpread, ySpread, xzSpread, 0.01D);
             level.sendParticles(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, CYAN), x, y, z, 8, xzSpread, ySpread, xzSpread, 0.01D);
-
             float damage = 4.0f; // 4 damage per second
             DamageSource vaporified = new DamageSource(
                     level.registryAccess()

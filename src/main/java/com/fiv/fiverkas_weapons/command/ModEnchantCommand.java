@@ -1,7 +1,6 @@
 package com.fiv.fiverkas_weapons.command;
 
 import com.fiv.fiverkas_weapons.registry.ModItems;
-import com.fiv.fiverkas_weapons.util.PermissionUtil;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -44,7 +43,7 @@ public class ModEnchantCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         dispatcher.register(
                 Commands.literal("enchant")
-                        .requires(PermissionUtil::hasGamemasterPermission)
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .then(
                                 Commands.argument("targets", EntityArgument.entities())
                                         .then(
@@ -89,7 +88,7 @@ public class ModEnchantCommand {
             if (entity instanceof LivingEntity livingentity) {
                 ItemStack itemstack = livingentity.getMainHandItem();
                 if (!itemstack.isEmpty()) {
-                    boolean supports = enchantmentHolder.value().canEnchant(itemstack);
+                    boolean supports = itemstack.isEnchantable();
                     boolean compatible = EnchantmentHelper.isEnchantmentCompatible(
                             EnchantmentHelper.getEnchantmentsForCrafting(itemstack).keySet(),
                             enchantmentHolder
@@ -144,18 +143,16 @@ public class ModEnchantCommand {
         }
 
         Set<Holder<Enchantment>> existing = EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet();
-        boolean hasPair = false;
         for (Holder<Enchantment> holder : existing) {
             if (Enchantment.areCompatible(holder, enchantment)) {
                 continue;
             }
             if (isBreachDensityPair(holder, enchantment)) {
-                hasPair = true;
                 continue;
             }
             return false;
         }
-        return hasPair;
+        return true;
     }
 
     private static boolean isBreachDensityPair(Holder<Enchantment> first, Holder<Enchantment> second) {

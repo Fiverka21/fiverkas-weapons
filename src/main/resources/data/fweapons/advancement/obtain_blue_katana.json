@@ -1,0 +1,34 @@
+{
+  "parent": "fweapons:root",
+  "display": {
+    "icon": {
+      "id": "fweapons:blue_katana"
+    },
+    "title": {
+      "translate": "adv.fweapons.obtain.blue_katana"
+    },
+    "description": {
+      "translate": "adv.fweapons.obtain.blue_katana.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "obtained": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "fweapons:blue_katana"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtained"
+    ]
+  ]
+}

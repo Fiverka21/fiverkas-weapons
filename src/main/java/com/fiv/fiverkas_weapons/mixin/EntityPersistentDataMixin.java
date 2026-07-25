@@ -1,7 +1,6 @@
 package com.fiv.fiverkas_weapons.mixin;
 
 import com.fiv.fiverkas_weapons.fabric.data.PersistentDataAccessor;
-import net.neoforged.neoforge.common.extensions.IEntityExtension;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.ValueInput;
@@ -13,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public abstract class EntityPersistentDataMixin implements PersistentDataAccessor, IEntityExtension {
+public abstract class EntityPersistentDataMixin implements PersistentDataAccessor {
     private static final String FWEAPONS_PERSISTENT_DATA_KEY = "fweapons_persistent_data";
 
     @Unique
@@ -27,11 +26,6 @@ public abstract class EntityPersistentDataMixin implements PersistentDataAccesso
         return fweapons$persistentData;
     }
 
-    @Override
-    public CompoundTag getPersistentData() {
-        return fweapons$getPersistentData();
-    }
-
     @Inject(method = "saveWithoutId", at = @At("TAIL"))
     private void fweapons$writePersistentData(ValueOutput output, CallbackInfo ci) {
         if (fweapons$persistentData != null && !fweapons$persistentData.isEmpty()) {
@@ -43,6 +37,6 @@ public abstract class EntityPersistentDataMixin implements PersistentDataAccesso
     private void fweapons$readPersistentData(ValueInput input, CallbackInfo ci) {
         fweapons$persistentData = input.read(FWEAPONS_PERSISTENT_DATA_KEY, CompoundTag.CODEC)
                 .map(CompoundTag::copy)
-                .orElse(null);
+                .orElseGet(CompoundTag::new);
     }
 }
