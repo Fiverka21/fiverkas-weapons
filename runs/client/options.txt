@@ -137,6 +137,7 @@ key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
 key_keybinds.bettercombat.feint:key.keyboard.unknown
 key_keybinds.bettercombat.toggle_mine_with_weapons:key.keyboard.unknown
+key_key.fweapons.dshield_resilience:key.mouse.middle
 soundCategory_master:1.0
 soundCategory_music:1.0
 soundCategory_record:1.0

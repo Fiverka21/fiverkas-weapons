@@ -13,5 +13,10 @@
     "sounds": [
       "fweapons:ramiel"
     ]
+  },
+  "tp": {
+    "sounds": [
+      "fweapons:tp"
+    ]
   }
 }

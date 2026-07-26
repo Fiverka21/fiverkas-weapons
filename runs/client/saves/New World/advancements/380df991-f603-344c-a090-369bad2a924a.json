@@ -13,6 +13,10 @@
   },
   "minecraft:adventure/kill_all_mobs": {
     "criteria": {
+      "minecraft:skeleton": "2026-07-25 23:48:07 +0200",
+      "minecraft:spider": "2026-07-25 23:48:05 +0200",
+      "minecraft:zombie": "2026-07-25 23:48:13 +0200",
+      "minecraft:creeper": "2026-07-25 23:48:28 +0200",
       "minecraft:slime": "2026-03-12 18:32:01 +0100",
       "minecraft:evoker": "2026-03-23 20:18:39 +0100"
     },
@@ -99,6 +103,108 @@
   "minecraft:story/enchant_item": {
     "criteria": {
       "enchanted_item": "2026-04-05 20:43:34 +0200"
+    },
+    "done": true
+  },
+  "fweapons:root": {
+    "criteria": {
+      "trigger": "2026-07-25 23:41:41 +0200"
+    },
+    "done": true
+  },
+  "fweapons:obtain_lscythe": {
+    "criteria": {
+      "obtained": "2026-07-25 23:41:41 +0200"
+    },
+    "done": true
+  },
+  "fweapons:obtain_natureaxe": {
+    "criteria": {
+      "obtained": "2026-07-25 23:41:41 +0200"
+    },
+    "done": true
+  },
+  "fweapons:obtain_thefool": {
+    "criteria": {
+      "obtained": "2026-07-25 23:42:54 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/combat/bow": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/tools/fishing_rod": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "fweapons:obtain_harvester": {
+    "criteria": {
+      "obtained": "2026-07-25 23:48:02 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/tripwire_hook": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/candle": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/tools/lead": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "fweapons:obtain_hcbow": {
+    "criteria": {
+      "obtained": "2026-07-25 23:47:56 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/white_wool_from_string": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/combat/crossbow": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/firework_rocket_simple": {
+    "criteria": {
+      "has_gunpowder": "2026-07-25 23:49:14 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/tnt": {
+    "criteria": {
+      "has_gunpowder": "2026-07-25 23:49:14 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/loom": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
+    },
+    "done": true
+  },
+  "minecraft:recipes/tools/bundle": {
+    "criteria": {
+      "has_string": "2026-07-25 23:48:06 +0200"
     },
     "done": true
   },

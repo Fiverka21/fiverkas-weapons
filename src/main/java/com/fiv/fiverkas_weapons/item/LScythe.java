@@ -1,9 +1,11 @@
 package com.fiv.fiverkas_weapons.item;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 import com.fiv.fiverkas_weapons.FiverkasWeapons;
-import com.fiv.fiverkas_weapons.util.CompatIds;
-import com.fiv.fiverkas_weapons.util.EntityDataUtil;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,19 +18,15 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import org.joml.Vector3f;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class LScythe extends AnimatedGradientSwordItem {
     public static final String DASH_ARMOR_EXPIRES_TAG = "fweapons_lscythe_dash_armor_expires";
@@ -38,7 +36,8 @@ public class LScythe extends AnimatedGradientSwordItem {
     private static final String DASH_TRAIL_LAST_X_TAG = "fweapons_lscythe_dash_trail_last_x";
     private static final String DASH_TRAIL_LAST_Y_TAG = "fweapons_lscythe_dash_trail_last_y";
     private static final String DASH_TRAIL_LAST_Z_TAG = "fweapons_lscythe_dash_trail_last_z";
-    private static final Object DASH_ARMOR_MODIFIER_ID = CompatIds.id(FiverkasWeapons.MODID, "lscythe_dash_armor");
+    public static final ResourceLocation DASH_ARMOR_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(FiverkasWeapons.MODID, "lscythe_dash_armor");
     public static final double DASH_ARMOR_PENALTY = -2.0D;
     private static final int WHITE = 0xFFFFFF;
     private static final int DARK_BLUE = 0x0B1D4A;
@@ -47,7 +46,9 @@ public class LScythe extends AnimatedGradientSwordItem {
     private static final double CHAIN_WEATHER_MULTIPLIER = 2.0D;
     private static final int MAX_CHAINS = 6;
     private static final float CHAIN_DAMAGE_MULTIPLIER = 0.5F;
+    private static final Vector3f LIGHT_BLUE = Vec3.fromRGB24(0x66CCFF).toVector3f();
     private static final DustParticleOptions LIGHT_BLUE_DUST = new DustParticleOptions(0x66CCFF, 1.6F);
+    private static final Vector3f DARK_BLUE_PARTICLE = Vec3.fromRGB24(DARK_BLUE).toVector3f();
     private static final DustParticleOptions DARK_BLUE_DUST = new DustParticleOptions(DARK_BLUE, 1.6F);
     private static final double DASH_SPEED = 4.0D;
     private static final double DASH_VERTICAL_DAMPING = 0.2D;
@@ -57,11 +58,9 @@ public class LScythe extends AnimatedGradientSwordItem {
     private static final double DASH_HIT_DISTANCE = 4.0D;
     private static final double DASH_HIT_RADIUS = 1.6D;
     private static final double DASH_HIT_FORWARD_PADDING = 1.0D;
-    private static final Constructor<?> ATTRIBUTE_MODIFIER_CTOR = resolveAttributeModifierConstructor();
-    private static final Method ATTRIBUTE_MODIFIER_AMOUNT = resolveModifierAmountMethod();
 
-    public LScythe(Item.Properties properties) {
-        super(properties, WHITE, DARK_BLUE, COLOR_SHIFT_SPEED_MS);
+    public LScythe(ToolMaterial tier, Item.Properties properties) {
+        super(tier, properties, WHITE, DARK_BLUE, COLOR_SHIFT_SPEED_MS);
     }
 
     @Override
@@ -87,6 +86,7 @@ public class LScythe extends AnimatedGradientSwordItem {
             @NotNull InteractionHand hand
     ) {
         ItemStack stack = player.getItemInHand(hand);
+        Item item = stack.getItem();
         if (player.getCooldowns().isOnCooldown(stack)) {
             return InteractionResult.FAIL;
         }
@@ -94,7 +94,7 @@ public class LScythe extends AnimatedGradientSwordItem {
         if (!level.isClientSide()) {
             dashForward(player);
         }
-        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
@@ -113,6 +113,7 @@ public class LScythe extends AnimatedGradientSwordItem {
         }
 
         applyChainLightning(serverLevel, target, attacker, baseDamage * CHAIN_DAMAGE_MULTIPLIER);
+        return;
     }
 
     private static void applyChainLightning(
@@ -169,8 +170,16 @@ public class LScythe extends AnimatedGradientSwordItem {
         if (candidates.isEmpty()) {
             return null;
         }
-        candidates.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(current)));
-        return candidates.get(0);
+        LivingEntity nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (LivingEntity candidate : candidates) {
+            double distance = candidate.distanceToSqr(current);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = candidate;
+            }
+        }
+        return nearest;
     }
 
     private static double getChainRadius(ServerLevel level) {
@@ -238,9 +247,9 @@ public class LScythe extends AnimatedGradientSwordItem {
         }
         if (!player.level().isClientSide()) {
             long now = player.level().getGameTime();
-            var data = EntityDataUtil.getPersistentData(player);
-            long previousExpiresAt = EntityDataUtil.getLong(data, DASH_ARMOR_EXPIRES_TAG);
-            int stacks = EntityDataUtil.getInt(data, DASH_ARMOR_STACKS_TAG);
+            var data = player.getPersistentData();
+            long previousExpiresAt = data.getLong(DASH_ARMOR_EXPIRES_TAG).orElse(0L);
+            int stacks = data.getInt(DASH_ARMOR_STACKS_TAG).orElse(0);
             if (previousExpiresAt > now && stacks > 0) {
                 stacks += 1;
             } else {
@@ -282,7 +291,7 @@ public class LScythe extends AnimatedGradientSwordItem {
     }
 
     private static void startDashTrail(Player player) {
-        var data = EntityDataUtil.getPersistentData(player);
+        var data = player.getPersistentData();
         long now = player.level().getGameTime();
         data.putLong(DASH_TRAIL_EXPIRES_TAG, now + DASH_TRAIL_DURATION_TICKS);
         data.remove(DASH_HIT_USED_TAG);
@@ -292,11 +301,11 @@ public class LScythe extends AnimatedGradientSwordItem {
     }
 
     public static void tickDashTrail(ServerLevel level, Player player) {
-        var data = EntityDataUtil.getPersistentData(player);
+        var data = player.getPersistentData();
         if (!data.contains(DASH_TRAIL_EXPIRES_TAG)) {
             return;
         }
-        long expiresAt = EntityDataUtil.getLong(data, DASH_TRAIL_EXPIRES_TAG);
+        long expiresAt = data.getLong(DASH_TRAIL_EXPIRES_TAG).orElse(0L);
         if (expiresAt <= level.getGameTime()) {
             clearDashTrailData(player);
             return;
@@ -310,9 +319,9 @@ public class LScythe extends AnimatedGradientSwordItem {
         }
 
         Vec3 last = new Vec3(
-                EntityDataUtil.getDouble(data, DASH_TRAIL_LAST_X_TAG),
-                EntityDataUtil.getDouble(data, DASH_TRAIL_LAST_Y_TAG),
-                EntityDataUtil.getDouble(data, DASH_TRAIL_LAST_Z_TAG)
+                data.getDouble(DASH_TRAIL_LAST_X_TAG).orElse(player.getX()),
+                data.getDouble(DASH_TRAIL_LAST_Y_TAG).orElse(player.getY()),
+                data.getDouble(DASH_TRAIL_LAST_Z_TAG).orElse(player.getZ())
         );
         Vec3 current = player.position();
         data.putDouble(DASH_TRAIL_LAST_X_TAG, current.x);
@@ -337,7 +346,7 @@ public class LScythe extends AnimatedGradientSwordItem {
     }
 
     private static void clearDashTrailData(Player player) {
-        var data = EntityDataUtil.getPersistentData(player);
+        var data = player.getPersistentData();
         data.remove(DASH_TRAIL_EXPIRES_TAG);
         data.remove(DASH_HIT_USED_TAG);
         data.remove(DASH_TRAIL_LAST_X_TAG);
@@ -386,12 +395,12 @@ public class LScythe extends AnimatedGradientSwordItem {
         DamageSource source = player.damageSources().playerAttack(player);
         closest.hurt(source, baseDamage);
         applyChainLightning(level, closest, player, baseDamage * CHAIN_DAMAGE_MULTIPLIER);
-        EntityDataUtil.getPersistentData(player).putBoolean(DASH_HIT_USED_TAG, true);
+        player.getPersistentData().putBoolean(DASH_HIT_USED_TAG, true);
     }
 
     private static void tryDashCollisionHit(ServerLevel level, Player player) {
-        var data = EntityDataUtil.getPersistentData(player);
-        if (EntityDataUtil.getBoolean(data, DASH_HIT_USED_TAG)) {
+        var data = player.getPersistentData();
+        if (data.getBoolean(DASH_HIT_USED_TAG).orElse(false)) {
             return;
         }
         AABB box = player.getBoundingBox().inflate(0.2D);
@@ -419,19 +428,20 @@ public class LScythe extends AnimatedGradientSwordItem {
         if (armor == null) {
             return;
         }
-        double baseArmor = armor.getBaseValue();
-        double penalty = Math.max(DASH_ARMOR_PENALTY * Math.max(1, stacks), -baseArmor);
-
-        Object existing = getModifierById(armor, DASH_ARMOR_MODIFIER_ID);
+        var existing = armor.getModifier(DASH_ARMOR_MODIFIER_ID);
         if (existing != null) {
-            double existingAmount = readModifierAmount(existing);
-            if (!Double.isNaN(existingAmount) && Math.abs(existingAmount - penalty) < 1.0E-6D) {
-                return;
-            }
-            removeModifierById(armor, DASH_ARMOR_MODIFIER_ID);
+            armor.removeModifier(DASH_ARMOR_MODIFIER_ID);
         }
-
-        addTransientModifier(armor, DASH_ARMOR_MODIFIER_ID, penalty);
+        double currentArmor = armor.getValue();
+        double penalty = Math.max(DASH_ARMOR_PENALTY * Math.max(1, stacks), -currentArmor);
+        if (penalty == 0.0D) {
+            return;
+        }
+        armor.addTransientModifier(new AttributeModifier(
+                DASH_ARMOR_MODIFIER_ID,
+                penalty,
+                AttributeModifier.Operation.ADD_VALUE
+        ));
     }
 
     public static void clearDashArmorPenalty(Player player) {
@@ -439,116 +449,6 @@ public class LScythe extends AnimatedGradientSwordItem {
         if (armor == null) {
             return;
         }
-        removeModifierById(armor, DASH_ARMOR_MODIFIER_ID);
-    }
-
-    private static Constructor<?> resolveAttributeModifierConstructor() {
-        for (Constructor<?> constructor : AttributeModifier.class.getConstructors()) {
-            if (constructor.getParameterCount() != 3) {
-                continue;
-            }
-            Class<?>[] params = constructor.getParameterTypes();
-            if (!isDoubleLike(params[1])) {
-                continue;
-            }
-            if (!AttributeModifier.Operation.class.isAssignableFrom(params[2])) {
-                continue;
-            }
-            return constructor;
-        }
-        return null;
-    }
-
-    private static Method resolveModifierAmountMethod() {
-        for (String name : new String[]{"amount", "getAmount"}) {
-            try {
-                Method method = AttributeModifier.class.getMethod(name);
-                if (isDoubleLike(method.getReturnType())) {
-                    return method;
-                }
-            } catch (ReflectiveOperationException ignored) {
-            }
-        }
-        return null;
-    }
-
-    private static boolean isDoubleLike(Class<?> type) {
-        return type == double.class || type == Double.class;
-    }
-
-    private static Object createModifier(Object id, double amount) {
-        if (ATTRIBUTE_MODIFIER_CTOR == null) {
-            return null;
-        }
-        try {
-            return ATTRIBUTE_MODIFIER_CTOR.newInstance(id, amount, AttributeModifier.Operation.ADD_VALUE);
-        } catch (ReflectiveOperationException ignored) {
-            return null;
-        }
-    }
-
-    private static Object getModifierById(Object attribute, Object id) {
-        Method method = findCompatibleSingleArgMethod(attribute.getClass(), "getModifier", id.getClass());
-        if (method == null) {
-            return null;
-        }
-        try {
-            return method.invoke(attribute, id);
-        } catch (ReflectiveOperationException ignored) {
-            return null;
-        }
-    }
-
-    private static void removeModifierById(Object attribute, Object id) {
-        Method method = findCompatibleSingleArgMethod(attribute.getClass(), "removeModifier", id.getClass());
-        if (method == null) {
-            return;
-        }
-        try {
-            method.invoke(attribute, id);
-        } catch (ReflectiveOperationException ignored) {
-        }
-    }
-
-    private static void addTransientModifier(Object attribute, Object id, double amount) {
-        Object modifier = createModifier(id, amount);
-        if (modifier == null) {
-            return;
-        }
-        Method method = findCompatibleSingleArgMethod(attribute.getClass(), "addTransientModifier", modifier.getClass());
-        if (method == null) {
-            return;
-        }
-        try {
-            method.invoke(attribute, modifier);
-        } catch (ReflectiveOperationException ignored) {
-        }
-    }
-
-    private static double readModifierAmount(Object modifier) {
-        if (ATTRIBUTE_MODIFIER_AMOUNT == null) {
-            return Double.NaN;
-        }
-        try {
-            Object value = ATTRIBUTE_MODIFIER_AMOUNT.invoke(modifier);
-            if (value instanceof Number number) {
-                return number.doubleValue();
-            }
-        } catch (ReflectiveOperationException ignored) {
-        }
-        return Double.NaN;
-    }
-
-    private static Method findCompatibleSingleArgMethod(Class<?> owner, String name, Class<?> argType) {
-        for (Method method : owner.getMethods()) {
-            if (!method.getName().equals(name) || method.getParameterCount() != 1) {
-                continue;
-            }
-            Class<?> parameter = method.getParameterTypes()[0];
-            if (parameter.isAssignableFrom(argType) || argType.isAssignableFrom(parameter)) {
-                return method;
-            }
-        }
-        return null;
+        armor.removeModifier(DASH_ARMOR_MODIFIER_ID);
     }
 }

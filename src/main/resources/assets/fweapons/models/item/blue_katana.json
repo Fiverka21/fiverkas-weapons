@@ -1,6 +1,8 @@
 {
   "parent": "item/generated",
+  "gui_light": "front",
   "textures": {
-    "layer0": "fweapons:item/blue_katana"
+    "layer0": "fweapons:item/blue_katana",
+    "particle": "fweapons:item/blue_katana"
   }
 }

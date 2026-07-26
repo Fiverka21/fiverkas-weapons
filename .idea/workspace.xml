@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="04e3edb7-58c8-4684-bc0a-d3749a5dde52" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-1.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-1.log.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-2.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-2.log.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-3.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-3.log.gz" afterDir="false" />
@@ -14,39 +14,77 @@
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug-5.log.gz" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug-5.log.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/debug.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/logs/latest.log" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/logs/latest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/runs/client/options.txt" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/options.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/DIM-1/data/raids.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/DIM-1/data/raids.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/DIM1/data/raids_end.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/DIM1/data/raids_end.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/advancements/380df991-f603-344c-a090-369bad2a924a.json" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/advancements/380df991-f603-344c-a090-369bad2a924a.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/data/raids.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/data/raids.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/data/random_sequences.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/data/random_sequences.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.-1.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.-1.-1.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.-1.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.-1.0.mca" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.0.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.0.-1.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.0.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/entities/r.0.0.mca" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/level.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/level.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/level.dat_old" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/level.dat_old" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat_old" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat_old" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.-1.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.-1.-1.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.-1.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.-1.0.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.0.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.0.-1.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.0.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/poi/r.0.0.mca" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/region/r.-1.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/region/r.-1.-1.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/region/r.-1.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/region/r.-1.0.mca" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/region/r.0.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/region/r.0.-1.mca" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/region/r.0.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/region/r.0.0.mca" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/saves/New World/stats/380df991-f603-344c-a090-369bad2a924a.json" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/saves/New World/stats/380df991-f603-344c-a090-369bad2a924a.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runs/client/usercache.json" beforeDir="false" afterPath="$PROJECT_DIR$/runs/client/usercache.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/FiverkasWeapons.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/FiverkasWeapons.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/command/ModEnchantCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/command/ModEnchantCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/BleedEffect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/BleedEffect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/CeruleanShroudEffect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/CeruleanShroudEffect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/SunsetEffect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/SunsetEffect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/VaporifiedEffect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/effect/VaporifiedEffect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/ModCombatEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/ModCombatEvents.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/client/ModCombatClientEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/event/client/ModCombatClientEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Airmace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Airmace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientAxeItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientAxeItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientBowItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientBowItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientNameCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientNameCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientSwordItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/AnimatedGradientSwordItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Bayonet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Bayonet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/BlueKatana.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/BlueKatana.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Dawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Dawn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Dusk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Dusk.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/GBlueprintItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/GBlueprintItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/LScythe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/LScythe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Mkopi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Mkopi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/NatureAxe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/NatureAxe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Sacrilegious.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/Sacrilegious.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/VaporwaveSword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/item/VaporwaveSword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/BayonetComboAttackPayload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/BayonetComboAttackPayload.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/BayonetMuzzleFlashPayload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/BayonetMuzzleFlashPayload.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/ClientAttackFlagPayload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/ClientAttackFlagPayload.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/ModNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/network/ModNetwork.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModCreativeTabs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModCreativeTabs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModEffects.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModEffects.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModItems.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModItems.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModSounds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/registry/ModSounds.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/util/EntityDataUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fiv/fiverkas_weapons/util/EntityDataUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/neoforge.mods.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/neoforge.mods.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/lang/en_us.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/models/item/blue_katana.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/models/item/blue_katana.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/sounds.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/textures/item/dream_essence.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/textures/item/dream_essence.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/fweapons/textures/item/gblueprint.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/fweapons/textures/item/gblueprint.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/airmace.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/airmace.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/bayonet.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/bayonet.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/blue_katana.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/blue_katana.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/dawn.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/dawn.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/dusk.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/dusk.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/lscythe.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/lscythe.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/mkopi.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/mkopi.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/natureaxe.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/natureaxe.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/sacrilegious.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/sacrilegious.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/vaporwave_sword.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/fweapons/weapon_attributes/vaporwave_sword.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/damage_type/no_knockback.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/damage_type/no_knockback.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/durability.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/durability.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/fire_aspect.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/fire_aspect.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/sword.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/sword.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/weapon.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/enchantable/weapon.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/swords.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/minecraft/tags/item/swords.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/neoforge/loot_modifiers/global_loot_modifiers.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/neoforge/loot_modifiers/global_loot_modifiers.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,25 +125,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;1.21.5-1.21.11&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/fiverka/Documents/fiverkas_weapons&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "1.21.5-1.21.11",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.Fiverkas_weapons: Client">
     <configuration name="Fiverkas_weapons: Client" type="Application" factoryName="Application">
       <envs>
@@ -188,8 +230,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.25134.95" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.25134.95" />
       </set>
     </attachedChunks>
   </component>
@@ -212,7 +254,8 @@
       <workItem from="1774291610453" duration="276000" />
       <workItem from="1774291900538" duration="2912000" />
       <workItem from="1775409205649" duration="3053000" />
-      <workItem from="1775412322270" duration="1983000" />
+      <workItem from="1775412322270" duration="2909000" />
+      <workItem from="1785012131859" duration="4136000" />
     </task>
     <servers />
   </component>

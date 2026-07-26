@@ -1,0 +1,75 @@
+{
+  "attributes": {
+    "range_bonus": -0.25,
+    "two_handed": false,
+    "category": "sickle",
+    "trail_appearance": {
+      "default_appearance": {
+        "primary": {
+          "color_rgba": 4278190335,
+          "glows": false
+        },
+        "secondary": {
+          "color_rgba": 4278190335,
+          "glows": false
+        }
+      },
+      "conditional": {
+        "is_enchanted": {
+          "primary": {
+            "color_rgba": 4278190335,
+            "glows": false
+          },
+          "secondary": {
+            "color_rgba": 4278190335,
+            "glows": false
+          }
+        }
+      }
+    },
+    "attacks": [
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1.0,
+        "angle": 150,
+        "upswing": 0.5,
+        "animation": "bettercombat:one_handed_slash_horizontal_right",
+        "swing_sound": {
+          "id": "bettercombat:sickle_slash"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
+      },
+      {
+        "hitbox": "HORIZONTAL_PLANE",
+        "damage_multiplier": 1.0,
+        "angle": 150,
+        "upswing": 0.5,
+        "animation": "bettercombat:one_handed_slash_horizontal_left",
+        "swing_sound": {
+          "id": "bettercombat:sickle_slash"
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 180.0
+          }
+        ]
+      }
+    ]
+  }
+}

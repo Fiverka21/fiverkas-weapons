@@ -1,0 +1,34 @@
+{
+  "parent": "fweapons:root",
+  "display": {
+    "icon": {
+      "id": "fweapons:thefool"
+    },
+    "title": {
+      "translate": "adv.fweapons.obtain.thefool"
+    },
+    "description": {
+      "translate": "adv.fweapons.obtain.thefool.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "obtained": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "fweapons:thefool"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtained"
+    ]
+  ]
+}

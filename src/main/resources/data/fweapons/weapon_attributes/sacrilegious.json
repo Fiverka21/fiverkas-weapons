@@ -7,22 +7,22 @@
     "trail_appearance": {
       "default_appearance": {
         "primary": {
-          "color_rgba": 858701721,
+          "color_rgba": 4281253887,
           "glows": false
         },
         "secondary": {
-          "color_rgba": 3133091430,
+          "color_rgba": 4290719487,
           "glows": false
         }
       },
       "conditional": {
         "is_enchanted": {
           "primary": {
-            "color_rgba": 858701721,
+            "color_rgba": 4281253887,
             "glows": false
           },
           "secondary": {
-            "color_rgba": 3133091430,
+            "color_rgba": 4290719487,
             "glows": false
           }
         }
@@ -37,7 +37,18 @@
         "animation": "bettercombat:two_handed_slash_horizontal_right",
         "swing_sound": {
           "id": "bettercombat:claymore_swing"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash180",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": -5.0
+          }
+        ]
       },
       {
         "hitbox": "FORWARD_BOX",
@@ -47,7 +58,18 @@
         "animation": "bettercombat:two_handed_stab_left",
         "swing_sound": {
           "id": "bettercombat:claymore_stab"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.15,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
@@ -57,7 +79,18 @@
         "animation": "bettercombat:one_handed_slash_horizontal_right",
         "swing_sound": {
           "id": "bettercombat:claymore_swing"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
       },
       {
         "hitbox": "HORIZONTAL_PLANE",
@@ -67,7 +100,18 @@
         "animation": "bettercombat:one_handed_slash_horizontal_left",
         "swing_sound": {
           "id": "bettercombat:claymore_swing"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash90",
+            "x_addition": 0.0,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 180.0
+          }
+        ]
       },
       {
         "hitbox": "FORWARD_BOX",
@@ -77,7 +121,18 @@
         "animation": "bettercombat:one_handed_stab",
         "swing_sound": {
           "id": "bettercombat:claymore_stab"
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "stab",
+            "x_addition": 0.0,
+            "y_addition": -0.13,
+            "z_addition": 0.2,
+            "local_yaw": 0.0,
+            "pitch_addition": 0.0,
+            "roll_set": 0.0
+          }
+        ]
       },
       {
         "hitbox": "VERTICAL_PLANE",
@@ -88,7 +143,18 @@
         "swing_sound": {
           "id": "bettercombat:claymore_slam",
           "randomness": 0
-        }
+        },
+        "trail_particles": [
+          {
+            "particle_type": "slash180",
+            "x_addition": 0.1,
+            "y_addition": -0.1,
+            "z_addition": 0.0,
+            "local_yaw": 45.0,
+            "pitch_addition": 0.0,
+            "roll_set": -86.0
+          }
+        ]
       }
     ]
   }

@@ -1,0 +1,30 @@
+{
+  "parent": "fweapons:root",
+  "display": {
+    "icon": {
+      "id": "fweapons:dream_essence"
+    },
+    "title": {
+      "translate": "adv.fweapons.obtain.dream_essence"
+    },
+    "description": {
+      "translate": "adv.fweapons.obtain.dream_essence.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "obtained": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "fweapons:dream_essence"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [["obtained"]]
+}

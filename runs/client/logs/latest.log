@@ -1,32 +1,32 @@
-[05Apr2026 20:44:09.388] [main/INFO] [net.neoforged.fml.startup.Entrypoint/]: JVM Uptime at startup: 108ms
-[05Apr2026 20:44:09.394] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Starting FancyModLoader version 10.0.32 (CLIENT in DEV)
-[05Apr2026 20:44:09.395] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Game directory: /home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/runs/client
-[05Apr2026 20:44:09.444] [main/INFO] [net.neoforged.fml.loading.EarlyServiceDiscovery/]: Found 2 early service jars (out of 107) in 16ms
-[05Apr2026 20:44:09.444] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Loading FML Early Services:
-[05Apr2026 20:44:09.445] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/fiverka/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/earlydisplay/10.0.32/1ca2e62504996c417c19e740513f8d09b880359e/earlydisplay-10.0.32.jar
-[05Apr2026 20:44:09.445] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/fiverka/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/loader/10.0.32/ef0364b1413d96932ddf4b4dc4a5660a4d861b5b/loader-10.0.32.jar
-[05Apr2026 20:44:09.449] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow
-[05Apr2026 20:44:09.802] [ForkJoinPool.commonPool-worker-5/INFO] [net.neoforged.fml.loading.moddiscovery.locators.GameLocator/]: Detected a joined NeoForge and Minecraft configuration. Applying filtering...
-[05Apr2026 20:44:09.908] [ForkJoinPool.commonPool-worker-5/INFO] [net.neoforged.fml.loading.moddiscovery.locators.InDevFolderLocator/CORE]: Got mod coordinates fiverkas_weapons%%/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/build/resources/main:fiverkas_weapons%%/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/build/classes/java/main from env
-[05Apr2026 20:44:09.929] [fml-loadingscreen/INFO] [net.neoforged.fml.earlydisplay.render.LoadingScreenRenderer/]: GL info: NVIDIA GeForce RTX 3060/PCIe/SSE2 GL version 3.3.0 NVIDIA 595.58.03, NVIDIA Corporation
-[05Apr2026 20:44:10.006] [ForkJoinPool.commonPool-worker-5/WARN] [net.neoforged.jarjar.selection.JarSelector/]: Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using jar(/home/fiverka/.gradle/caches/modules-2/files-2.1/io.github.llamalad7/mixinextras-neoforge/0.5.0/d734b83ce6542bb70ea31755c1595b88992dbe65/mixinextras-neoforge-0.5.0.jar)
-[05Apr2026 20:44:10.007] [ForkJoinPool.commonPool-worker-5/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 4 dependencies adding them to mods collection
-[05Apr2026 20:44:10.008] [ForkJoinPool.commonPool-worker-5/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+[25Jul2026 23:47:23.771] [main/INFO] [net.neoforged.fml.startup.Entrypoint/]: JVM Uptime at startup: 79ms
+[25Jul2026 23:47:23.778] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Starting FancyModLoader version 10.0.32 (CLIENT in DEV)
+[25Jul2026 23:47:23.778] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Game directory: /home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/runs/client
+[25Jul2026 23:47:23.823] [main/INFO] [net.neoforged.fml.loading.EarlyServiceDiscovery/]: Found 2 early service jars (out of 107) in 14ms
+[25Jul2026 23:47:23.824] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Loading FML Early Services:
+[25Jul2026 23:47:23.824] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/fiverka/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/earlydisplay/10.0.32/1ca2e62504996c417c19e740513f8d09b880359e/earlydisplay-10.0.32.jar
+[25Jul2026 23:47:23.825] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/fiverka/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/loader/10.0.32/ef0364b1413d96932ddf4b4dc4a5660a4d861b5b/loader-10.0.32.jar
+[25Jul2026 23:47:23.829] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow
+[25Jul2026 23:47:24.234] [ForkJoinPool.commonPool-worker-7/INFO] [net.neoforged.fml.loading.moddiscovery.locators.GameLocator/]: Detected a joined NeoForge and Minecraft configuration. Applying filtering...
+[25Jul2026 23:47:24.328] [ForkJoinPool.commonPool-worker-7/INFO] [net.neoforged.fml.loading.moddiscovery.locators.InDevFolderLocator/CORE]: Got mod coordinates fiverkas_weapons%%/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/build/resources/main:fiverkas_weapons%%/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/build/classes/java/main from env
+[25Jul2026 23:47:24.331] [fml-loadingscreen/INFO] [net.neoforged.fml.earlydisplay.render.LoadingScreenRenderer/]: GL info: NVIDIA GeForce RTX 3060/PCIe/SSE2 GL version 3.3.0 NVIDIA 610.43.03, NVIDIA Corporation
+[25Jul2026 23:47:24.426] [ForkJoinPool.commonPool-worker-7/WARN] [net.neoforged.jarjar.selection.JarSelector/]: Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using jar(/home/fiverka/.gradle/caches/modules-2/files-2.1/io.github.llamalad7/mixinextras-neoforge/0.5.0/d734b83ce6542bb70ea31755c1595b88992dbe65/mixinextras-neoforge-0.5.0.jar)
+[25Jul2026 23:47:24.427] [ForkJoinPool.commonPool-worker-7/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 4 dependencies adding them to mods collection
+[25Jul2026 23:47:24.428] [ForkJoinPool.commonPool-worker-7/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
      Mod List:
 		Name Version (Mod Id)
 
 		Better Combat 3.0.0+1.21.10 (bettercombat)
 		Cloth Config v20 API 20.0.149 (cloth_config)
-		Fiverka's Weapons 1.1 (fweapons)
+		Fiverka's Weapons 1.3 (fweapons)
 		Minecraft 1.21.10 (minecraft)
 		NeoForge 21.10.64 (neoforge)
 		Player Animation Library 1.1.3+mc.1.21.9 (player_animation_library)
 		Tiny Config 3.1.0 (tiny_config)
-[05Apr2026 20:44:10.177] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/home/fiverka/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.16.5+mixin.0.8.7/80fc3a9f592673cea87f4cd702f87991c6c9fe4d/sponge-mixin-0.16.5+mixin.0.8.7.jar Service=FML Env=CLIENT
-[05Apr2026 20:44:10.198] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Loading FML Plugins:
-[05Apr2026 20:44:10.198] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - mods/PlayerAnimationLibNeoforge-1.1.3+mc.1.21.9.jar > javassist-3.30.2-GA.jar
-[05Apr2026 20:44:10.198] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/fiverka/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/21.10.64/f3fdbbbda21bad3e3adafdddf31f9e7f26ea5d58/neoforge-21.10.64-universal.jar > net.neoforged.neoforge-coremods-21.10.64.jar
-[05Apr2026 20:44:10.256] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Building game content classloader:
+[25Jul2026 23:47:24.608] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/home/fiverka/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.16.5+mixin.0.8.7/80fc3a9f592673cea87f4cd702f87991c6c9fe4d/sponge-mixin-0.16.5+mixin.0.8.7.jar Service=FML Env=CLIENT
+[25Jul2026 23:47:24.628] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Loading FML Plugins:
+[25Jul2026 23:47:24.629] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - mods/PlayerAnimationLibNeoforge-1.1.3+mc.1.21.9.jar > javassist-3.30.2-GA.jar
+[25Jul2026 23:47:24.629] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/fiverka/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/21.10.64/f3fdbbbda21bad3e3adafdddf31f9e7f26ea5d58/neoforge-21.10.64-universal.jar > net.neoforged.neoforge-coremods-21.10.64.jar
+[25Jul2026 23:47:24.684] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Building game content classloader:
  - bettercombat (jar(mods/bettercombat-neoforge-3.0.0+1.21.10.jar))
  - cloth_config (jar(mods/cloth-config-20.0.149-neoforge.jar))
  - fweapons (composite(folder(/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/build/resources/main), folder(/home/fiverka/Projects/fiverkas-weapons-1.21.5-1.21.11/build/classes/java/main)))
@@ -37,111 +37,125 @@
  - net.neoforged.fml.generated (empty(VirtualJar/net.neoforged.fml.generated))
  - player_animation_library (jar(mods/PlayerAnimationLibNeoforge-1.1.3+mc.1.21.9.jar))
  - tiny_config (jar(mods/bettercombat-neoforge-3.0.0+1.21.10.jar > tiny-config-3.1.0-neoforge.jar))
-[05Apr2026 20:44:10.266] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Built game content classloader in 17ms
-[05Apr2026 20:44:11.206] [pool-14-thread-1/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
-[05Apr2026 20:44:11.210] [Datafixer Bootstrap/INFO] [com.mojang.datafixers.DataFixerBuilder/]: 281 Datafixer optimizations took 236 milliseconds
-[05Apr2026 20:44:14.654] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[05Apr2026 20:44:14.654] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
-[05Apr2026 20:44:14.656] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[05Apr2026 20:44:14.657] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[05Apr2026 20:44:14.658] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[05Apr2026 20:44:14.659] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [waypoint, modify, waypoint, color, reset] and [waypoint, modify, waypoint, color, color] with inputs: [reset]
-[05Apr2026 20:44:14.703] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.10.64, for MC 1.21.10
-[05Apr2026 20:44:14.755] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: The mod cloth_config uses the @OnlyIn annotation; the runtime member-stripping behaviour of this annotation is no longer present, which may lead to issues if that behaviour was relied upon
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.AutoConfig$ClientOnly
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on method me.shedaniel.autoconfig.AutoConfig.getConfigScreen(Ljava/lang/Class;Lnet/minecraft/client/gui/screens/Screen;)Ljava/util/function/Supplier;
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on method me.shedaniel.autoconfig.AutoConfig.getGuiRegistry(Ljava/lang/Class;)Lme/shedaniel/autoconfig/gui/registry/GuiRegistry;
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on method me.shedaniel.autoconfig.example.ExampleInits.exampleClientInit()V
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.ConfigScreenProvider
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.DefaultGuiProviders
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.DefaultGuiTransformers
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.ComposedGuiRegistryAccess
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.GuiRegistry
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.api.GuiProvider
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.api.GuiRegistryAccess
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.api.GuiTransformer
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.ClothConfigInitializer
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.AbstractConfigEntry
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.AbstractConfigListEntry
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ConfigBuilder
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ConfigCategory
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ConfigEntryBuilder
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.Modifier
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ModifierKeyCode
-[05Apr2026 20:44:14.756] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.ClothConfigScreen
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.ClothConfigTabButton
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.ClothRequiresRestartScreen
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.AbstractListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.AbstractTextFieldListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.BaseListCell
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.BaseListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.BooleanListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.DoubleListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.DoubleListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.EnumListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.FloatListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.FloatListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.IntegerListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.IntegerListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.IntegerSliderEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.KeyCodeEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.LongListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.LongListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.LongSliderEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.NestedListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.SelectionListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.StringListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.StringListListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.SubCategoryListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.TextFieldListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.TextListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.TooltipListEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget$ElementEntry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicEntryListWidget$Entries
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicEntryListWidget$Entry
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicEntryListWidget
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicNewSmoothScrollingEntryListWidget
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicSmoothScrollingEntryListWidget
-[05Apr2026 20:44:14.757] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ConfigBuilderImpl
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ConfigCategoryImpl
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ConfigEntryBuilderImpl
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.GameOptionsHooks
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.KeyBindingHooks
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ModifierKeyCodeImpl
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.BooleanToggleBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.ColorFieldBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.DoubleFieldBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.DoubleListBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.EnumSelectorBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.FieldBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.FloatFieldBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.FloatListBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.IntFieldBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.IntListBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.IntSliderBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.KeyCodeBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.LongFieldBuilder
-[05Apr2026 20:44:14.758] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.LongListBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.LongSliderBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.SelectorBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.StringListBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.TextFieldBuilder
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.math.impl.PointHelper
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: The mod bettercombat uses the @OnlyIn annotation; the runtime member-stripping behaviour of this annotation is no longer present, which may lead to issues if that behaviour was relied upon
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class net.bettercombat.client.particle.SlashParticle$Provider
-[05Apr2026 20:44:14.759] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class net.bettercombat.client.particle.SlashParticle
-[05Apr2026 20:44:15.132] [Render thread/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
-[05Apr2026 20:44:15.147] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
-[05Apr2026 20:44:15.215] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.3.3+5
-[05Apr2026 20:44:15.331] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Using optional rendering extensions: GL_ARB_buffer_storage, GL_KHR_debug, GL_ARB_vertex_attrib_binding, GL_ARB_direct_state_access
-[05Apr2026 20:44:15.820] [Render thread/ERROR] [com.mojang.text2speech.Narrator/]: Error while loading the narrator
+[25Jul2026 23:47:24.692] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Built game content classloader in 15ms
+[25Jul2026 23:47:25.637] [pool-14-thread-1/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[25Jul2026 23:47:25.641] [Datafixer Bootstrap/INFO] [com.mojang.datafixers.DataFixerBuilder/]: 281 Datafixer optimizations took 216 milliseconds
+[25Jul2026 23:47:28.987] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[25Jul2026 23:47:28.988] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[25Jul2026 23:47:28.989] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[25Jul2026 23:47:28.990] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[25Jul2026 23:47:28.991] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[25Jul2026 23:47:28.992] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [waypoint, modify, waypoint, color, reset] and [waypoint, modify, waypoint, color, color] with inputs: [reset]
+[25Jul2026 23:47:29.047] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.10.64, for MC 1.21.10
+[25Jul2026 23:47:29.088] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: The mod cloth_config uses the @OnlyIn annotation; the runtime member-stripping behaviour of this annotation is no longer present, which may lead to issues if that behaviour was relied upon
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.AutoConfig$ClientOnly
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on method me.shedaniel.autoconfig.AutoConfig.getConfigScreen(Ljava/lang/Class;Lnet/minecraft/client/gui/screens/Screen;)Ljava/util/function/Supplier;
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on method me.shedaniel.autoconfig.AutoConfig.getGuiRegistry(Ljava/lang/Class;)Lme/shedaniel/autoconfig/gui/registry/GuiRegistry;
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on method me.shedaniel.autoconfig.example.ExampleInits.exampleClientInit()V
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.ConfigScreenProvider
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.DefaultGuiProviders
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.DefaultGuiTransformers
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.ComposedGuiRegistryAccess
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.GuiRegistry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.api.GuiProvider
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.api.GuiRegistryAccess
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.autoconfig.gui.registry.api.GuiTransformer
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.ClothConfigInitializer
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.AbstractConfigEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.AbstractConfigListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ConfigBuilder
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ConfigCategory
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ConfigEntryBuilder
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.Modifier
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.api.ModifierKeyCode
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.ClothConfigScreen
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.ClothConfigTabButton
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.ClothRequiresRestartScreen
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.AbstractListListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.AbstractTextFieldListListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.BaseListCell
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.BaseListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.BooleanListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.DoubleListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.DoubleListListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.EnumListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.FloatListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.FloatListListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.IntegerListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.IntegerListListEntry
+[25Jul2026 23:47:29.089] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.IntegerSliderEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.KeyCodeEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.LongListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.LongListListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.LongSliderEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.NestedListListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.SelectionListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.StringListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.StringListListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.SubCategoryListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.TextFieldListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.TextListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.entries.TooltipListEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget$ElementEntry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicEntryListWidget$Entries
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicEntryListWidget$Entry
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicEntryListWidget
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicNewSmoothScrollingEntryListWidget
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.gui.widget.DynamicSmoothScrollingEntryListWidget
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ConfigBuilderImpl
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ConfigCategoryImpl
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ConfigEntryBuilderImpl
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.GameOptionsHooks
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.KeyBindingHooks
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.ModifierKeyCodeImpl
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.BooleanToggleBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.ColorFieldBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.DoubleFieldBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.DoubleListBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.EnumSelectorBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.FieldBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.FloatFieldBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.FloatListBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.IntFieldBuilder
+[25Jul2026 23:47:29.090] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.IntListBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.IntSliderBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.KeyCodeBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.LongFieldBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.LongListBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.LongSliderBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.SelectorBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.StringListBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.TextDescriptionBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.clothconfig2.impl.builders.TextFieldBuilder
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class me.shedaniel.math.impl.PointHelper
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: The mod bettercombat uses the @OnlyIn annotation; the runtime member-stripping behaviour of this annotation is no longer present, which may lead to issues if that behaviour was relied upon
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class net.bettercombat.client.particle.SlashParticle$Provider
+[25Jul2026 23:47:29.091] [modloading-worker-0/ERROR] [net.neoforged.neoforge.common.OnlyInWarningsHandler/]: @OnlyIn used on class net.bettercombat.client.particle.SlashParticle
+[25Jul2026 23:47:29.452] [Render thread/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+[25Jul2026 23:47:29.465] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
+[25Jul2026 23:47:29.534] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.3.3+5
+[25Jul2026 23:47:29.681] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Using optional rendering extensions: GL_ARB_buffer_storage, GL_KHR_debug, GL_ARB_vertex_attrib_binding, GL_ARB_direct_state_access
+[25Jul2026 23:47:29.904] [Download-2/ERROR] [net.minecraft.client.Minecraft/]: Failed to fetch user properties
+com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
+	at com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:59) ~[authlib-7.0.61.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:150) ~[authlib-7.0.61.jar:?]
+	at TRANSFORMER/minecraft@1.21.10/net.minecraft.client.Minecraft.lambda$new$1(Minecraft.java:437) ~[neoforge-21.10.64.jar:?]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1768) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
+Caused by: com.mojang.authlib.exceptions.MinecraftClientHttpException: Status: 401
+	at com.mojang.authlib.minecraft.client.MinecraftClient.readInputStream(MinecraftClient.java:103) ~[authlib-7.0.61.jar:?]
+	at com.mojang.authlib.minecraft.client.MinecraftClient.get(MinecraftClient.java:56) ~[authlib-7.0.61.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:121) ~[authlib-7.0.61.jar:?]
+	... 5 more
+[25Jul2026 23:47:30.167] [Render thread/ERROR] [com.mojang.text2speech.Narrator/]: Error while loading the narrator
 com.mojang.text2speech.Narrator$InitializeException: Failed to load library flite
 	at com.mojang.text2speech.NarratorLinux$FliteLibrary.loadNative(NarratorLinux.java:81) ~[text2speech-1.18.11.jar:?]
 	at com.mojang.text2speech.NarratorLinux.<init>(NarratorLinux.java:18) ~[text2speech-1.18.11.jar:?]
@@ -195,26 +209,11 @@ Native library (linux-x86-64/libflite.so) not found in resource path (/home/five
 		at TRANSFORMER/minecraft@1.21.10/net.minecraft.client.Minecraft.<init>(Minecraft.java:676) [neoforge-21.10.64.jar:?]
 		at TRANSFORMER/minecraft@1.21.10/net.minecraft.client.main.Main.main(Main.java:214) [neoforge-21.10.64.jar:?]
 		at net.neoforged.fml.startup.Client.main(Client.java:19) [loader-10.0.32.jar:10.0]
-[05Apr2026 20:44:15.854] [Render thread/INFO] [net.minecraft.server.packs.resources.ReloadableResourceManager/]: Reloading ResourceManager: vanilla, mod_resources, mod/player_animation_library, mod/tiny_config, mod/cloth_config, mod/bettercombat, mod/fweapons, mod/neoforge
-[05Apr2026 20:44:15.905] [resourceLoad/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_all_no_pua-15.1.05.hex, loading
-[05Apr2026 20:44:15.910] [Download-2/ERROR] [net.minecraft.client.Minecraft/]: Failed to fetch user properties
-com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
-	at com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:59) ~[authlib-7.0.61.jar:?]
-	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:150) ~[authlib-7.0.61.jar:?]
-	at TRANSFORMER/minecraft@1.21.10/net.minecraft.client.Minecraft.lambda$new$1(Minecraft.java:437) ~[neoforge-21.10.64.jar:?]
-	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1768) ~[?:?]
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
-	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
-Caused by: com.mojang.authlib.exceptions.MinecraftClientHttpException: Status: 401
-	at com.mojang.authlib.minecraft.client.MinecraftClient.readInputStream(MinecraftClient.java:103) ~[authlib-7.0.61.jar:?]
-	at com.mojang.authlib.minecraft.client.MinecraftClient.get(MinecraftClient.java:56) ~[authlib-7.0.61.jar:?]
-	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:121) ~[authlib-7.0.61.jar:?]
-	... 5 more
-[05Apr2026 20:44:15.930] [resourceLoad/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_jp_patch-15.1.05.hex, loading
-[05Apr2026 20:44:16.091] [resourceLoad/WARN] [net.minecraft.client.renderer.texture.SpriteLoader/]: Texture fweapons:item/dream_essence with size 22x22 limits mip level from 4 to 1
-[05Apr2026 20:44:16.359] [Download-3/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
-[05Apr2026 20:44:16.360] [Download-3/ERROR] [com.mojang.realmsclient.client.RealmsClient/]: Failed to fetch Realms feature flags
+[25Jul2026 23:47:30.189] [Render thread/INFO] [net.minecraft.server.packs.resources.ReloadableResourceManager/]: Reloading ResourceManager: vanilla, mod_resources, mod/player_animation_library, mod/tiny_config, mod/cloth_config, mod/bettercombat, mod/fweapons, mod/neoforge
+[25Jul2026 23:47:30.268] [resourceLoad/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_all_no_pua-15.1.05.hex, loading
+[25Jul2026 23:47:30.285] [resourceLoad/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_jp_patch-15.1.05.hex, loading
+[25Jul2026 23:47:30.299] [Download-2/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
+[25Jul2026 23:47:30.300] [Download-2/ERROR] [com.mojang.realmsclient.client.RealmsClient/]: Failed to fetch Realms feature flags
 com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
 	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:522) ~[neoforge-21.10.64.jar:?]
 	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.client.RealmsClient.fetchFeatureFlags(RealmsClient.java:163) ~[neoforge-21.10.64.jar:?]
@@ -222,199 +221,304 @@ com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication 
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
 	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
-[05Apr2026 20:44:16.763] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.bamboo_wood_trapdoor.open
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.entity.wolf.ambient', args=[]} for sound event: minecraft:entity.wolf.ambient
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.iron_trapdoor.open', args=[]} for sound event: minecraft:block.iron_trapdoor.open
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.iron_trapdoor.close', args=[]} for sound event: minecraft:block.iron_trapdoor.close
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.entity.wolf.ambient', args=[]} for sound event: minecraft:entity.wolf.pant
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.entity.wolf.ambient', args=[]} for sound event: minecraft:entity.wolf.whine
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.cherry_wood_trapdoor.open
-[05Apr2026 20:44:16.764] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.cherry_wood_trapdoor.close
-[05Apr2026 20:44:16.765] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.ambient.cave', args=[]} for sound event: minecraft:ambient.cave
-[05Apr2026 20:44:16.765] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.bamboo_wood_trapdoor.close
-[05Apr2026 20:44:16.765] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.nether_wood_trapdoor.close
-[05Apr2026 20:44:16.765] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.wooden_trapdoor.close
-[05Apr2026 20:44:16.765] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.nether_wood_trapdoor.open
-[05Apr2026 20:44:16.765] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.wooden_trapdoor.open
-[05Apr2026 20:44:16.765] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.armor.equip_copper
-[05Apr2026 20:44:16.765] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:ui.hud.bubble_pop
-[05Apr2026 20:44:16.765] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.cactus_flower.break
-[05Apr2026 20:44:16.765] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.cactus_flower.place
-[05Apr2026 20:44:16.765] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest.close
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest.open
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_weathered.close
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_weathered.open
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_oxidized.close
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_oxidized.open
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.step
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.hurt
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.death
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.step
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.hurt
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.death
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.step
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.hurt
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.death
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.spin
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.spin
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.spin
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.no_item_get
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.no_item_no_get
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.item_drop
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.item_no_drop
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_become_statue
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.break
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.place
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.hit
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.step
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.fall
-[05Apr2026 20:44:16.766] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.spawn
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.shear
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.ambient
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.activate
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.deactivate
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.attack
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.death
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.step
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.freeze
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.unfreeze
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.spawn
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.sway
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.twitch
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.break
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.fall
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.hit
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.hurt
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.place
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.step
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.idle
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.spawn
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.deadbush.idle
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.break
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.step
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.fall
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.ambient
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.ambient_water
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.place
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.place_in_water
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.transition
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dry_grass.ambient
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.open_long
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.open
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.close_long
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.close
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.idle
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.firefly_bush.idle
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.ambient
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.death
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.hurt
-[05Apr2026 20:44:16.767] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.spawn
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.ambient
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.death
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.hurt
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.riding
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.equip
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.unequip
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.harness_goggles_up
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.harness_goggles_down
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.horse_armor.unequip
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.break
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.step
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.place
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.hit
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.fall
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.break
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.step
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.place
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.hit
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.fall
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.lead.untied
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.lead.tied
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.lead.break
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.llama_carpet.unequip
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:music_disc.lava_chicken
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:music_disc.tears
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.pale_hanging_moss.idle
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.parrot.imitate.creaking
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.sand.idle
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.shears.snip
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.activate
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.break
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.deactivate
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.fall
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.hit
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.multi_swap
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.place
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.place_item
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.single_swap
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.step
-[05Apr2026 20:44:16.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.take_item
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.spawner.fall
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.break
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.fall
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.place
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.step
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.break
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.fall
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.hit
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.place
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.step
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:weather.end_flash
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.ambient
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.death
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.growl
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.hurt
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.pant
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.whine
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.ambient
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.death
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.growl
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.hurt
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.pant
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.whine
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.ambient
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.death
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.growl
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.hurt
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.pant
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.whine
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.ambient
-[05Apr2026 20:44:16.769] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.death
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.growl
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.hurt
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.pant
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.whine
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.ambient
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.death
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.growl
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.hurt
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.pant
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.whine
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.ambient
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.death
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.growl
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.hurt
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.pant
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.whine
-[05Apr2026 20:44:16.770] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.saddle.unequip
-[05Apr2026 20:44:16.783] [Render thread/INFO] [com.mojang.blaze3d.audio.Library/]: OpenAL initialized on device Starship/Matisse HD Audio Controller Analog Stereo
-[05Apr2026 20:44:16.783] [Render thread/INFO] [net.minecraft.client.sounds.SoundEngine/SOUNDS]: Sound engine started
-[05Apr2026 20:44:16.784] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 2048x1024x0 minecraft:textures/atlas/particles.png-atlas
-[05Apr2026 20:44:16.787] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 128x64x0 minecraft:textures/atlas/decorated_pot.png-atlas
-[05Apr2026 20:44:16.788] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 2048x1024x0 minecraft:textures/atlas/armor_trims.png-atlas
-[05Apr2026 20:44:16.790] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
-[05Apr2026 20:44:16.791] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x0 minecraft:textures/atlas/shield_patterns.png-atlas
-[05Apr2026 20:44:16.791] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x1024x4 minecraft:textures/atlas/blocks.png-atlas
-[05Apr2026 20:44:16.796] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/chest.png-atlas
-[05Apr2026 20:44:16.797] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x0 minecraft:textures/atlas/banner_patterns.png-atlas
-[05Apr2026 20:44:16.797] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/beds.png-atlas
-[05Apr2026 20:44:16.797] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
-[05Apr2026 20:44:16.798] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
-[05Apr2026 20:44:16.799] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x0 minecraft:textures/atlas/signs.png-atlas
-[05Apr2026 20:44:16.799] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/shulker_boxes.png-atlas
-[05Apr2026 20:44:16.894] [Render thread/INFO] [net.neoforged.neoforge.client.entity.animation.json.AnimationLoader/]: Loaded 0 entity animations
-[05Apr2026 20:44:19.704] [IO-Worker-1/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
-[05Apr2026 20:44:19.704] [IO-Worker-1/ERROR] [com.mojang.realmsclient.RealmsAvailability/]: Couldn't connect to realms
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.bamboo_wood_trapdoor.open
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.entity.wolf.ambient', args=[]} for sound event: minecraft:entity.wolf.ambient
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.iron_trapdoor.open', args=[]} for sound event: minecraft:block.iron_trapdoor.open
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.iron_trapdoor.close', args=[]} for sound event: minecraft:block.iron_trapdoor.close
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.entity.wolf.ambient', args=[]} for sound event: minecraft:entity.wolf.pant
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.entity.wolf.ambient', args=[]} for sound event: minecraft:entity.wolf.whine
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.cherry_wood_trapdoor.open
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.cherry_wood_trapdoor.close
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.ambient.cave', args=[]} for sound event: minecraft:ambient.cave
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.bamboo_wood_trapdoor.close
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.nether_wood_trapdoor.close
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.wooden_trapdoor.close
+[25Jul2026 23:47:31.184] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.nether_wood_trapdoor.open
+[25Jul2026 23:47:31.185] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.block.trapdoor.toggle', args=[]} for sound event: minecraft:block.wooden_trapdoor.open
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.armor.equip_copper
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:ui.hud.bubble_pop
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.cactus_flower.break
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.cactus_flower.place
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest.close
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest.open
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_weathered.close
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_weathered.open
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_oxidized.close
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_chest_oxidized.open
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.step
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.hurt
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.death
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.step
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.hurt
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.death
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.step
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.hurt
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.death
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.spin
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_weathered.spin
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_oxidized.spin
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.no_item_get
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.no_item_no_get
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.item_drop
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.item_no_drop
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem_become_statue
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.break
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.place
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.hit
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.step
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.copper_golem_statue.fall
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.spawn
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.copper_golem.shear
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.ambient
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.activate
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.deactivate
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.attack
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.death
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.step
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.freeze
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.unfreeze
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.spawn
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.sway
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.creaking.twitch
+[25Jul2026 23:47:31.185] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.break
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.fall
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.hit
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.hurt
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.place
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.step
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.idle
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.creaking_heart.spawn
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.deadbush.idle
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.break
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.step
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.fall
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.ambient
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.ambient_water
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.place
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.place_in_water
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dried_ghast.transition
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.dry_grass.ambient
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.open_long
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.open
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.close_long
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.close
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.eyeblossom.idle
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.firefly_bush.idle
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.ambient
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.death
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.hurt
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.ghastling.spawn
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.ambient
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.death
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.hurt
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.riding
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.equip
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.unequip
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.harness_goggles_up
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.happy_ghast.harness_goggles_down
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.horse_armor.unequip
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.break
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.step
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.place
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.hit
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.iron.fall
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.break
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.step
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.place
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.hit
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.leaf_litter.fall
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.lead.untied
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.lead.tied
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.lead.break
+[25Jul2026 23:47:31.186] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.llama_carpet.unequip
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:music_disc.lava_chicken
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:music_disc.tears
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.pale_hanging_moss.idle
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.parrot.imitate.creaking
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.sand.idle
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.shears.snip
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.activate
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.break
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.deactivate
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.fall
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.hit
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.multi_swap
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.place
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.place_item
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.single_swap
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.step
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.shelf.take_item
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.spawner.fall
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.break
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.fall
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.place
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin.step
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.break
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.fall
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.hit
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.place
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:block.resin_bricks.step
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:weather.end_flash
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.ambient
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.death
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.growl
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.hurt
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.pant
+[25Jul2026 23:47:31.187] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_puglin.whine
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.ambient
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.death
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.growl
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.hurt
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.pant
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_sad.whine
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.ambient
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.death
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.growl
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.hurt
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.pant
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_angry.whine
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.ambient
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.death
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.growl
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.hurt
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.pant
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_grumpy.whine
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.ambient
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.death
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.growl
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.hurt
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.pant
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_big.whine
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.ambient
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.death
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.growl
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.hurt
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.pant
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.wolf_cute.whine
+[25Jul2026 23:47:31.188] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.saddle.unequip
+[25Jul2026 23:47:31.201] [Render thread/INFO] [com.mojang.blaze3d.audio.Library/]: OpenAL initialized on device Starship/Matisse HD Audio Controller Analog Stereo
+[25Jul2026 23:47:31.202] [Render thread/INFO] [net.minecraft.client.sounds.SoundEngine/SOUNDS]: Sound engine started
+[25Jul2026 23:47:31.202] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 2048x1024x0 minecraft:textures/atlas/particles.png-atlas
+[25Jul2026 23:47:31.206] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 128x64x0 minecraft:textures/atlas/decorated_pot.png-atlas
+[25Jul2026 23:47:31.207] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 2048x1024x0 minecraft:textures/atlas/armor_trims.png-atlas
+[25Jul2026 23:47:31.209] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[25Jul2026 23:47:31.209] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x0 minecraft:textures/atlas/shield_patterns.png-atlas
+[25Jul2026 23:47:31.210] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x1024x4 minecraft:textures/atlas/blocks.png-atlas
+[25Jul2026 23:47:31.216] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/chest.png-atlas
+[25Jul2026 23:47:31.216] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x0 minecraft:textures/atlas/banner_patterns.png-atlas
+[25Jul2026 23:47:31.216] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/beds.png-atlas
+[25Jul2026 23:47:31.217] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
+[25Jul2026 23:47:31.217] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[25Jul2026 23:47:31.218] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x0 minecraft:textures/atlas/signs.png-atlas
+[25Jul2026 23:47:31.218] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/shulker_boxes.png-atlas
+[25Jul2026 23:47:31.506] [Render thread/INFO] [net.neoforged.neoforge.client.entity.animation.json.AnimationLoader/]: Loaded 0 entity animations
+[25Jul2026 23:47:34.588] [IO-Worker-1/ERROR] [com.mojang.realmsclient.RealmsAvailability/]: Couldn't connect to realms
+com.mojang.realmsclient.exception.RealmsServiceException: Realms service error (502) with message '<div id='content'>
+        <div id='message'>
+            <h1>502</h1>
+<h2><span>The service behind this page isn't responding to Azure Front Door.</span>
+</h2>
+<hr />
+<p>Bad Gateway</p>
+<p>Azure Front Door wasn't able to connect to the origin. <br> If the problem persists, use the troubleshooting steps to resolve the issue.</p>
+<br />
+<a href="https://learn.microsoft.com/en-us/azure/frontdoor/troubleshoot-issues" target="blank">Azure Documentation</a>
+<br />
+        </div>
+        <div id='errorref'>
+            <span>Error Info:</span><span>OriginConnectionAborted</span><br />
+<span>x-azure-ref ID:</span><span>20260725T214734Z-177769844dfh4qlthC1CPHzvv400000009k0000000002e35            </span>
+        </div>
+    </div>'
+	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:526) ~[neoforge-21.10.64.jar:?]
+	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.client.RealmsClient.clientCompatible(RealmsClient.java:292) ~[neoforge-21.10.64.jar:?]
+	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.RealmsAvailability.lambda$check$0(RealmsAvailability.java:51) ~[neoforge-21.10.64.jar:?]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1768) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
+[25Jul2026 23:47:49.382] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:airmace_smithing' from 'fweapons:recipe/airmace_smithing.json': DataResult.Error['Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:diamond_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:diamond_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:diamond_block"}; Second: Not a string: {"item":"minecraft:diamond_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:diamond_block"}]; Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:mace"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:mace"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:mace"}; Second: Not a string: {"item":"minecraft:mace"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:mace"}]; Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"fweapons:gblueprint"}]; Second: Failed to parse either. First: Not a string: {"item":"fweapons:gblueprint"}; Second: Failed to parse either. First: Not a json array: {"item":"fweapons:gblueprint"}; Second: Not a string: {"item":"fweapons:gblueprint"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"fweapons:gblueprint"}]']
+[25Jul2026 23:47:49.383] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:antem' from 'fweapons:recipe/antem.json': DataResult.Error['Map entry 'S' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:iron_sword"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:iron_sword"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:iron_sword"}; Second: Not a string: {"item":"minecraft:iron_sword"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:iron_sword"}]']
+[25Jul2026 23:47:49.385] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:bayonet' from 'fweapons:recipe/bayonet.json': DataResult.Error['Map entry 'I' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:iron_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:iron_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:iron_block"}; Second: Not a string: {"item":"minecraft:iron_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:iron_block"}]']
+[25Jul2026 23:47:49.390] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:blue_katana' from 'fweapons:recipe/blue_katana.json': DataResult.Error['Map entry 'B' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:blue_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:blue_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:blue_dye"}; Second: Not a string: {"item":"minecraft:blue_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:blue_dye"}]']
+[25Jul2026 23:47:49.405] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:dawn' from 'fweapons:recipe/dawn.json': DataResult.Error['Map entry 'B' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:gold_ingot"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:gold_ingot"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:gold_ingot"}; Second: Not a string: {"item":"minecraft:gold_ingot"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:gold_ingot"}]']
+[25Jul2026 23:47:49.409] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:dshield' from 'fweapons:recipe/dshield.json': DataResult.Error['Map entry 'O' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:obsidian"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:obsidian"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:obsidian"}; Second: Not a string: {"item":"minecraft:obsidian"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:obsidian"}]']
+[25Jul2026 23:47:49.410] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:dusk' from 'fweapons:recipe/dusk.json': DataResult.Error['Map entry 'A' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:amethyst_shard"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:amethyst_shard"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:amethyst_shard"}; Second: Not a string: {"item":"minecraft:amethyst_shard"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:amethyst_shard"}]']
+[25Jul2026 23:47:49.417] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:gblueprint' from 'fweapons:recipe/gblueprint.json': DataResult.Error['Map entry 'B' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:black_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:black_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:black_dye"}; Second: Not a string: {"item":"minecraft:black_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:black_dye"}]']
+[25Jul2026 23:47:49.421] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:harvester' from 'fweapons:recipe/harvester.json': DataResult.Error['Map entry 'I' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:iron_ingot"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:iron_ingot"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:iron_ingot"}; Second: Not a string: {"item":"minecraft:iron_ingot"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:iron_ingot"}]']
+[25Jul2026 23:47:49.421] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:hcbow_smithing' from 'fweapons:recipe/hcbow_smithing.json': DataResult.Error['Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:iron_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:iron_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:iron_block"}; Second: Not a string: {"item":"minecraft:iron_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:iron_block"}]; Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:crossbow"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:crossbow"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:crossbow"}; Second: Not a string: {"item":"minecraft:crossbow"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:crossbow"}]; Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"fweapons:hcbowprint"}]; Second: Failed to parse either. First: Not a string: {"item":"fweapons:hcbowprint"}; Second: Failed to parse either. First: Not a json array: {"item":"fweapons:hcbowprint"}; Second: Not a string: {"item":"fweapons:hcbowprint"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"fweapons:hcbowprint"}]']
+[25Jul2026 23:47:49.421] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:hcbowprint' from 'fweapons:recipe/hcbowprint.json': DataResult.Error['Map entry 'I' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:ink_sac"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:ink_sac"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:ink_sac"}; Second: Not a string: {"item":"minecraft:ink_sac"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:ink_sac"}]']
+[25Jul2026 23:47:49.426] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:lscythe' from 'fweapons:recipe/lscythe.json': DataResult.Error['Map entry 'L' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:lapis_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:lapis_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:lapis_block"}; Second: Not a string: {"item":"minecraft:lapis_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:lapis_block"}]']
+[25Jul2026 23:47:49.429] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:mkopi' from 'fweapons:recipe/mkopi.json': DataResult.Error['Map entry 'R' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:red_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:red_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:red_dye"}; Second: Not a string: {"item":"minecraft:red_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:red_dye"}]']
+[25Jul2026 23:47:49.430] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:natureaxe' from 'fweapons:recipe/natureaxe.json': DataResult.Error['Map entry 'L' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"tag":"minecraft:leaves"}]; Second: Failed to parse either. First: Not a string: {"tag":"minecraft:leaves"}; Second: Failed to parse either. First: Not a json array: {"tag":"minecraft:leaves"}; Second: Not a string: {"tag":"minecraft:leaves"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"tag":"minecraft:leaves"}]']
+[25Jul2026 23:47:49.443] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:sacrilegious' from 'fweapons:recipe/sacrilegious.json': DataResult.Error['Map entry 'D' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:diamond"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:diamond"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:diamond"}; Second: Not a string: {"item":"minecraft:diamond"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:diamond"}]']
+[25Jul2026 23:47:49.461] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:thefool' from 'fweapons:recipe/thefool.json': DataResult.Error['Map entry 'G' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:glowstone_dust"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:glowstone_dust"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:glowstone_dust"}; Second: Not a string: {"item":"minecraft:glowstone_dust"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:glowstone_dust"}]']
+[25Jul2026 23:47:49.465] [Worker-Main-8/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:vaporwave_sword' from 'fweapons:recipe/vaporwave_sword.json': DataResult.Error['Map entry 'Y' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:yellow_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:yellow_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:yellow_dye"}; Second: Not a string: {"item":"minecraft:yellow_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:yellow_dye"}]']
+[25Jul2026 23:47:49.537] [Render thread/INFO] [net.minecraft.world.item.crafting.RecipeManager/]: Loaded 1461 recipes
+[25Jul2026 23:47:49.545] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 1610 advancements
+[25Jul2026 23:47:49.547] [Render thread/INFO] [net.neoforged.neoforge.common.crafting.RecipePriorityManager/]: Loaded 0 recipe priority overrides
+[25Jul2026 23:47:49.663] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Starting integrated minecraft server version 1.21.10
+[25Jul2026 23:47:49.664] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
+[25Jul2026 23:47:49.818] [Server thread/INFO] [net.bettercombat.logic.WeaponRegistry/]: Encoded Weapon Attribute registry size (with package overhead): 5415 bytes (in 1 string chunks with the size of 10000)
+[25Jul2026 23:47:49.958] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Loading 0 persistent chunks...
+[25Jul2026 23:47:49.971] [Server thread/INFO] [net.neoforged.neoforge.server.permission.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
+[25Jul2026 23:47:50.295] [Render thread/INFO] [net.bettercombat.BetterCombatMod/]: Received config sync packet
+[25Jul2026 23:47:50.328] [Render thread/INFO] [net.bettercombat.logic.WeaponRegistry/]: Decoded Weapon Attribute registry in 1 string chunks
+[25Jul2026 23:47:50.449] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Loading 49 chunks for player spawn...
+[25Jul2026 23:47:50.449] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Preparing spawn area: 16%
+[25Jul2026 23:47:50.475] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Preparing spawn area: 16%
+[25Jul2026 23:47:50.575] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Time elapsed: 617 ms
+[25Jul2026 23:47:50.860] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[local:E:fdd85bb3] logged in with entity id 18 at (-146.75323634479287, -60.0, -328.6540705610015)
+[25Jul2026 23:47:50.910] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[25Jul2026 23:47:51.013] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 2 reached during a single frame. New capacity will be 4.
+[25Jul2026 23:47:51.053] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Changing view distance to 12, from 10
+[25Jul2026 23:47:51.055] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 4 reached during a single frame. New capacity will be 8.
+[25Jul2026 23:47:51.055] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Changing simulation distance to 12, from 0
+[25Jul2026 23:47:51.064] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 79 advancements
+[25Jul2026 23:47:51.191] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
+[25Jul2026 23:47:51.227] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 16 reached during a single frame. New capacity will be 32.
+[25Jul2026 23:47:51.250] [Render thread/WARN] [net.minecraft.client.multiplayer.ClientPacketListener/]: Received passengers for unknown entity
+[25Jul2026 23:47:51.272] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 32 reached during a single frame. New capacity will be 64.
+[25Jul2026 23:47:51.381] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 64 reached during a single frame. New capacity will be 128.
+[25Jul2026 23:47:51.636] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 128 reached during a single frame. New capacity will be 256.
+[25Jul2026 23:47:51.939] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 256 reached during a single frame. New capacity will be 512.
+[25Jul2026 23:47:56.378] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev has made the advancement [The Ballista]
+[25Jul2026 23:47:56.387] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Dev has made the advancement [The Ballista]
+[25Jul2026 23:47:56.389] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 79 advancements
+[25Jul2026 23:48:02.326] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev has made the advancement [Gaia’s weapons]
+[25Jul2026 23:48:02.331] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Dev has made the advancement [Gaia’s weapons]
+[25Jul2026 23:48:02.332] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 79 advancements
+[25Jul2026 23:48:05.639] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 79 advancements
+[25Jul2026 23:48:06.237] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 88 advancements
+[25Jul2026 23:48:07.688] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 88 advancements
+[25Jul2026 23:48:13.939] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 88 advancements
+[25Jul2026 23:48:24.179] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Set the time to 1000]
+[25Jul2026 23:48:24.186] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Set the time to 1000
+[25Jul2026 23:48:28.081] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 88 advancements
+[25Jul2026 23:48:41.575] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Saving and pausing game...
+[25Jul2026 23:48:41.598] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[25Jul2026 23:48:41.615] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[25Jul2026 23:48:41.616] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[25Jul2026 23:49:14.184] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 90 advancements
+[25Jul2026 23:49:35.425] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Saving and pausing game...
+[25Jul2026 23:49:35.441] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[25Jul2026 23:49:35.449] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[25Jul2026 23:49:35.449] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[25Jul2026 23:49:35.979] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[25Jul2026 23:49:35.979] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[25Jul2026 23:49:35.994] [Server thread/INFO] [net.minecraft.server.network.ServerCommonPacketListenerImpl/]: Stopping singleplayer server as player logged out
+[25Jul2026 23:49:36.025] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
+[25Jul2026 23:49:36.026] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
+[25Jul2026 23:49:36.026] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
+[25Jul2026 23:49:36.163] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[25Jul2026 23:49:36.199] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[25Jul2026 23:49:36.202] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[25Jul2026 23:49:36.213] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (New World): All chunks are saved
+[25Jul2026 23:49:36.213] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[25Jul2026 23:49:36.213] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[25Jul2026 23:49:36.213] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage: All dimensions are saved
+[25Jul2026 23:49:36.519] [IO-Worker-4/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
+[25Jul2026 23:49:36.519] [IO-Worker-4/ERROR] [com.mojang.realmsclient.RealmsAvailability/]: Couldn't connect to realms
 com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
 	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:522) ~[neoforge-21.10.64.jar:?]
 	at TRANSFORMER/minecraft@1.21.10/com.mojang.realmsclient.client.RealmsClient.clientCompatible(RealmsClient.java:292) ~[neoforge-21.10.64.jar:?]
@@ -423,60 +527,4 @@ com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication 
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
 	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
-[05Apr2026 20:44:22.022] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:airmace_smithing' from 'fweapons:recipe/airmace_smithing.json': DataResult.Error['Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:diamond_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:diamond_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:diamond_block"}; Second: Not a string: {"item":"minecraft:diamond_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:diamond_block"}]; Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:mace"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:mace"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:mace"}; Second: Not a string: {"item":"minecraft:mace"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:mace"}]; Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"fweapons:gblueprint"}]; Second: Failed to parse either. First: Not a string: {"item":"fweapons:gblueprint"}; Second: Failed to parse either. First: Not a json array: {"item":"fweapons:gblueprint"}; Second: Not a string: {"item":"fweapons:gblueprint"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"fweapons:gblueprint"}]']
-[05Apr2026 20:44:22.025] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:bayonet' from 'fweapons:recipe/bayonet.json': DataResult.Error['Map entry 'I' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:iron_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:iron_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:iron_block"}; Second: Not a string: {"item":"minecraft:iron_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:iron_block"}]']
-[05Apr2026 20:44:22.029] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:blue_katana' from 'fweapons:recipe/blue_katana.json': DataResult.Error['Map entry 'B' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:blue_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:blue_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:blue_dye"}; Second: Not a string: {"item":"minecraft:blue_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:blue_dye"}]']
-[05Apr2026 20:44:22.045] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:dawn' from 'fweapons:recipe/dawn.json': DataResult.Error['Map entry 'B' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:gold_ingot"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:gold_ingot"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:gold_ingot"}; Second: Not a string: {"item":"minecraft:gold_ingot"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:gold_ingot"}]']
-[05Apr2026 20:44:22.049] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:dusk' from 'fweapons:recipe/dusk.json': DataResult.Error['Map entry 'A' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:amethyst_shard"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:amethyst_shard"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:amethyst_shard"}; Second: Not a string: {"item":"minecraft:amethyst_shard"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:amethyst_shard"}]']
-[05Apr2026 20:44:22.064] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:gblueprint' from 'fweapons:recipe/gblueprint.json': DataResult.Error['Map entry 'B' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:black_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:black_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:black_dye"}; Second: Not a string: {"item":"minecraft:black_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:black_dye"}]']
-[05Apr2026 20:44:22.080] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:lscythe' from 'fweapons:recipe/lscythe.json': DataResult.Error['Map entry 'L' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:lapis_block"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:lapis_block"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:lapis_block"}; Second: Not a string: {"item":"minecraft:lapis_block"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:lapis_block"}]']
-[05Apr2026 20:44:22.083] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:mkopi' from 'fweapons:recipe/mkopi.json': DataResult.Error['Map entry 'R' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:red_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:red_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:red_dye"}; Second: Not a string: {"item":"minecraft:red_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:red_dye"}]']
-[05Apr2026 20:44:22.085] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:natureaxe' from 'fweapons:recipe/natureaxe.json': DataResult.Error['Map entry 'L' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"tag":"minecraft:leaves"}]; Second: Failed to parse either. First: Not a string: {"tag":"minecraft:leaves"}; Second: Failed to parse either. First: Not a json array: {"tag":"minecraft:leaves"}; Second: Not a string: {"tag":"minecraft:leaves"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"tag":"minecraft:leaves"}]']
-[05Apr2026 20:44:22.103] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:sacrilegious' from 'fweapons:recipe/sacrilegious.json': DataResult.Error['Map entry 'D' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:diamond"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:diamond"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:diamond"}; Second: Not a string: {"item":"minecraft:diamond"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:diamond"}]']
-[05Apr2026 20:44:22.110] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:thefool' from 'fweapons:recipe/thefool.json': DataResult.Error['Map entry 'G' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:glowstone_dust"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:glowstone_dust"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:glowstone_dust"}; Second: Not a string: {"item":"minecraft:glowstone_dust"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:glowstone_dust"}]']
-[05Apr2026 20:44:22.123] [Worker-Main-4/ERROR] [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener/]: Couldn't parse data file 'fweapons:vaporwave_sword' from 'fweapons:recipe/vaporwave_sword.json': DataResult.Error['Map entry 'Y' : Failed to parse either. First: Input does not contain a key [type]: MapLike[{"item":"minecraft:yellow_dye"}]; Second: Failed to parse either. First: Not a string: {"item":"minecraft:yellow_dye"}; Second: Failed to parse either. First: Not a json array: {"item":"minecraft:yellow_dye"}; Second: Not a string: {"item":"minecraft:yellow_dye"}; Input does not contain a key [neoforge:ingredient_type]: MapLike[{"item":"minecraft:yellow_dye"}]']
-[05Apr2026 20:44:22.197] [Render thread/INFO] [net.minecraft.world.item.crafting.RecipeManager/]: Loaded 1461 recipes
-[05Apr2026 20:44:22.205] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 1586 advancements
-[05Apr2026 20:44:22.207] [Render thread/INFO] [net.neoforged.neoforge.common.crafting.RecipePriorityManager/]: Loaded 0 recipe priority overrides
-[05Apr2026 20:44:22.319] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Starting integrated minecraft server version 1.21.10
-[05Apr2026 20:44:22.319] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
-[05Apr2026 20:44:22.480] [Server thread/INFO] [net.bettercombat.logic.WeaponRegistry/]: Encoded Weapon Attribute registry size (with package overhead): 4151 bytes (in 1 string chunks with the size of 10000)
-[05Apr2026 20:44:22.602] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Loading 0 persistent chunks...
-[05Apr2026 20:44:22.614] [Server thread/INFO] [net.neoforged.neoforge.server.permission.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
-[05Apr2026 20:44:22.895] [Render thread/INFO] [net.bettercombat.BetterCombatMod/]: Received config sync packet
-[05Apr2026 20:44:22.928] [Render thread/INFO] [net.bettercombat.logic.WeaponRegistry/]: Decoded Weapon Attribute registry in 1 string chunks
-[05Apr2026 20:44:23.040] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Loading 49 chunks for player spawn...
-[05Apr2026 20:44:23.041] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Preparing spawn area: 16%
-[05Apr2026 20:44:23.119] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Preparing spawn area: 32%
-[05Apr2026 20:44:23.169] [Server thread/INFO] [net.minecraft.server.level.progress.LoggingLevelLoadListener/]: Time elapsed: 568 ms
-[05Apr2026 20:44:23.456] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[local:E:2ded3f0a] logged in with entity id 33 at (-145.8918760711291, -60.0, -146.6933239655055)
-[05Apr2026 20:44:23.495] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
-[05Apr2026 20:44:23.571] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Changing view distance to 12, from 10
-[05Apr2026 20:44:23.572] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Changing simulation distance to 12, from 0
-[05Apr2026 20:44:23.591] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 2 reached during a single frame. New capacity will be 4.
-[05Apr2026 20:44:23.629] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 4 reached during a single frame. New capacity will be 8.
-[05Apr2026 20:44:23.639] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 60 advancements
-[05Apr2026 20:44:23.677] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
-[05Apr2026 20:44:23.807] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 16 reached during a single frame. New capacity will be 32.
-[05Apr2026 20:44:23.855] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 32 reached during a single frame. New capacity will be 64.
-[05Apr2026 20:44:23.995] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 64 reached during a single frame. New capacity will be 128.
-[05Apr2026 20:44:24.172] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 128 reached during a single frame. New capacity will be 256.
-[05Apr2026 20:44:24.580] [Render thread/INFO] [net.minecraft.client.renderer.DynamicUniformStorage/]: Resizing Dynamic Transforms UBO, capacity limit of 256 reached during a single frame. New capacity will be 512.
-[05Apr2026 20:45:07.519] [Server thread/INFO] [net.minecraft.client.server.IntegratedServer/]: Saving and pausing game...
-[05Apr2026 20:45:07.541] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
-[05Apr2026 20:45:07.552] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
-[05Apr2026 20:45:07.552] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
-[05Apr2026 20:45:08.073] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
-[05Apr2026 20:45:08.073] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
-[05Apr2026 20:45:08.090] [Server thread/INFO] [net.minecraft.server.network.ServerCommonPacketListenerImpl/]: Stopping singleplayer server as player logged out
-[05Apr2026 20:45:08.124] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
-[05Apr2026 20:45:08.124] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
-[05Apr2026 20:45:08.124] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
-[05Apr2026 20:45:08.335] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
-[05Apr2026 20:45:08.375] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
-[05Apr2026 20:45:08.378] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
-[05Apr2026 20:45:08.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (New World): All chunks are saved
-[05Apr2026 20:45:08.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[05Apr2026 20:45:08.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
-[05Apr2026 20:45:08.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage: All dimensions are saved
-[05Apr2026 20:45:08.819] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Stopping!
+[25Jul2026 23:49:39.020] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Stopping!
